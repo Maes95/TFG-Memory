@@ -1,16 +1,3 @@
-title_page:
-  font_color: #333333
-  logo:
-    image: image::./logoURJC.jpg[Logo]
-    top: 5%
-  title:
-    font_size: 14
-    top: 30%
-    text_transform: uppercase
-    margin_top: 40
-    margin_bottom: 20
-  subtitle:
-    font_style: bold
 page:
   layout: portrait
   margin: [0.75in, 1in, 0.75in, 1in]
