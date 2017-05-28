@@ -1,0 +1,96 @@
+= ESCUELA TÉCNICA SUPERIOR DE INGENIERÍA INFORMÁTICA: GRADO EN INGENIERÍA INFORMÁTICA
+Michel Maes Bermejo <m.maes@alumnos.urjc.es>
+:toc:
+:toc-title: Contenido
+:doctype: book
+:source-highlighter: rouge
+:imagesdir: images
+:no title:
+
+// Autor: Michel Maes Bermejo, Tutor: Micael Gallego Carrillo
+// Comparativa de tecnologías de servidor para servicios basados en websocket
+// Curso Académico 2016/2017
+
+// PROBLEMAS: ToC no situable, portada limitada a 3 lineas
+
+[abstract]
+== Resumen
+
+Página resumiendo el contenido de la memoria. Esta página se escribe cuando ya se ha escrito toda la memoria.
+
+== 1. Introducción y Motivación
+
+Contexto en el que se enmarca el proyecto y la justificación del mismo. Este capítulo es muy importante porque permite al lector conocer qué sentido tiene el proyecto, qué ofrece, por qué es relevante su implementación, los objetivos que persigue, etc. Este capítulo debería tener una extensión de entre 4 y 10 páginas.
+
+== 2. Objetivos
+
+Página describiendo los objetivos concretos que se pretenden conseguir con el desarrollo del proyecto. Es como la conclusión del capítulo anterior.
+
+== 3. Tecnologías, Herramientas y Metodologías
+
+Descripción de los lenguajes de programación, entornos de desarrollo, herramientas auxiliares, librerías de terceros, sistemas operativos, navegadores web, etc… utilizados para la realización del proyecto así como la metodología empleada. El grado de profundidad a la hora de explicar cada tecnología dependerá de lo relevante que ha sido para el proyecto y lo conocida que es. Por ejemplo, si se usa el lenguaje de programación Java, no es necesario entrar en tanto detalle que si se usa un lenguaje mucho menos usado como Scala, por ejemplo. Respecto a la metodología, dada la naturaleza de los proyectos, se suele describir una metodología iterativa e incremental en espiral, en la que se van sucediendo reuniones con el profesor que van definiendo el ámbito del proyecto. Este capítulo puede tener una extensión entre 10 y 40 páginas.
+
+== 4. Descripción informática
+
+Descripción del proyecto realizado. Después de unos párrafos introductorios el capítulo se divide en subcapítulos. (de 40 a 80 páginas)
+
+=== 4.1. Requisitos
+
+Descripción detallada de las funcionalidades que tendría que implementar la aplicación (pues se asume que los requisitos se escriben antes de empezar el desarrollo). Pueden tener forma de historias de usuario o bien ser una lista de requisitos funcionales y no funcionales.
+
+=== 4.2. Arquitectura y Análisis
+
+Descripción de los aspectos de alto nivel de la aplicación. Diagramas de clases de análisis, diagramas de clases de diseño, etc. Se debe incluir la suficiente información para que el lector pueda entender la estructura de alto nivel del software desarrollado. Se pueden incluir diagramas de casos de uso si se considera útil.
+
+=== 4.3. Diseño e Implementación
+
+Descripción de algún aspecto relevante de la implementación que quiera mencionarse. Por ejemplo se podría incluir alguno de los siguientes aspectos:
+- Algoritmo complejo que se haya tenido que desarrollar.
+- Integración entre librerías problemática.
+- Resolución de algún bug que haya sido especialmente problemático.
+- Focalizar en alguna parte del desarrollo y describirla en más detalle
+- En esta sección se pueden incluir fragmentos de código fuente. En este apartado se pueden incluir algunas métricas del proyecto (Nº de clases, líneas de código, etc…). También se puede incluir la evolución del repositorio de github (gráfico de commits por día).
+
+=== 4.2. Pruebas
+
+En esta sección se describen las pruebas automáticas que han sido implementadas para el proyecto. Sobre los tests, conviene indicar la cobertura del código. Si no se han implementado pruebas automáticas, deberían haberse implementarse y describirse aquí o tener una buena justificación de por qué no se han implementado.
+
+== 5. Conclusiones y trabajos futuros
+
+Reflexión sobre el trabajo realizado, qué objetivos se han cumplido y qué aspectos quedan pendientes para una futura ampliación del proyecto. Además se deben incluir unas conclusiones personales indicando lo que ha supuesto para el alumno la realización del trabajo. Entre 2 y 5 páginas.
+
+== Bibliografía
+
+Deben ir numerados y referenciados en las partes del texto en las que se haga referencia a ellos.
+
+== Anexos
+
+- Instrucciones de construcción del software desde el repositorio github
+- Instalación del software para que se pueda usar
+- Manual de uso (básico)
+- También pueden incluirse como anexo:
+- Formato de los ficheros utilizados
+
+//
+// == Introduction
+//
+// A paragraph followed by a simple list.
+//
+// * item 1
+// * item 2
+//
+// Here's how you say "`Hello, World!`" in Ruby.
+//
+//
+//
+// .A basic Ruby application
+// [source,java]
+// ----
+// public User(Session session) {
+//   this.session = session;
+// }
+// ----
+//
+// TIP: asciidoctor-fopub takes the pain out of converting a DocBook file to a PDF file like this one.
+// All you need is a Java Development Kit (JDK) and this project.
+// The rest of the software is fetched and configured by Gradle.
