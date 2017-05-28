@@ -1,4 +1,4 @@
-= ESCUELA TÉCNICA SUPERIOR DE INGENIERÍA INFORMÁTICA: GRADO EN INGENIERÍA INFORMÁTICA
+= Comparativa de tecnologías de servidor para servicios basados en websocket
 Michel Maes Bermejo <m.maes@alumnos.urjc.es>
 :toc:
 :toc-title: Contenido
@@ -6,12 +6,6 @@ Michel Maes Bermejo <m.maes@alumnos.urjc.es>
 :source-highlighter: rouge
 :imagesdir: images
 :no title:
-
-// Autor: Michel Maes Bermejo, Tutor: Micael Gallego Carrillo
-// Comparativa de tecnologías de servidor para servicios basados en websocket
-// Curso Académico 2016/2017
-
-// PROBLEMAS: ToC no situable, portada limitada a 3 lineas
 
 [abstract]
 == Resumen
