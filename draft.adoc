@@ -10,11 +10,15 @@ Michel Maes Bermejo <m.maes@alumnos.urjc.es>
 [abstract]
 == Resumen
 
-Página resumiendo el contenido de la memoria. Esta página se escribe cuando ya se ha escrito toda la memoria.
+Página resumiendo el contenido de la memoria. Esta página se escribe cuando ya se
+ha escrito toda la memoria.
 
 == 1. Introducción y Motivación
 
-Contexto en el que se enmarca el proyecto y la justificación del mismo. Este capítulo es muy importante porque permite al lector conocer qué sentido tiene el proyecto, qué ofrece, por qué es relevante su implementación, los objetivos que persigue, etc. Este capítulo debería tener una extensión de entre 4 y 10 páginas.
+Hoy en día hay muchas aplicaciones basadas en WebSockets proporcionan
+comunicación en tiempo real. Estas aplicaciones tienen como objetivo tener
+tiempos de respuesta bajos (requisitos funcionales) y un consumo mínimo de recursos
+(requisitos no funcionales).
 
 == 2. Objetivos
 
@@ -64,27 +68,3 @@ Deben ir numerados y referenciados en las partes del texto en las que se haga re
 - Manual de uso (básico)
 - También pueden incluirse como anexo:
 - Formato de los ficheros utilizados
-
-//
-// == Introduction
-//
-// A paragraph followed by a simple list.
-//
-// * item 1
-// * item 2
-//
-// Here's how you say "`Hello, World!`" in Ruby.
-//
-//
-//
-// .A basic Ruby application
-// [source,java]
-// ----
-// public User(Session session) {
-//   this.session = session;
-// }
-// ----
-//
-// TIP: asciidoctor-fopub takes the pain out of converting a DocBook file to a PDF file like this one.
-// All you need is a Java Development Kit (JDK) and this project.
-// The rest of the software is fetched and configured by Gradle.
