@@ -4,8 +4,9 @@ Michel Maes Bermejo <m.maes@alumnos.urjc.es>
 :toc-title: Contenido
 :doctype: book
 :source-highlighter: rouge
-:pdf-stylesdir: themes
-:imagesdir: images
+:pdf-stylesdir: resources/themes
+:imagesdir: resources/images
+// :pdf-fontsdir: resources/fonts
 :no title:
 
 [abstract]
@@ -22,21 +23,59 @@ Este problema de desinformación puede abordarse mediante el estudio de las dist
 
 Estas tecnologías proporcionan una comunicación en tiempo real con clientes muy diversos (aplicaciones móviles, navegadores, otro servidores…). Un ejemplo actual son los servicios de mensajería instantánea cómo WhatsApp o Telegram. Hoy en día este tipo de aplicaciones tienen un impacto drástico en la vida diaria, siendo casi una herramienta imprescindible, por lo que prevenir una caída de servicio ante un alto número de clientes es fundamental.
 
+.Crecimiento de WhatsApp en los últimos 4 años
 image::./crecWhastApp.png[Crecimiento WhatsApp]
 
 La motivación de este proyecto surge de la necesidad de comprender mejor estas tecnologías y proporcionar argumentos sólidos que justifiquen el uso de una u otra, dependiendo de las necesidades de nuestro proyecto y de los recursos de los que dispongamos.
 
 == 2. Objetivos
 
-El objetivo principal de este proyecto será realizar una comparativa entre distintas tecnologías que den solución a la comunicación en tiempo real mediante el uso de WebSockets.
+El objetivo principal de este proyecto será realizar una comparativa entre distintas
+tecnologías que den solución a la comunicación en tiempo real mediante el uso de WebSockets.
 
-Con este fin, se implementará una aplicación de mensajería instantánea (que a partir de ahora denominaremos simplemente Chat) para cada tecnología y un cliente común capaz de probarlas y recoger distintas métricas, que serán el factor determinante a la hora de realizar la comparativa.
+Con este fin, se implementará una aplicación de mensajería instantánea
+(que a partir de ahora denominaremos simplemente Chat) para cada tecnología y un cliente
+común capaz de probarlas y recoger distintas métricas, que serán el factor determinante a
+la hora de realizar la comparativa.
 
-Otro objetivo relevante del proyecto será su extensibilidad, de forma que cualquier desarrollador pueda implementar su aplicación de chat, sumarla a la comparativa y así contribuir al proyecto.
+Otro objetivo relevante del proyecto será su extensibilidad, de forma que cualquier
+desarrollador pueda implementar su aplicación de chat, sumarla a la comparativa y
+así contribuir al proyecto.
 
 == 3. Tecnologías, Herramientas y Metodologías
 
-Descripción de los lenguajes de programación, entornos de desarrollo, herramientas auxiliares, librerías de terceros, sistemas operativos, navegadores web, etc… utilizados para la realización del proyecto así como la metodología empleada. El grado de profundidad a la hora de explicar cada tecnología dependerá de lo relevante que ha sido para el proyecto y lo conocida que es. Por ejemplo, si se usa el lenguaje de programación Java, no es necesario entrar en tanto detalle que si se usa un lenguaje mucho menos usado como Scala, por ejemplo. Respecto a la metodología, dada la naturaleza de los proyectos, se suele describir una metodología iterativa e incremental en espiral, en la que se van sucediendo reuniones con el profesor que van definiendo el ámbito del proyecto. Este capítulo puede tener una extensión entre 10 y 40 páginas.
+=== 3.1 Tecnologías
+
+De la multitud de lenguajes de programación que existen válidos para afrontar el
+desarrollo de un servidor basado en WebSocket nuestra primera opción ha sido
+seleccionar Java, que dispone de múltiples librerías interesantes para abordar
+el problema además de ser uno de os lenguajes de programación más extendidos,
+populares y con una amplia comunidad, como demuestra el informe TIOBE (Ver __Figura 2__).
+De forma adicional, se ha incluido también Node.js, tecnología muy popular en
+los últimos años que promete ser ligera y eficiente.
+
+.Indice Tiobe
+image::./tiobe.png[tiobe]
+
+==== 3.1.1 WebSockets
+
+.Logo WebSocket
+image::./websockets-logo.png[websocket]
+
+RFC 6455 <<1>> define WebSocket como un protocolo que proporciona un canal de comunicación bidireccional y full-dúplex sobre un único socket TCP. Aunque inicialmente estaba pensada para comunicaciones entre el navegador y el servidor web, puede usarse también para aplicaciones cliente/servidor.
+
+Por otro lado, W3C se encarga de normalizar la API<<2>> de WebSocket.  Define una interfaz para el navegador compuesta por 4 métodos que corresponder a handlers para los diferentes eventos que maneja.
+
+[source,javascript]
+var socket = new WebSocket('ws://example.com:9000/chat');
+// Send new text
+socket.send("Some text");
+socket.onmessage = function(event) {
+    var data = JSON.parse(event.data);
+    // Use data
+});
+socket.onopen  = function(e){ console.log("WS Opened")};
+socket.onclose = function(e){ console.log("WS Closed")};
 
 == 4. Descripción informática
 
@@ -70,6 +109,13 @@ Reflexión sobre el trabajo realizado, qué objetivos se han cumplido y qué asp
 == Bibliografía
 
 Deben ir numerados y referenciados en las partes del texto en las que se haga referencia a ellos.
+
+
+[bibliography]
+[[[1]]] https://tools.ietf.org/html/rfc6455
+
+[[[2]]] https://www.w3.org/TR/2011/WD-websockets-20110929
+
 
 == Anexos
 

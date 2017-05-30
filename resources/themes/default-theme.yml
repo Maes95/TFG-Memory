@@ -1,10 +1,17 @@
+font:
+  catalog:
+    Times-New-Roman:
+      normal: times-new-roman-592db177b9c04.ttf
+      bold: times-new-roman-bold-592db1bc48112.ttf
+      italic: times-new-roman-italic-592db1c3094d2.ttf
+      bold_italic: times-new-roman-bold-italic-592db1bf92fce.ttf
 page:
   layout: portrait
   margin: [0.75in, 1in, 0.75in, 1in]
   size: Letter
 base:
   font_color: #333333
-  font_family: Times-Roman
+  font_family: Times-New-Roman
   font_size: 12
   line_height_length: 17
   line_height: $base_line_height_length / $base_font_size
@@ -19,3 +26,6 @@ link:
   font_color: #002FA7
 outline_list:
   indent: $base_font_size * 1.5
+image:
+  width: 90%
+  align: center
