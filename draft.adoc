@@ -4,6 +4,7 @@ Michel Maes Bermejo <m.maes@alumnos.urjc.es>
 :toc-title: Contenido
 :doctype: book
 :source-highlighter: rouge
+:pdf-stylesdir: themes
 :imagesdir: images
 :no title:
 
@@ -15,14 +16,23 @@ ha escrito toda la memoria.
 
 == 1. Introducción y Motivación
 
-Hoy en día hay muchas aplicaciones basadas en WebSockets proporcionan
-comunicación en tiempo real. Estas aplicaciones tienen como objetivo tener
-tiempos de respuesta bajos (requisitos funcionales) y un consumo mínimo de recursos
-(requisitos no funcionales).
+Hoy en día, un desarrollador de software tiene múltiples herramientas (entre lenguajes y librerías) para abordar cualquier proyecto que tenga entre manos. Es una práctica común usar una tecnología concreta sobre la que sentimos predilección o las que creemos que pueden resolver mejor nuestro problema. En ocasiones, nos equivocamos en nuestra elección y descartamos opciones mucho más efectivas.
+
+Este problema de desinformación puede abordarse mediante el estudio de las distintas tecnologías que proponen una solución al mismo, pero dado que el ámbito del desarrollo software es muy amplio, vamos a centrarnos en las tecnologías de servidor para servicios basados en WebSockets.
+
+Estas tecnologías proporcionan una comunicación en tiempo real con clientes muy diversos (aplicaciones móviles, navegadores, otro servidores…). Un ejemplo actual son los servicios de mensajería instantánea cómo WhatsApp o Telegram. Hoy en día este tipo de aplicaciones tienen un impacto drástico en la vida diaria, siendo casi una herramienta imprescindible, por lo que prevenir una caída de servicio ante un alto número de clientes es fundamental.
+
+image::./crecWhastApp.png[Crecimiento WhatsApp]
+
+La motivación de este proyecto surge de la necesidad de comprender mejor estas tecnologías y proporcionar argumentos sólidos que justifiquen el uso de una u otra, dependiendo de las necesidades de nuestro proyecto y de los recursos de los que dispongamos.
 
 == 2. Objetivos
 
-Página describiendo los objetivos concretos que se pretenden conseguir con el desarrollo del proyecto. Es como la conclusión del capítulo anterior.
+El objetivo principal de este proyecto será realizar una comparativa entre distintas tecnologías que den solución a la comunicación en tiempo real mediante el uso de WebSockets.
+
+Con este fin, se implementará una aplicación de mensajería instantánea (que a partir de ahora denominaremos simplemente Chat) para cada tecnología y un cliente común capaz de probarlas y recoger distintas métricas, que serán el factor determinante a la hora de realizar la comparativa.
+
+Otro objetivo relevante del proyecto será su extensibilidad, de forma que cualquier desarrollador pueda implementar su aplicación de chat, sumarla a la comparativa y así contribuir al proyecto.
 
 == 3. Tecnologías, Herramientas y Metodologías
 
