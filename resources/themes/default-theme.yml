@@ -26,6 +26,6 @@ link:
   font_color: #002FA7
 outline_list:
   indent: $base_font_size * 1.5
-image:
-  width: 90%
-  align: center
+# image:
+#   width: 90%
+#   align: center
