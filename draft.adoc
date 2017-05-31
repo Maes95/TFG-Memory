@@ -6,7 +6,7 @@ Michel Maes Bermejo <m.maes@alumnos.urjc.es>
 :source-highlighter: rouge
 :pdf-stylesdir: resources/themes
 :imagesdir: resources/images
-// :pdf-fontsdir: resources/fonts
+:pdf-fontsdir: resources/fonts
 :no title:
 
 [abstract]
@@ -24,7 +24,7 @@ Este problema de desinformación puede abordarse mediante el estudio de las dist
 Estas tecnologías proporcionan una comunicación en tiempo real con clientes muy diversos (aplicaciones móviles, navegadores, otro servidores…). Un ejemplo actual son los servicios de mensajería instantánea cómo WhatsApp o Telegram. Hoy en día este tipo de aplicaciones tienen un impacto drástico en la vida diaria, siendo casi una herramienta imprescindible, por lo que prevenir una caída de servicio ante un alto número de clientes es fundamental.
 
 .Crecimiento de WhatsApp en los últimos 4 años
-image::./crecWhastApp.png[Crecimiento WhatsApp]
+image::./crecWhastApp.png[Crecimiento WhatsApp, pdfwidth=90%]
 
 La motivación de este proyecto surge de la necesidad de comprender mejor estas tecnologías y proporcionar argumentos sólidos que justifiquen el uso de una u otra, dependiendo de las necesidades de nuestro proyecto y de los recursos de los que dispongamos.
 
@@ -55,12 +55,12 @@ De forma adicional, se ha incluido también Node.js, tecnología muy popular en
 los últimos años que promete ser ligera y eficiente.
 
 .Indice Tiobe
-image::./tiobe.png[tiobe, pdfwidth=30%]
+image::./tiobe.png[tiobe]
 
 ==== 3.1.1 WebSockets
 
 .Logo WebSocket
-image::./websockets-logo.png[websocket]
+image::./websockets-logo.png[websocket, pdfwidth=40%]
 
 RFC 6455 <<1>> define WebSocket como un protocolo que proporciona un canal de comunicación bidireccional y full-dúplex sobre un único socket TCP. Aunque inicialmente estaba pensada para comunicaciones entre el navegador y el servidor web, puede usarse también para aplicaciones cliente/servidor.
 
