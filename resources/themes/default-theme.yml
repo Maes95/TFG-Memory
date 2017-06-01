@@ -5,6 +5,11 @@ font:
       bold: times-new-roman-bold-592db1bc48112.ttf
       italic: times-new-roman-italic-592db1c3094d2.ttf
       bold_italic: times-new-roman-bold-italic-592db1bf92fce.ttf
+    Noto Serif:
+      normal: notoserif-regular-subset.ttf
+      bold: notoserif-bold-subset.ttf
+      italic: notoserif-italic-subset.ttf
+      bold_italic: notoserif-bold_italic-subset.ttf
 page:
   layout: portrait
   margin: [0.75in, 1in, 0.75in, 1in]
@@ -30,3 +35,4 @@ image:
   align: center
 caption:
   align: center
+menu_caret_content: " <font size=\"1.15em\"><color rgb=\"b12146\">\u203a</color></font> "

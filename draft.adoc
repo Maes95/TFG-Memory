@@ -17,30 +17,58 @@ ha escrito toda la memoria.
 
 == 1. Introducción y Motivación
 
-Hoy en día, un desarrollador de software tiene múltiples herramientas (entre lenguajes y librerías) para abordar cualquier proyecto que tenga entre manos. Es una práctica común usar una tecnología concreta sobre la que sentimos predilección o las que creemos que pueden resolver mejor nuestro problema. En ocasiones, nos equivocamos en nuestra elección y descartamos opciones mucho más efectivas.
+Hoy en día, un desarrollador de software tiene múltiples herramientas (entre
+lenguajes y librerías) para abordar cualquier proyecto que tenga entre manos.
+Es una práctica común usar una tecnología concreta sobre la que sentimos predilección
+o las que creemos que pueden resolver mejor nuestro problema. En ocasiones, nos
+equivocamos en nuestra elección y descartamos opciones mucho más efectivas.
 
-Este problema de desinformación puede abordarse mediante el estudio de las distintas tecnologías que proponen una solución al mismo, pero dado que el ámbito del desarrollo software es muy amplio, vamos a centrarnos en las tecnologías de servidor para servicios basados en WebSockets.
+Este problema de desinformación puede abordarse mediante el estudio de las
+distintas tecnologías que proponen una solución al mismo, pero dado que el
+ámbito del desarrollo software es muy amplio, vamos a centrarnos en las
+tecnologías de servidor para servicios basados en WebSockets.
 
-Estas tecnologías proporcionan una comunicación en tiempo real con clientes muy diversos (aplicaciones móviles, navegadores, otro servidores…). Un ejemplo actual son los servicios de mensajería instantánea cómo WhatsApp o Telegram. Hoy en día este tipo de aplicaciones tienen un impacto drástico en la vida diaria, siendo casi una herramienta imprescindible, por lo que prevenir una caída de servicio ante un alto número de clientes es fundamental.
+Estas tecnologías proporcionan una comunicación en tiempo real con clientes
+muy diversos (aplicaciones móviles, navegadores, otro servidores…). Un ejemplo
+actual son los servicios de mensajería instantánea cómo WhatsApp o Telegram. Hoy
+en día este tipo de aplicaciones tienen un impacto drástico en la vida diaria,
+siendo casi una herramienta imprescindible, por lo que prevenir una caída de
+servicio ante un alto número de clientes es fundamental.
 
 .Crecimiento de WhatsApp en los últimos 4 años
-image::./crecWhastApp.png[Crecimiento WhatsApp, pdfwidth=90%]
+image::./crecWhastApp.png[Crecimiento WhatsApp, pdfwidth=80%]
 
-La motivación de este proyecto surge de la necesidad de comprender mejor estas tecnologías y proporcionar argumentos sólidos que justifiquen el uso de una u otra, dependiendo de las necesidades de nuestro proyecto y de los recursos de los que dispongamos.
+La motivación de este proyecto surge de la necesidad de comprender mejor estas
+tecnologías y proporcionar argumentos sólidos que justifiquen el uso de una u
+otra, dependiendo de las necesidades de nuestro proyecto y de los recursos de
+los que dispongamos.
 
 == 2. Objetivos
 
-El objetivo principal de este proyecto será realizar una comparativa entre distintas
-tecnologías que den solución a la comunicación en tiempo real mediante el uso de WebSockets.
+El objetivo principal de este proyecto será realizar una comparativa entre
+distintas tecnologías que den solución a la comunicación en tiempo real mediante
+el uso de WebSockets, dentro de una misma máquina (escalado vertical).
 
-Con este fin, se implementará una aplicación de mensajería instantánea
-(que a partir de ahora denominaremos simplemente Chat) para cada tecnología y un cliente
-común capaz de probarlas y recoger distintas métricas, que serán el factor determinante a
-la hora de realizar la comparativa.
+Con este fin, se implementará una aplicación de mensajería instantánea (que a
+partir de ahora denominaremos simplemente Chat) para cada tecnología y un
+cliente común capaz de probarlas y recoger distintas métricas, que serán el
+factor determinante a la hora de realizar la comparativa.
 
-Otro objetivo relevante del proyecto será su extensibilidad, de forma que cualquier
-desarrollador pueda implementar su aplicación de chat, sumarla a la comparativa y
-así contribuir al proyecto.
+Otro objetivo relevante del proyecto será su extensibilidad, de forma que
+cualquier desarrollador pueda implementar su aplicación de chat, sumarla a la
+comparativa y así contribuir al proyecto.
+
+El proyecto base corresponde a Javier Mateos <<https://github.com/meji92>> que
+realizó una comparativa entre las aplicaciones de Akka y Vert.x. Nuestro
+proyecto pretende ser una continuación y expansión del anterior, concretamente:
+
+- Implementar un cliente de pruebas que automatice el proceso de comparación
+(obtención de métricas) y genere una un cliente web que muestre los resultados
+de forma dinámica y permita almacenarlos.
+
+- Re-escribir la aplicación de Vert.x a su versión más reciente.
+
+- Incluir nuevas implementaciones con distintas tecnologías para ampliar la comparativa
 
 == 3. Tecnologías, Herramientas y Metodologías
 
@@ -62,11 +90,17 @@ image::./tiobe.png[tiobe]
 .Logo WebSocket
 image::./websockets-logo.png[websocket, pdfwidth=40%]
 
-RFC 6455 <<1>> define WebSocket como un protocolo que proporciona un canal de comunicación bidireccional y full-dúplex sobre un único socket TCP. Aunque inicialmente estaba pensada para comunicaciones entre el navegador y el servidor web, puede usarse también para aplicaciones cliente/servidor.
+RFC 6455 <<https://tools.ietf.org/html/rfc6455>> define WebSocket como un protocolo que proporciona un canal
+de comunicación bidireccional y full-dúplex sobre un único socket TCP. Aunque
+inicialmente estaba pensada para comunicaciones entre el navegador y el servidor
+web, puede usarse también para aplicaciones cliente/servidor.
 
-Por otro lado, W3C se encarga de normalizar la API<<2>> de WebSocket.  Define una interfaz para el navegador compuesta por 4 métodos que corresponder a handlers para los diferentes eventos que maneja.
+Por otro lado, W3C se encarga de normalizar la API<<https://www.w3.org/TR/2011/WD-websockets-20110929>> de WebSocket.
+Define una interfaz para el navegador compuesta por 4 métodos que corresponder
+a handlers para los diferentes eventos que maneja.
 
 [source,javascript]
+---------------------------------------------------------------------
 var socket = new WebSocket('ws://example.com:9000/chat');
 // Send new text
 socket.send("Some text");
@@ -76,6 +110,269 @@ socket.onmessage = function(event) {
 });
 socket.onopen  = function(e){ console.log("WS Opened")};
 socket.onclose = function(e){ console.log("WS Closed")};
+---------------------------------------------------------------------
+
+==== 3.1.2 Node.js
+
+
+Node.js<<https://nodejs.org/es/>> es un entorno de ejecución para JavaScript construido con el motor de JavaScript V8<<https://developers.google.com/v8/>> de Chrome. Está diseñado para construir aplicaciones en red escalables. Se caracteriza por sus operaciones E/S sin bloqueos y por su arquitectura orientada a eventos. Está pensado Tiene un diseño similar y está influenciado por sistemas como Event Machine de Ruby ó Twisted de Python.
+
+Conceptos básicos de Node.js:
+
+- Arquitectura de eventos: Node.js presenta un bucle de eventos como un entorno, no como una librería (soporte nativo). Dentro de este entorno de ejecución, cada conexión de un cliente tiene asignado un callback, y recibe una pequeña asignación de memoria dinámica (sin generar un nuevo hilo). Este bucle de eventos ejecuta de forma secuencial los callbacks hasta que no queda ninguno por atender.
+
+- Concurrencia<<https://es.wikipedia.org/wiki/Node.js#Concurrencia>>: Node.js funciona con un modelo de evaluación de un único hilo de ejecución, usando entradas y salidas asíncronas las cuales pueden ejecutarse concurrentemente en un número de hasta cientos de miles sin incurrir en costos asociados al cambio de contexto.
+
+- Ejecución: Node.js, al estar desarrollado a partir de V8, no interpreta el código JavaScript en tiempo real, sino que lo compila directamente  a código máquina.
+
+===== 3.1.2.1 Express
+
+Express<<http://expressjs.com/es/>> es una infraestructura de aplicaciones web para Node.js, que proporciona un conjunto de características para crear aplicaciones web de forma simple y flexible.
+
+[source,javascript]
+---------------------------------------------------------------------
+var express = require('express');
+var app = express();
+// respond with "hello world" when a GET request is made to the homepage
+app.get('/', function(req, res) {
+  res.send('hello world');
+});
+---------------------------------------------------------------------
+
+===== 3.1.2.2 WS
+
+WS<<https://github.com/websockets/ws>> es una librería de Node.js que proporciona la funcinalidad necesaria para abrir una conexión WebSocket en Node.js, tanto cliente como servidor. Puede ser utilizada junto a Express para dotar una aplicación web de conexión WebSocket.
+
+===== 3.1.3.3 Cluster
+
+Cluster<<https://nodejs.org/api/cluster.html>><<https://www.npmjs.com/package/cluster>> es una librería que permite a Node.js aprovechar los distintos cores del sistema en el que se ejecuta, dado que por defecto, Node.js se ejecuta como un único thread.
+
+Esta librería también facilita el balanceo de carga entre los distintos procesos, permitiéndoles compartir el puerto que escuchan y distribuyendo la carga mediante un algoritmo de Round Robin.
+
+==== 3.1.3 Java
+
+.Logo Java
+image::./java-logo.png[java, pdfwidth=40%]
+
+Java es un lenguaje de programación de propósito general, concurrente y orientado
+a objetos. Su sintaxis deriva en gran medida de C y C++. Uno de los principales
+atractivos de Java es su máquina virtual (JVM) que nos permite ejecutar nuestro
+código Java en cualquier dispositivo, independientemente de la arquitectura.
+Las tecnologías basadas en Java seleccionadas para la comparativa son explicadas
+a continuación.
+
+===== 3.1.3.1 Vert.x
+
+.Logo Vertx
+image::./vertx-logo.png[vertx, pdfwidth=40%]
+
+Vert.x es un toolkit de Java que permite construir aplicaciones reactivas.
+Se autodenomina dirigido por eventos y no bloqueante, está inspirado en Node.js.
+
+La versión utilizada en el proyecto es la 3.3.
+
+Conceptos básicos de Vert.x
+
+* **Verticle** <<http://vertx.io/docs/vertx-core/java/#verticles>>: modelo de
+concurrencia que propone Vertx. Un Verticle es una clase que se comporta como
+un actor<<https://en.wikipedia.org/wiki/Actor_model>>, cuyo comportamiento está
+orientado a enviar/recibir mensajes. Para facilitar el desarrollo, Vertx asegura
+que el código de un verticle nunca va a ser ejecutado por más de un thread a la vez.
+
+* **EventBus**: es uno de sus principales recursos que le da su carácter reactivo.
+Consiste en un bus transversal a la aplicación que permite la comunicación entre
+los verticles de distintas formas<<http://vertx.io/docs/apidocs/io/vertx/core/eventbus/EventBus.html>>:
+
+* **Publicar-Subscribir**: Diversos verticles se subscriben a un determinado
+topic proporcionando un handler que opere con la respuesta. Tras esto, basta
+con publicar un mensaje bajo ese topic para que todos los componentes subscritos
+lo reciban.
+
+* **Punto a punto**: Al igual que el anterior, envía un mensaje bajo un topic,
+pero en este caso, solo a uno de los subscriptores, elegido mediante un algoritmo
+de round-robin no estricto.
+
+* **Petición-Respuesta**: Similar al anterior, con la única diferencia que se
+proporciona un handler para una posible respuesta.
+
+* **Context** <<https://github.com/vietj/vertx-materials/blob/master/src/main/asciidoc/Demystifying_the_event_loop.adoc>>: se encarga de controlar un ámbito concreto de la aplicación, además del orden en el que los callbacks/handlers son ejecutados. Vertx dispone de 3 tipos diferentes de contexts:
+*** Event-loop: ejecuta los handlers de forma que un mismo handler es ejecutado únicamente en un Thread y este no debe ser bloqueante de ninguna manera (uso de herramientas de bloqueo condicional, llamadas a bases de datos, ejecuciones del sistema largas, etc…). Este modelo no es dependiente la sincronización y dota a Vertx, junto al EventBus de su reactividad, además de su carácter no bloqueante. Es el context usado por defecto.
+*** Worker: contexto ligado a los verticles, que siguen asegurando que se ejecutan en un solo Thread, pero permiten su bloqueo.
+*** Multi-Thread Worker: Permite la ejecución de un verticle en diferentes threads, de forma que pueda realizar las tareas de forma concurrente, delegando en el desarrollador la responsabilidad de asegurar la concurrencia y sincronización.
+
+Además de los recursos mencionados, cuenta con una extensa API que abarca desde múltiples herramientas de testing hasta servidores y clientes de TCP/SSL, HTTP/HTTPS y WebSockets, cobrando estos últimos especial importancia de cara al desarrollo de la aplicación.
+
+===== 3.1.3.2 Akka
+
+.Logo Akka
+image::./akka-logo.png[akka, pdfwidth=40%]
+
+Akka es otro toolkit para crear aplicaciones concurrentes y distribuidas. También se ejecuta sobre la JVM. Se puede utilizar con Java y Scala, lenguaje con el que está escrito y del que su implementación de los actores forma parte de la librería estándar desde la versión 2,10. Otras de sus características son:
+
+- **Tolerancia a fallos**: Akka adopta el modelo de “let it crash” que ha resultado un gran éxito en la industria de la telecomunicación.
+
+- **Transparencia de localización**: todo en Akka está diseñado para trabajar en un entorno distribuido: todas las comunicaciones son mediante paso de mensajes y todo es asíncrono
+
+- **Persistencia**: Los mensajes recibidos por el actor pueden conservarse y ser reproducidos al iniciar o reiniciar el actor, por lo que se puede conservar el estado de los actores después de un fallo o al migrarlos a otro nodo.
+
+La versión utilizada de Akka durante este proyecto es la 2.4-M2, aunque actualmente ya existe la versión 2.4.0 estable.
+
+La aplicación de Akka hace uso de Play Framework<<https://www.playframework.com/>> un framework web open source, que da soporte web a la aplicación y proporciona la comunicación mediante WebSockets.
+
+Conceptos básicos de Akka
+
+- **Actores**: Los actores son objetos que poseen un estado y un comportamiento. Se comunican entre ellos exclusivamente enviando mensajes que se encolan en el mailbox del actor de destino. Los actores se organizan jerárquicamente. Un actor encargado de realizar una tarea, puede dividir esa tarea en otras sub-tareas y enviárselas a unos actores hijos a los que supervisará.
+
+- **Actor System**: Es el encargado de ejecutar, crear y borrar actores además de otros fines como la configuración o el logging. Varios actor systems con diferentes configuraciones puede coexistir en la misma JVM sin problemas, aunque al ser una estructura pesada que puede manejar de 1..N threads, se recomienda crear una por aplicación.
+
+Para crear los actores, usaremos el siguiente método:
+
+[source,java]
+---------------------------------------------------------------------
+Akka.system().actorOf(Props.create(ChatManager.class), "ChatManager");
+---------------------------------------------------------------------
+
+En este caso el actorSystem es devuelto por Akka.system(). Se invoca así debido a que es el actorSystem que crea PlayFramework (del que hablaremos posteriormente) por defecto. Pasamos como parámetros la función Props.create con el nombre de la clase y el nombre que le asignamos al actor. Props es un objeto de configuración usado para crear los actores. Es inmutable, por lo tanto es thread-safe y se puede compartir perfectamente.
+
+Para eliminar un actor no necesitaremos llamar al actorSystem. Solo tendremos que enviar al actor una poisonPill y el mismo se eliminará. El propio actor también puede enviarse a si mismo esa poisonPill.
+
+[source,java]
+---------------------------------------------------------------------
+self().tell(PoisonPill.getInstance(), self());
+---------------------------------------------------------------------
+
+- **Actor Reference**: Es un objeto que representa al actor en el exterior. Estos objetos pueden enviarse sin ninguna restricción y permiten enviar mensajes al actor con total transparencia, sin necesidad de actualizar las referencias a pesar de enviarse a otros hosts. Además evitan que desde el exterior pueda conocerse el estado del actor a no ser que este lo publique.
+
+- **Actor Path**: Como los actores son creados en una estricta estructura jerárquica, existe una única secuencia de nombres de actores dados siguiendo recursivamente los links entre actores padres e hijos hasta el actorSystem. Esta secuencia similar a las rutas de un sistema de ficheros, por ello es conocida como actor Path.
+
+La diferencia entre un actor path y una ActorReference es que el segundo tiene el mismo ciclo de vida que el actor. Si el actor se destruye su actor reference también, sin embargo un actor path puede existir perfectamente
+
+===== 3.1.2.3 Spring Boot
+
+.Logo Spring
+image::./springboot-logo.png[spring, pdfwidth=40%]
+
+Spring Boot<<http://projects.spring.io/spring-boot/>> comprende un módulo de Spring<<https://spring.io/>> (un framework para el desarrollo de aplicaciones web) que provee de todo lo necesario para crear una aplicación con un mínimo de configuración lista para lanzar. Spring Boot proporciona:
+
+- Una experiencia de iniciación muy rápida
+
+- Prototipos extensibles para la mayoría de problemas que podamos tener
+
+- Características no funcionales comunes a la mayoría de proyectos (servidores integrados, seguridad, métricas, comprobaciones de estado, configuración externalizada).
+
+Además, cuenta con el Sistema de Inversión de Control de Spring<<https://es.wikipedia.org/wiki/Spring_Framework#Contenedor_de_Inversi.C3.B3n_de_Control_.28inyecci.C3.B3n_de_dependencia.29>><<https://docs.spring.io/spring/docs/current/spring-framework-reference/html/beans.html>>, que permite la configuración de los componentes de la aplicación, mientras que la administración del ciclo de vida de los objetos se lleva a cabo a través de la inyección de dependencias<<https://es.wikipedia.org/wiki/Inyecci%C3%B3n_de_dependencias>> (que a su vez es una forma de inversión de control).
+
+[source,java]
+---------------------------------------------------------------------
+import org.springframework.boot.*;
+import org.springframework.boot.autoconfigure.*;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@SpringBootApplication
+public class Example {
+
+	@RequestMapping("/")
+	String home() {
+		return "Hello World!";
+	}
+
+	public static void main(String[] args) throws Exception {
+		SpringApplication.run(Example.class, args);
+	}
+
+}
+---------------------------------------------------------------------
+
+=== 3.2 Herramientas
+
+==== 3.2.1 Control de versiones
+
+.Logo Git
+image::./git-logo.png[git, pdfwidth=30%]
+
+Git <<https://git-scm.com/>> es un software de control de versiones diseñado por Linus Torvalds, pensando en la eficiencia y la confiabilidad del mantenimiento de versiones de aplicaciones cuando éstas tienen un gran número de archivos de código fuente.
+
+Para el desarrollo de este proyecto hemos usado GitHub<<https://github.com>>, una plataforma de desarrollo colaborativa para alojar proyectos Git.
+
+A pesar de su integración con diversos entornos de desarrollo, debido a la estructura del proyecto (un solo repositorio) hemos usado su versión por terminal.
+
+==== 3.2.2 Gestores de dependencias
+
+Debido a la pluralidad de tecnologías, hemos utilizado distintos gestores de dependencias:
+
+===== 3.2.2.1 Maven
+
+.Logo Maven
+image::./maven-logo.png[maven, pdfwidth=40%]
+
+Maven<<https://maven.apache.org/>> es una herramienta de software para la gestión y construcción de proyectos Java creada por Jason van Zyl. Hace uso de un POM (Project Object Model), un archivo XML que describe las dependencias y permite añadir opciones de ejecución, test y desplegamiento de la aplicación.
+
+Se ha utilizado para configurar los proyectos en Vert.x y Spring Boot.
+
+===== 3.2.2.2 SBT
+
+.Logo SBT
+image::./sbt-logo.png[sbt, pdfwidth=30%]
+
+SBT<<http://www.scala-sbt.org/>> es una herramienta de software para construcción de proyectos en Scala y estándar para contruir aplicaciones en Play Framework, similar a Maven o Ant (propios de Java). Entre sus características, permite el uso conjunto de Java y Scala en el mismo proyecto. Su archivo de configuración es un.stb, que dispone dispone de sintaxis propia.
+
+Se ha utilizado para configurar el proyecto de Akka.
+
+===== 3.2.2.3 NPM
+
+.Logo NPM
+image::./npm-logo.png[npm, pdfwidth=30%]
+
+Npm<<https://www.npmjs.com/>> es una herramienta software para la gestión y construcción de proyectos en Node.js creado por Isaac Z. Schlueter. Al igual que Maven, permite declarar las dependencias y distintas opciones de ejecución, desplegamiento y pruebas. Para ello hace uso de un archivo JSON llamado package.json.
+
+Es utilizado en las aplicaciones de Node.js.
+
+====  3.2.3 Entornos de desarrollo
+
+Al contar con diferentes lenguajes, se han utilizado distintos entornos de desarrollo:
+
+===== 3.2.3.1 Atom
+
+.Logo Atom
+image::./atom-logo.jpg[atom, pdfwidth=60%]
+
+Atom<<https://atom.io/>> es un editor de texto sencillo, ligero y extensible creado por Github. Cuenta con una gran librería de paquetes aportados por la comunidad para facilitar el desarrollo software. Por defecto, no cuenta con ningún tipo de compilador o intérprete.
+
+Se ha utilizado de forma conjunta con una terminal para el desarrollo de las aplicaciones en Node.js
+
+===== 3.2.3.2 NetBeans
+
+.Logo NetBeans
+image::./netbeans-logo.jpg[netbeans, pdfwidth=60%]
+
+NetBeans<<https://netbeans.org/>> es un entorno de desarrollo integrado libre, centrado sobre todo en el lenguaje Java. Ofrece una interfaz completa para el desarrollo de proyectos java, desde la documentación de las librerías hasta el lanzamiento de la aplicación o la monitorización de pruebas.
+
+Se ha utilizado para el desarrollo de las aplicaciones en Vert.x y Akka.
+
+===== 3.2.3.3 Spring Tool Suite
+
+.Logo Spring Tool Suite
+image::./sts-logo.png[sts, pdfwidth=20%]
+
+Sprint Tool Suit (STS)<<https://spring.io/tools>> es un entorno de desarrollo basado en Eclipse<<https://eclipse.org/>> y adaptado a proyectos que utilizan el framework Spring, facilitando su desarrollo, construcción y despliegue.
+
+Se ha utilizado para el desarrollo de las aplicaciones en Spring.
+
+=== 3.3 Metodología
+
+El modelo de desarrollo de este proyecto se ha llevado a cabo a través de TDD<<https://es.wikipedia.org/wiki/Desarrollo_guiado_por_pruebas>>(Test-driven Development, o en español, desarrollo guiado por pruebas), una práctica de igeniría del software cuya principal idea es hacer que los requistos sean traducidos a pruebas.
+
+Las razones que han llevado a utilizar un ciclo de desarrollo conducido por pruebas son:
+
+La naturaleza intrínseca del proyecto, distintas aplicaciones cuyo funcionamiento debe ser el mismo y por tanto comparten requisitos.
+
+La herencia de un proyecto, que proporcionaba dichas pruebas de integración necesarias para validad cualquier aplicación.
+
+.Ciclo de desarrollo conducido por pruebas
+image::./tdd.png[tdd, pdfwidth=90%]
+
+Por lo tanto, para cada aplicación que implementásemos, debíamos desarrollarla de acuerdo a las pruebas, de forma que una vez las pasasen, solo debíamos refactorizar la aplicación para mejorar su rendimiento y mantenibilidad.
 
 == 4. Descripción informática
 
@@ -108,14 +405,7 @@ Reflexión sobre el trabajo realizado, qué objetivos se han cumplido y qué asp
 
 == Bibliografía
 
-Deben ir numerados y referenciados en las partes del texto en las que se haga referencia a ellos.
-
-
-[bibliography]
-[[[1]]] https://tools.ietf.org/html/rfc6455
-
-[[[2]]] https://www.w3.org/TR/2011/WD-websockets-20110929
-
+:bibliography:
 
 == Anexos
 
