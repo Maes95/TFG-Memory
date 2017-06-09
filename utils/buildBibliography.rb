@@ -1,7 +1,7 @@
 #
 #   @author Michel Maes Bermejo
 #
-#   This script builds a document bibliography
+#   This script builds a document bibliography for Asciidoc
 #
 #   You should write references as:
 #
