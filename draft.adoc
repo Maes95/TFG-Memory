@@ -5,6 +5,8 @@ Michel Maes Bermejo <m.maes@alumnos.urjc.es>
 :doctype: book
 :source-highlighter: rouge
 :rouge-style: custom
+:icons: font
+:icon-set: fa
 :pdf-stylesdir: resources/themes
 :imagesdir: resources/images
 :pdf-fontsdir: resources/fonts
@@ -12,7 +14,6 @@ Michel Maes Bermejo <m.maes@alumnos.urjc.es>
 
 [abstract]
 == Resumen
-
 
 Página resumiendo el contenido de la memoria. Esta página se escribe cuando ya se
 ha escrito toda la memoria.
@@ -449,10 +450,6 @@ Dado el carácter comparativo que posee el proyecto, nos centraremos en los requ
 === 4.2. Diseño e Implementación
 
 A continuación, se expondrá el diseño e implementación de cada aplicación construida, así como un acceso a su código fuente.
-
-Consideraciones generales de las aplicaciones:
-
-- Todas ellas ofrecen un cliente estático HTML (el mismo para todas) bajo la dirección `/` usado únicamente para pruebas iniciales y como depuración.
 
 <<<
 
@@ -902,8 +899,127 @@ Reflexión sobre el trabajo realizado, qué objetivos se han cumplido y qué asp
 
 == Anexos
 
-- Instrucciones de construcción del software desde el repositorio github
-- Instalación del software para que se pueda usar
-- Manual de uso (básico)
-- También pueden incluirse como anexo:
-- Formato de los ficheros utilizados
+=== Anexo 1: Cómo construir una aplicación
+
+La aplicación en cuestión debe poder soportar un chat en el que varios usuarios puedan comunicarse entre si.
+
+Requiere lanzar la aplicación como un servidor que escuche de un puerto concreto y ofrecer una conexión WebSocket sobre la dirección '/chat'.
+
+==== Primera conexión
+
+El cliente, al establecer la conexión enviará sus datos en un string, que podrá formatearse a JSON y tiene la siguiente estructura:
+
+[source,json]
+---------------------------------------------------------------------
+{
+  "name": "MyName",
+  "chat": "MyRoom"
+}
+---------------------------------------------------------------------
+
+La aplicación debe almacenar estos datos junto a la conexión WebSocket, de forma que queden "registrados".
+
+==== Gestión de mensajes
+
+Una vez se ha establecido la conexión y se ha mandado el mensaje de inicialización, el cliente enviará mensajes a la aplicación, de nuevo como un String, que se podrá formatear a un JSON con la siguiente estructura:
+
+[source,json]
+---------------------------------------------------------------------
+{
+  "name": "MyName",
+  "chat": "MyRoom",
+  "message":"MyMessage"
+}
+---------------------------------------------------------------------
+
+Este mensaje debe ser reenviado por la aplicación a todos los usuarios cuya sala de chat sea la misma que la del mensaje.
+
+NOTE: No debe confundirse un mensaje de chat con un mensaje de conexión, la forma de diferenciarlos es por la existencia o no de la clave "message" en el JSON.
+
+==== Desconexión
+
+La aplicación debe gestionar la desconexión de usuarios, de forma que cuando un usuario se desconecta, este debe eliminarse de la aplicación para que no se le reenvíen mensajes.
+
+==== Opcionales
+
+Aunque las pruebas que se realizan no lo requieren, la aplicación puede impedir que dos usuarios con el mismo nombre puedan conectarse (independientemente del chat al que pertenezcan). En caso de que ya exista el usuario debería enviar un mensaje de vuelta al cliente tal y cómo se muestra a continuación:
+
+[source,json]
+---------------------------------------------------------------------
+{
+   "type": "system",
+   "message": "A user with that name already exists"
+}
+---------------------------------------------------------------------
+
+Además, y de cara a probar rápidamente el correcto funcionamiento de la aplicación, puede ofrecerse un cliente http que permita realizar la conexión desde el navegador.
+
+<<<
+
+=== Anexo 2: Cómo incluir una aplicación en la comparativa
+
+WebChatTest contiene un archivo de configuración disponible en WebChatTest/src/main/resources/config.json con el siguiente aspecto:
+
+[source,json]
+---------------------------------------------------------------------
+{
+    "apps" : [
+        {
+            "name" : "NodeJS",
+            "commands" : "node app.js",
+            "port" : 8080,
+        },
+        {
+            "name" : "Vert.x",
+            "address" : "192.168.1.45",
+            "port" : 5000,
+        }
+    ],
+    "chats": [
+        {
+            "numChats": 1,
+            "users": [10, 20, 30, 40, 50, 60]
+        }
+    ]
+}
+---------------------------------------------------------------------
+
+Nuestra aplicación se incluirá como un nuevo objeto a "apps", cuyo formato se define en la siguiente tabla:
+
+
+[options="header"]
+|==========================
+| Propiedad   | Tipo      | Obligatorio    | Por defecto       | Explicación |
+| name       | String     |     Si      |      -         | Nombre de la aplicación |
+| globalDefinition | String     |     No      |  Sin definición    | Definición de la tecnología |
+| specificDefinition | String     |     No      |      -         | Definición específica de la aplicación |
+| commands   | String     |     No      |      -         | Comando(s) que lanzan la aplicación |
+| port       | Number     |     No      |    9000        | Puerto en el que escucha la aplicación   |
+| folderName | String     |     No      | name+"-WebChat"| Nombre de la carpeta donde se encuentra la aplicación |
+| address    | String     |     No      |  127.0.0.0     | Dirección IP del host de la aplicación |
+| delay      | Number     |     No      |   10000        | Tiempo (en ms) que se espera a que arranque la aplicación |
+| remote     | Boolean    |     No      |  false         | Indica si la máquina corre en remoto |
+| pid        | Number     |     No      |      -         | PID del proceso |
+|==========================
+
+==== Aplicaciones locales
+
+Son las aplicaciones lanzadas por `WebChatTest`
+
+- El proyecto de la aplicación debe encontrarse en el mismo directorio que la aplicación que realiza las pruebas, WebChatTest.
+
+- *Es obligatorio* especificar los comandos de arranque de la aplicación.
+
+- No debe sobrescribirse la dirección.
+
+==== Aplicaciones remotas
+
+Son las aplicaciones NO lanzadas por `WebChatTest`
+
+- *Es obligatorio* que especifique el parámetro `remote` a true.
+
+- *Es obligatorio* que especifique la dirección dónde se ejecuta, a no ser que corra en la misma máquina.
+
+- No es necesario, por tanto, especificar los comandos de arranque ni la carpeta de la aplicación. El retraso es fijo para las aplicaciones remotas (0 ms).
+
+- Si la aplicación corre en la misma máquina y se quieren obtener las medidas de rendimiento, es necesario incluir en la configuración su pid
