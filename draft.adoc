@@ -162,6 +162,44 @@ Cluster<<https://nodejs.org/api/cluster.html>><<https://www.npmjs.com/package/cl
 
 Esta librería también facilita el balanceo de carga entre los distintos procesos, permitiéndoles compartir el puerto que escuchan y distribuyendo la carga mediante un algoritmo de Round Robin.
 
+==== 3.1.4 AngularJS
+
+.Logo AngularJS
+image::./angularjs.png[angularjs, pdfwidth=40%]
+
+AngularJS <<https://www.angularjs.org/>> <<https://es.wikipedia.org/wiki/AngularJS >>es un framework de JavaScript de código abierto desarrollado por Google. Nos permite desarrollar SPAs (Single Page Applications), que siguiendo el MVC (modelo-vista-controlador), facilitan la presentación y manipulación de los datos en el lado cliente (frontend), reduciendo la carga lógica del lado servidor (backend).
+
+<<<
+
+Entre sus características, destacamos:
+
+- La extensión del html mediante etiquetas y sintaxis propia.
+
+- Inyección de dependencias
+
+- Una numerosa comunidad y una extensa documentación
+
+La versión utilizada para este proyecto es la 1.4, aunque actualmente está disponible Angular 2, conocido simplemente con Angular<<https://angular.io/>>, una versión revulsiva y no retro compatible, que se apoya en Typescript, una extensión de JavaScript. No se ha utilizado esta nueva versión por la simplicidad que ofrecía AngularJS al no requerir dependencias o desplegado de la aplicación.
+
+==== 3.1.5 Chart.js
+
+.Logo Chart.js
+image::./chartjs-logo.jpg[chartjs, pdfwidth=40%]
+
+Chart.js<<http://www.chartjs.org/>> es una librería de JavaScript para el lado cliente que nos permite la generación de gráficas para nuestra aplicación.
+
+Entre sus características destacamos:
+
+- Gran variedad de gráficos
+
+- Sencillez de uso y una amplia y detallada documentación
+
+- No requiere de librerías adicionales
+
+- Gráficos interactivos
+
+Esta librería cuenta con una versión compatible con Angular <<http://jtblin.github.io/angular-chart.js/>> que será la utilizada en este proyecto.
+
 <<<
 
 ==== 3.1.3 Java
@@ -885,9 +923,196 @@ El objetivo de esta aplicación es ver la diferencia entre una misma aplicación
 
 <<<
 
-=== 4.2. Pruebas
+=== 4.3. Pruebas
 
-En esta sección se describen las pruebas automáticas que han sido implementadas para el proyecto. Sobre los tests, conviene indicar la cobertura del código. Si no se han implementado pruebas automáticas, deberían haberse implementarse y describirse aquí o tener una buena justificación de por qué no se han implementado.
+Las aplicaciones desarrolladas carecen de pruebas unitarias o de integración propias, comparten un cliente común capaz de probarlas de forma completa.
+
+A lo largo de este apartado hablaremos de este cliente, su implementación y de sus características.
+
+La implementación del cliente puede encontrarse en https://github.com/Maes95/TFG-WebChat/tree/v2.1/WebChatTest
+
+==== 4.3.1 Desarrollo e implementación
+
+Como hemos comentado anteriormente, el cliente forma parte de un proyecto heredado al que intentamos dar continuación. La versión original del cliente permitía (dados unos parámetros escritos directamente en el código) probar una aplicación con los requisitos ya mencionados. Concretamente:
+
+1. Genera X clientes para 1 sala de chat, de forma que cada cliente enviaba (además de su mensaje de conexión) 500 mensajes al resto de usuarios en un periodo de 5 segundos.
+
+2. El mensaje contiene el momento (en milisegundos) en el que es enviado el mensaje. Cada cliente va recibiendo los mensajes y almacenando el tiempo que tardan en llegar (momento actual – momento que trae el mensaje).
+
+3. Cuando todos los clientes han recibido todos los mensajes (sin pérdidas) se divide el tiempo total entre el número total de mensajes (Nº usuarios x Nº usuarios x 500) y se muestra por pantalla y se guarda en un archivo.
+
+Estos pasos se repiten hasta 10 veces para obtener mayor homogeneidad. Al terminar todas las iteraciones, se lee el archivo y se calcula el tiempo medio de los intentos para hallar el tiempo de respuesta de la aplicación.
+
+Este cliente hace uso de la librería de testing de Vertx, que dispone de múltiples herramientas para facilitar el desarrollo de pruebas para aplicaciones asíncronas.
+
+Aunque funcional, queda limitado a un solo caso (X usuarios en una única sala de chat). Dentro de los objetivos de nuestro proyecto se encuentra el de ampliar este cliente de pruebas. Para ello, las nuevas funcionalidades a implementar son las siguientes:
+
+- Automatización de pruebas, de forma que dadas unas aplicaciones y parámetros (como el número de usuarios y de salas de chat) en un archivo, nuestro cliente pueda ejecutar las pruebas sin que tengamos que interactuar.
+
+- Añadir nuevas métricas, en concreto, el consumo de recursos de la máquina: uso de CPU y uso de memoria.
+
+- Ofrecer una interfaz web que genere gráficas dinámicas para realizar la comparativa a partir de los resultados obtenidos.
+
+A continuación, explicaremos como han sido desarrolladas estas nuevas funcionalidades
+
+===== Automatización de pruebas
+
+El primer paso para la automatización fue permitir que una aplicación pudiese ser probada con distintos número de usuarios y salas de chat. Dado que ya iterábamos por métodos, el siguiente paso era iterar por clases. Para abordar este concepto, usamos la anotación @Parameterized<< https://github.com/junit-team/junit4/wiki/parameterized-tests>> sobre nuestra clase de pruebas. Esta anotación nos permite definir un método bajo la anotación @Parameters, que nos permite devolver una colección de listas de objetos. Cada lista de objetos corresponde a los parámetros que recibirá el constructor de la clase. De esta forma, nuestro clase de pruebas se instanciará tantas veces como listas de parámetros proporcionemos.
+
+Un ejemplo simple de este caso sería:
+
+[source,java]
+---------------------------------------------------------------------
+@Parameters
+public static Collection<Object[]> data() {
+    return Arrays.asList(new Object[][] {
+        { 10, 1 }, { 20, 1 }, { 30, 1 }
+    });
+}
+
+public ChatTest(int usersPerChat, int numChats){ … }
+---------------------------------------------------------------------
+
+Donde el número de usuarios sería el primer parámetro y el número de salas el segundo.
+
+El segundo paso, y uno de los más laboriosos, fue automatizar el despliegue de las aplicaciones, de forma que el cliente de pruebas gestionase los ciclos de vida de los procesos de cada aplicación. El objetivo es que se pudiera incluir varias aplicaciones que pasasen las pruebas con la configuración mencionada en el anterior párrafo, incluyéndolas como configuración.
+
+
+[source,java]
+---------------------------------------------------------------------
+return Arrays.asList(new Object[][] { { 40, 1, "Node" } });
+---------------------------------------------------------------------
+
+Para lanzar una aplicación, se genero un archivo ejecutable.sh en el directorio de cada aplicación, de forma que bastaba con ejecutarlo desde Java para poder controlar el proceso
+
+[source,java]
+---------------------------------------------------------------------
+switch(app){
+   case "Node": Process process = new ProcessBuilder("./run.sh")
+                .directory(new File(path+ "WebChatNodeWebsockets"))
+                .start();
+       break;
+   …
+}
+---------------------------------------------------------------------
+
+Llegado este punto y para hacer la aplicación más flexible y que los cambios de configuración no dependiesen de manipular el código fuente, se decidió crear un archivo de configuración que pudiese ser leído por la aplicación. El formato elegido fue JSON. El archivo de configuración era originalmente como se muestra a continuación.
+
+[source,json]
+---------------------------------------------------------------------
+{
+    "apps" : ["AkkaPlay", "NodeJS"],
+    "chats": [
+        {
+            "numChats": 1,
+            "users": [10, 20, 30, 40, 50, 60]
+        },
+        {
+            "numChats": 2,
+            "users": [20, 25, 30, 35]
+        },
+        {
+            "numChats": 4,
+            "users": [10, 12, 15, 17]
+        }
+    ]
+}
+---------------------------------------------------------------------
+
+Para conseguir una mayor modularidad y poder extender el código, se encapsulo toda la lógica referente al manejo del proceso de la aplicación en una clase concreta, WebChatApp. Esta idea se desarrolló hasta hacer de WebChatApp una interfaz utilizada por ChatTest para la gestión de la aplicación, permitiendo desarrollar clases que permitan distintos tipos de configuración que implementasen dicha interfaz. La estructura de clases resultantes fue la siguiente:
+
+image::./classes.png[classes]
+
+Pretendemos distinguir entre dos tipos de aplicaciones:
+
+- *Lanzables* (WebChatThrowableApp): Son las aplicaciones que queremos que sean 100% gestionadas por la clase de pruebas.
+
+- *No Lanzables* (WebChatNonThrowableApp): Debido a que no siempre puede lanzarse una aplicación (ya sea por su forma de lanzarse o porque se encuentra en otra máquina), creamos esta categoría que se traduce al código en forma de una clase abstracta. Las implementaciones concretas se distinguen entre sí únicamente por la obtención de métricas adicionales (como ya veremos más adelante).
+
+- *Locales* (WebChatLocalApp): Aplicación ya lanzada en la misma máquina. Para su gestión, proporcionamos en la configuración su PID.
+
+- *Remotas* (WebChatRemoteApp):  Aplicación lanzada en una máquina remota.
+
+Nuestra aplicación de pruebas hace uso de la clase WebChatAppFactory, que nos proporciona un objeto WebChatApp con la implementación adecuada en función de la configuración introducida. La estructura del archivo de configuración se extiende, permitiendo configurar cada app de forma independiente. El formato utilizado puede encontrarse en la documentación en GitHub (en Inglés) o en el anexo X de este documento (en Español).
+
+<<<
+
+===== Nuevas métricas
+
+Una vez tenemos una sólida estructura para manejar las aplicaciones, tenemos mayor facilidad para obtener las métricas de los procesos de las mismas. Como hemos comentado, las métricas deseadas son la cantidad de memoria consumida y el uso de CPU. Para su obtención, hemos hecho uso del comando top de Linux, concretamente:
+
+[source]
+---------------------------------------------------------------------
+top -b -n 1 –p PID
+---------------------------------------------------------------------
+
+Este comando, ejecutado desde java mediante un ProcessBuilder (al igual que una aplicación) y proporcionando el PID del proceso nos devuelve una lista de líneas. En las dos últimas podemos ver toda la información del proceso de la aplicación de chat concreta:
+
+[source]
+---------------------------------------------------------------------
+PID USUARIO PR  NI    VIRT    RES    SHR S  %CPU %MEM   HORA+ ORDEN
+3121 michel  20   0  885276  33896  18568 S   0,0  0,6 0:00.22 node
+---------------------------------------------------------------------
+
+Aunque solo necesitamos la cantidad de memoria RAM utilizada (RES) y el uso de la CPU (%CPU), hemos decidido tomar además el uso de memoria como porcentaje (%MEM) y la memoria virtual (VIRT).
+
+===== Interfaz Web
+
+Hasta ahora, todos los resultados son mostrados por la terminal, por lo que publicar los resultados en otros formatos puede ser tedioso.
+
+Para ofrecer una mejor experiencia y poder realizar la comparativa de forma más eficaz, se ha desarrollado un servidor simple que ofrece un cliente HTML.
+
+- *Servidor*: Se trata de un servidor desarrollado en Vert.x (por su sencillo y eficaz desarrollo) el cual hace uso del patrón Singleton << https://msdn.microsoft.com/es-es/library/bb972272.aspx>> para garantizar una única instancia durante la ejecución y facilitar el acceso a la misma. Se encarga de publicar los resultados al cliente, haciendo de nexo entre ChatTest y el cliente. La comunicación entre Cliente y Servidor se realiza mediante el EventBus de Vertx, que permite extender la publicación eventos al lado Cliente (en JavaScript) que cuenta con su propia referencia al EventBus. Utiliza WebSockets para soportar la comunicación.
+
+[source,java]
+---------------------------------------------------------------------
+public void send(JsonObject result){
+    vertx.eventBus().publish("new.result", result);
+}
+---------------------------------------------------------------------
+
+- **Cliente**: Se trata de una aplicación SPA desarrollada en AngularJS que muestra los resultados del cliente en graficas dinámicas, junto a las tablas de los resultados que muestra. Para generar los gráficos se ha utilizado la libreria Chart.js <<http://www.chartjs.org/>>, concretamente su versión para AngularJS <<http://jtblin.github.io/angular-chart.js/>>.
+
+<<<
+
+==== 4.3.2 Funcionamiento
+
+El flujo de funcionamiento de la aplicación puede apreciarse en la siguiente imagen:
+
+image::./TestSystem.png[TestSystem]
+
+- *Paso 1*: Se lanza la aplicación de Test tomando un archivo de configuración. Se lanza (de forma automática) TestResultServer, que abre una nueva ventana en el navegador con el cliente web escuchando, a la espera de resultados. Se realizan las pruebas.
+
+- *Paso 2*: ChatTest pregunta por la métricas a WebChatApp
+
+[source,java]
+---------------------------------------------------------------------
+current_application.getMetrics();
+---------------------------------------------------------------------
+
+- *Paso 3*: WebChatApp pregunta por sus métricas a TestMetrics
+
+[source,java]
+---------------------------------------------------------------------
+@Override
+public Metrics getMetrics() {
+    return TestMetrics.getMetricsTop(pid);
+}
+---------------------------------------------------------------------
+
+- *Paso 4*: TestMetrics resuelve la lectura de métricas y las encapsula en un Objeto Metrics a WebChatApp
+
+- *Paso 5*: WebChatApp devuelve a su vez este objeto a ChatTest, que añade a un objeto de tipo Result. Este objeto se crea para cada prueba, guardando todas las métricas y la configuración de la prueba (Nº de chats, Nº de clientes y el nombre de la aplicación probada).
+
+- *Paso 6*: Al terminar una prueba, ChatTest enviar el Result (ya en formato JSON) a TestResultServer. Al haber múltiples métricas almacenadas (diferentes tiempos de respuesta debido a las 10 iteraciones) y diferente consumo de recursos (ya que se generan cada segundo). Al convertirse a JSON, se toma solo la media aritmética de cada métrica.
+
+- *Paso 7*: TestResultServer publica el resultado en el EventBus, de forma que el cliente es capaz de recibirlo y añadirlo a su gráfica correspondiente.
+
+image::./captura1.png[Captura 1]
+
+* Los pasos 2-7 se repiten para cada tupla (Aplicación, Nº de chats, Nº de clientes)
+
+* La obtención de métricas de latencia y consumo de recursos se realizan de forma concurrente.
 
 == 5. Conclusiones y trabajos futuros
 
@@ -989,17 +1214,17 @@ Nuestra aplicación se incluirá como un nuevo objeto a "apps", cuyo formato se 
 
 [options="header"]
 |==========================
-| Propiedad   | Tipo      | Obligatorio    | Por defecto       | Explicación |
-| name       | String     |     Si      |      -         | Nombre de la aplicación |
-| globalDefinition | String     |     No      |  Sin definición    | Definición de la tecnología |
-| specificDefinition | String     |     No      |      -         | Definición específica de la aplicación |
-| commands   | String     |     No      |      -         | Comando(s) que lanzan la aplicación |
-| port       | Number     |     No      |    9000        | Puerto en el que escucha la aplicación   |
-| folderName | String     |     No      | name+"-WebChat"| Nombre de la carpeta donde se encuentra la aplicación |
-| address    | String     |     No      |  127.0.0.0     | Dirección IP del host de la aplicación |
-| delay      | Number     |     No      |   10000        | Tiempo (en ms) que se espera a que arranque la aplicación |
-| remote     | Boolean    |     No      |  false         | Indica si la máquina corre en remoto |
-| pid        | Number     |     No      |      -         | PID del proceso |
+| Propiedad   | Tipo      | Obligatorio    | Por defecto       | Explicación
+| name       | String     |     Si      |      -         | Nombre de la aplicación
+| globalDefinition | String     |     No      |  Sin definición    | Definición de la tecnología
+| specificDefinition | String     |     No      |      -         | Definición específica de la aplicación
+| commands   | String     |     No      |      -         | Comando(s) que lanzan la aplicación
+| port       | Number     |     No      |    9000        | Puerto en el que escucha la aplicación
+| folderName | String     |     No      | name+"-WebChat"| Nombre de la carpeta donde se encuentra la aplicación
+| address    | String     |     No      |  127.0.0.0     | Dirección IP del host de la aplicación
+| delay      | Number     |     No      |   10000        | Tiempo (en ms) que se espera a que arranque la aplicación
+| remote     | Boolean    |     No      |  false         | Indica si la máquina corre en remoto
+| pid        | Number     |     No      |      -         | PID del proceso
 |==========================
 
 ==== Aplicaciones locales
@@ -1022,4 +1247,4 @@ Son las aplicaciones NO lanzadas por `WebChatTest`
 
 - No es necesario, por tanto, especificar los comandos de arranque ni la carpeta de la aplicación. El retraso es fijo para las aplicaciones remotas (0 ms).
 
-- Si la aplicación corre en la misma máquina y se quieren obtener las medidas de rendimiento, es necesario incluir en la configuración su pid
+- Si la aplicación corre en la misma máquina y se quieren obtener las medidas de rendimiento, es necesario incluir en la configuración su `pid`
