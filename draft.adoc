@@ -15,8 +15,37 @@ Michel Maes Bermejo <m.maes@alumnos.urjc.es>
 [abstract]
 == Resumen
 
-Página resumiendo el contenido de la memoria. Esta página se escribe cuando ya se
-ha escrito toda la memoria.
+En este proyecto abordaremos una comparativa entre diferentes tecnologías basadas
+en WebSockets. Para ello construiremos un total de 7 aplicaciones de chat utilizando
+diferentes tecnologías.
+
+Las tecnologías seleccionada para la comparativa son:
+
+- Akka
+- Vert.x
+- Spring
+- Node.js
+
+Además de una aplicación para cada tecnología, completaremos el conjunto de las
+aplicaciones con algunas variantes de las tecnologías mencionadas con el fin de
+encontrar su versión más óptima:
+
+- Vert.x sin la utilización de su EventBus
+- Spring utilizando un servidor en Jetty en lugar de en Tomcat
+- Node.js utilizando la libreria cluster
+
+Para realizar esta comparativa de una forma justa, se desarrollará un cliente
+común a todas las aplicaciones que se encarge de tomar diferentes métricas, concretamente:
+
+- La latencia (o tiempo de respuesta)
+- El uso de CPU
+- El uso de memoria
+
+Una vez la construcción de las aplicaciones haya finalizado, usaremos el cliente
+para obtener métricas de cada aplicación ante distintas cargas de trabajo.
+
+Por último, analizaremos los resultados obtenidos para evaluar que tecnología
+resulta ser la más óptima para trabajar con WebSockets.
 
 == 1. Introducción y Motivación
 
