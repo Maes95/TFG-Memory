@@ -61,7 +61,7 @@ Otro objetivo relevante del proyecto será su extensibilidad, de forma que
 cualquier desarrollador pueda implementar su aplicación de chat, sumarla a la
 comparativa y así contribuir al proyecto.
 
-El proyecto base corresponde a Javier Mateos <<https://github.com/meji92>> que
+El proyecto base corresponde a Javier Mateos<%https://github.com/meji92%> que
 realizó una comparativa entre las aplicaciones de Akka y Vert.x. Nuestro
 proyecto pretende ser una continuación y expansión del anterior, concretamente:
 
@@ -95,12 +95,12 @@ image::./tiobe.png[tiobe]
 .Logo WebSocket
 image::./websockets-logo.png[websocket, pdfwidth=40%]
 
-RFC 6455 <<https://tools.ietf.org/html/rfc6455>> define WebSocket como un protocolo que proporciona un canal
+RFC 6455 <%https://tools.ietf.org/html/rfc6455%> define WebSocket como un protocolo que proporciona un canal
 de comunicación bidireccional y full-dúplex sobre un único socket TCP. Aunque
 inicialmente estaba pensada para comunicaciones entre el navegador y el servidor
 web, puede usarse también para aplicaciones cliente/servidor.
 
-Por otro lado, W3C se encarga de normalizar la API<<https://www.w3.org/TR/2011/WD-websockets-20110929>> de WebSocket.
+Por otro lado, W3C se encarga de normalizar la API<%https://www.w3.org/TR/2011/WD-websockets-20110929%> de WebSocket.
 Define una interfaz para el navegador compuesta por 4 métodos que corresponder
 a handlers para los diferentes eventos que maneja.
 
@@ -122,7 +122,7 @@ socket.onclose = function(e){ console.log("WS Closed")};
 ==== 3.1.2 Node.js
 image::./node-logo.png[node, pdfwidth=40%]
 
-Node.js<<https://nodejs.org/es/>> es un entorno de ejecución para JavaScript construido con el motor de JavaScript V8<<https://developers.google.com/v8/>> de Chrome. Está diseñado para construir aplicaciones en red escalables. Se caracteriza por sus operaciones E/S sin bloqueos y por su arquitectura orientada a eventos. Está pensado Tiene un diseño similar y está influenciado por sistemas como Event Machine de Ruby ó Twisted de Python.
+Node.js<%https://nodejs.org/es/%> es un entorno de ejecución para JavaScript construido con el motor de JavaScript V8<%https://developers.google.com/v8/%> de Chrome. Está diseñado para construir aplicaciones en red escalables. Se caracteriza por sus operaciones E/S sin bloqueos y por su arquitectura orientada a eventos. Está pensado Tiene un diseño similar y está influenciado por sistemas como Event Machine de Ruby ó Twisted de Python.
 
 La versión utilizada en este proyecto es la 6.9.1
 
@@ -130,7 +130,7 @@ La versión utilizada en este proyecto es la 6.9.1
 
 - *Arquitectura de eventos*: Node.js presenta un bucle de eventos como un entorno, no como una librería (soporte nativo). Dentro de este entorno de ejecución, cada conexión de un cliente tiene asignado un callback, y recibe una pequeña asignación de memoria dinámica (sin generar un nuevo hilo). Este bucle de eventos ejecuta de forma secuencial los callbacks hasta que no queda ninguno por atender.
 
-- *Concurrencia*<<https://es.wikipedia.org/wiki/Node.js#Concurrencia>>: Node.js funciona con un modelo de evaluación de un único hilo de ejecución, usando entradas y salidas asíncronas las cuales pueden ejecutarse concurrentemente en un número de hasta cientos de miles sin incurrir en costos asociados al cambio de contexto.
+- *Concurrencia*<%https://es.wikipedia.org/wiki/Node.js#Concurrencia%>: Node.js funciona con un modelo de evaluación de un único hilo de ejecución, usando entradas y salidas asíncronas las cuales pueden ejecutarse concurrentemente en un número de hasta cientos de miles sin incurrir en costos asociados al cambio de contexto.
 
 - *Ejecución*: Node.js, al estar desarrollado a partir de V8, no interpreta el código JavaScript en tiempo real, sino que lo compila directamente  a código máquina.
 
@@ -140,7 +140,7 @@ La versión utilizada de Node.js para este proyecto es la 6.9.1, aunque existen 
 
 ===== 3.1.2.1 Express
 
-Express<<http://expressjs.com/es/>> es una infraestructura de aplicaciones web para Node.js, que proporciona un conjunto de características para crear aplicaciones web de forma simple y flexible.
+Express<%http://expressjs.com/es/%> es una infraestructura de aplicaciones web para Node.js, que proporciona un conjunto de características para crear aplicaciones web de forma simple y flexible.
 
 [source,javascript]
 ---------------------------------------------------------------------
@@ -154,11 +154,11 @@ app.get('/', function(req, res) {
 
 ===== 3.1.2.2 WS
 
-WS<<https://github.com/websockets/ws>> es una librería de Node.js que proporciona la funcinalidad necesaria para abrir una conexión WebSocket en Node.js, tanto cliente como servidor. Puede ser utilizada junto a Express para dotar una aplicación web de conexión WebSocket.
+WS<%https://github.com/websockets/ws%> es una librería de Node.js que proporciona la funcinalidad necesaria para abrir una conexión WebSocket en Node.js, tanto cliente como servidor. Puede ser utilizada junto a Express para dotar una aplicación web de conexión WebSocket.
 
 ===== 3.1.3.3 Cluster
 
-Cluster<<https://nodejs.org/api/cluster.html>><<https://www.npmjs.com/package/cluster>> es una librería que permite a Node.js aprovechar los distintos cores del sistema en el que se ejecuta, dado que por defecto, Node.js se ejecuta como un único thread.
+Cluster<%https://nodejs.org/api/cluster.html%><%https://www.npmjs.com/package/cluster%> es una librería que permite a Node.js aprovechar los distintos cores del sistema en el que se ejecuta, dado que por defecto, Node.js se ejecuta como un único thread.
 
 Esta librería también facilita el balanceo de carga entre los distintos procesos, permitiéndoles compartir el puerto que escuchan y distribuyendo la carga mediante un algoritmo de Round Robin.
 
@@ -167,7 +167,7 @@ Esta librería también facilita el balanceo de carga entre los distintos proces
 .Logo AngularJS
 image::./angularjs.png[angularjs, pdfwidth=40%]
 
-AngularJS <<https://www.angularjs.org/>> <<https://es.wikipedia.org/wiki/AngularJS >>es un framework de JavaScript de código abierto desarrollado por Google. Nos permite desarrollar SPAs (Single Page Applications), que siguiendo el MVC (modelo-vista-controlador), facilitan la presentación y manipulación de los datos en el lado cliente (frontend), reduciendo la carga lógica del lado servidor (backend).
+AngularJS <%https://www.angularjs.org/%> <%https://es.wikipedia.org/wiki/AngularJS %>es un framework de JavaScript de código abierto desarrollado por Google. Nos permite desarrollar SPAs (Single Page Applications), que siguiendo el MVC (modelo-vista-controlador), facilitan la presentación y manipulación de los datos en el lado cliente (frontend), reduciendo la carga lógica del lado servidor (backend).
 
 <<<
 
@@ -179,14 +179,14 @@ Entre sus características, destacamos:
 
 - Una numerosa comunidad y una extensa documentación
 
-La versión utilizada para este proyecto es la 1.4, aunque actualmente está disponible Angular 2, conocido simplemente con Angular<<https://angular.io/>>, una versión revulsiva y no retro compatible, que se apoya en Typescript, una extensión de JavaScript. No se ha utilizado esta nueva versión por la simplicidad que ofrecía AngularJS al no requerir dependencias o desplegado de la aplicación.
+La versión utilizada para este proyecto es la 1.4, aunque actualmente está disponible Angular 2, conocido simplemente con Angular<%https://angular.io/%>, una versión revulsiva y no retro compatible, que se apoya en Typescript, una extensión de JavaScript. No se ha utilizado esta nueva versión por la simplicidad que ofrecía AngularJS al no requerir dependencias o desplegado de la aplicación.
 
 ==== 3.1.5 Chart.js
 
 .Logo Chart.js
 image::./chartjs-logo.jpg[chartjs, pdfwidth=40%]
 
-Chart.js<<http://www.chartjs.org/>> es una librería de JavaScript para el lado cliente que nos permite la generación de gráficas para nuestra aplicación.
+Chart.js<%http://www.chartjs.org/%> es una librería de JavaScript para el lado cliente que nos permite la generación de gráficas para nuestra aplicación.
 
 Entre sus características destacamos:
 
@@ -198,7 +198,7 @@ Entre sus características destacamos:
 
 - Gráficos interactivos
 
-Esta librería cuenta con una versión compatible con Angular <<http://jtblin.github.io/angular-chart.js/>> que será la utilizada en este proyecto.
+Esta librería cuenta con una versión compatible con Angular <%http://jtblin.github.io/angular-chart.js/%> que será la utilizada en este proyecto.
 
 <<<
 
@@ -228,15 +228,15 @@ La versión utilizada en el proyecto es la 3.3.
 
 [.underline]#Conceptos básicos de Vert.x#
 
-* **Verticle** <<http://vertx.io/docs/vertx-core/java/#verticles>>: modelo de
+* **Verticle** <%http://vertx.io/docs/vertx-core/java/#verticles%>: modelo de
 concurrencia que propone Vertx. Un Verticle es una clase que se comporta como
-un actor<<https://en.wikipedia.org/wiki/Actor_model>>, cuyo comportamiento está
+un actor<%https://en.wikipedia.org/wiki/Actor_model%>, cuyo comportamiento está
 orientado a enviar/recibir mensajes. Para facilitar el desarrollo, Vertx asegura
 que el código de un verticle nunca va a ser ejecutado por más de un thread a la vez.
 
 * **EventBus**: es uno de sus principales recursos que le da su carácter reactivo.
 Consiste en un bus transversal a la aplicación que permite la comunicación entre
-los verticles de distintas formas<<http://vertx.io/docs/apidocs/io/vertx/core/eventbus/EventBus.html>>:
+los verticles de distintas formas<%http://vertx.io/docs/apidocs/io/vertx/core/eventbus/EventBus.html%>:
 
 * **Publicar-Subscribir**: Diversos verticles se subscriben a un determinado
 topic proporcionando un handler que opere con la respuesta. Tras esto, basta
@@ -250,10 +250,11 @@ de round-robin no estricto.
 * **Petición-Respuesta**: Similar al anterior, con la única diferencia que se
 proporciona un handler para una posible respuesta.
 
-* **Context** <<https://github.com/vietj/vertx-materials/blob/master/src/main/asciidoc/Demystifying_the_event_loop.adoc>>: se encarga de controlar un ámbito concreto de la aplicación, además del orden en el que los callbacks/handlers son ejecutados. Vertx dispone de 3 tipos diferentes de contexts:
-** Event-loop: ejecuta los handlers de forma que un mismo handler es ejecutado únicamente en un Thread y este no debe ser bloqueante de ninguna manera (uso de herramientas de bloqueo condicional, llamadas a bases de datos, ejecuciones del sistema largas, etc…). Este modelo no es dependiente la sincronización y dota a Vertx, junto al EventBus de su reactividad, además de su carácter no bloqueante. Es el context usado por defecto.
-** Worker: contexto ligado a los verticles, que siguen asegurando que se ejecutan en un solo Thread, pero permiten su bloqueo.
-** Multi-Thread Worker: Permite la ejecución de un verticle en diferentes threads, de forma que pueda realizar las tareas de forma concurrente, delegando en el desarrollador la responsabilidad de asegurar la concurrencia y sincronización.
+* **Context** <%https://github.com/vietj/vertx-materials/blob/master/src/main/asciidoc/Demystifying_the_event_loop.adoc%>: se encarga de controlar un ámbito concreto de la aplicación, además del orden en el que los callbacks/handlers son ejecutados. Vertx dispone de 3 tipos diferentes de contexts:
+
+-  Event-loop: ejecuta los handlers de forma que un mismo handler es ejecutado únicamente en un Thread y este no debe ser bloqueante de ninguna manera (uso de herramientas de bloqueo condicional, llamadas a bases de datos, ejecuciones del sistema largas, etc…). Este modelo no es dependiente la sincronización y dota a Vertx, junto al EventBus de su reactividad, además de su carácter no bloqueante. Es el context usado por defecto.
+-  Worker: contexto ligado a los verticles, que siguen asegurando que se ejecutan en un solo Thread, pero permiten su bloqueo.
+-  Multi-Thread Worker: Permite la ejecución de un verticle en diferentes threads, de forma que pueda realizar las tareas de forma concurrente, delegando en el desarrollador la responsabilidad de asegurar la concurrencia y sincronización.
 
 Además de los recursos mencionados, cuenta con una extensa API que abarca desde múltiples herramientas de testing hasta servidores y clientes de TCP/SSL, HTTP/HTTPS y WebSockets, cobrando estos últimos especial importancia de cara al desarrollo de la aplicación.
 
@@ -274,7 +275,7 @@ Akka es otro toolkit para crear aplicaciones concurrentes y distribuidas. Tambi�
 
 La versión utilizada de Akka durante este proyecto es la 2.4-M2, aunque actualmente ya existe la versión 2.4.0 estable.
 
-La aplicación de Akka hace uso de Play Framework<<https://www.playframework.com/>> un framework web open source, que da soporte web a la aplicación y proporciona la comunicación mediante WebSockets.
+La aplicación de Akka hace uso de Play Framework<%https://www.playframework.com/%> un framework web open source, que da soporte web a la aplicación y proporciona la comunicación mediante WebSockets.
 
 [.underline]#Conceptos básicos de Akka#
 
@@ -311,7 +312,7 @@ La diferencia entre un actor path y una ActorReference es que el segundo tiene e
 .Logo Spring
 image::./springboot-logo.png[spring, pdfwidth=40%]
 
-Spring Boot<<http://projects.spring.io/spring-boot/>> comprende un módulo de Spring<<https://spring.io/>> (un framework para el desarrollo de aplicaciones web) que provee de todo lo necesario para crear una aplicación con un mínimo de configuración lista para lanzar. Spring Boot proporciona:
+Spring Boot<%http://projects.spring.io/spring-boot/%> comprende un módulo de Spring<%https://spring.io/%> (un framework para el desarrollo de aplicaciones web) que provee de todo lo necesario para crear una aplicación con un mínimo de configuración lista para lanzar. Spring Boot proporciona:
 
 - Una experiencia de iniciación muy rápida
 
@@ -319,7 +320,7 @@ Spring Boot<<http://projects.spring.io/spring-boot/>> comprende un módulo de Sp
 
 - Características no funcionales comunes a la mayoría de proyectos (servidores integrados, seguridad, métricas, comprobaciones de estado, configuración externalizada).
 
-Además, cuenta con el Sistema de Inversión de Control de Spring<<https://es.wikipedia.org/wiki/Spring_Framework#Contenedor_de_Inversi.C3.B3n_de_Control_.28inyecci.C3.B3n_de_dependencia.29>><<https://docs.spring.io/spring/docs/current/spring-framework-reference/html/beans.html>>, que permite la configuración de los componentes de la aplicación, mientras que la administración del ciclo de vida de los objetos se lleva a cabo a través de la inyección de dependencias<<https://es.wikipedia.org/wiki/Inyecci%C3%B3n_de_dependencias>> (que a su vez es una forma de inversión de control).
+Además, cuenta con el Sistema de Inversión de Control de Spring<%https://es.wikipedia.org/wiki/Spring_Framework#Contenedor_de_Inversi.C3.B3n_de_Control_.28inyecci.C3.B3n_de_dependencia.29%><%https://docs.spring.io/spring/docs/current/spring-framework-reference/html/beans.html%>, que permite la configuración de los componentes de la aplicación, mientras que la administración del ciclo de vida de los objetos se lleva a cabo a través de la inyección de dependencias<%https://es.wikipedia.org/wiki/Inyecci%C3%B3n_de_dependencias%> (que a su vez es una forma de inversión de control).
 
 La versión utilizada de Spring para este proyecto es la 1.4.3
 
@@ -354,9 +355,9 @@ public class Example {
 .Logo Git
 image::./git-logo.png[git, pdfwidth=30%]
 
-Git <<https://git-scm.com/>> es un software de control de versiones diseñado por Linus Torvalds, pensando en la eficiencia y la confiabilidad del mantenimiento de versiones de aplicaciones cuando éstas tienen un gran número de archivos de código fuente.
+Git <%https://git-scm.com/%> es un software de control de versiones diseñado por Linus Torvalds, pensando en la eficiencia y la confiabilidad del mantenimiento de versiones de aplicaciones cuando éstas tienen un gran número de archivos de código fuente.
 
-Para el desarrollo de este proyecto hemos usado GitHub<<https://github.com>>, una plataforma de desarrollo colaborativa para alojar proyectos Git.
+Para el desarrollo de este proyecto hemos usado GitHub<%https://github.com%>, una plataforma de desarrollo colaborativa para alojar proyectos Git.
 
 A pesar de su integración con diversos entornos de desarrollo, debido a la estructura del proyecto (un solo repositorio) hemos usado su versión por terminal.
 
@@ -371,7 +372,7 @@ Debido a la pluralidad de tecnologías, hemos utilizado distintos gestores de de
 .Logo Maven
 image::./maven-logo.png[maven, pdfwidth=40%]
 
-Maven<<https://maven.apache.org/>> es una herramienta de software para la gestión y construcción de proyectos Java creada por Jason van Zyl. Hace uso de un POM (Project Object Model), un archivo XML que describe las dependencias y permite añadir opciones de ejecución, test y desplegamiento de la aplicación.
+Maven<%https://maven.apache.org/%> es una herramienta de software para la gestión y construcción de proyectos Java creada por Jason van Zyl. Hace uso de un POM (Project Object Model), un archivo XML que describe las dependencias y permite añadir opciones de ejecución, test y desplegamiento de la aplicación.
 
 Se ha utilizado para configurar los proyectos en Vert.x y Spring Boot.
 
@@ -380,7 +381,7 @@ Se ha utilizado para configurar los proyectos en Vert.x y Spring Boot.
 .Logo SBT
 image::./sbt-logo.png[sbt, pdfwidth=30%]
 
-SBT<<http://www.scala-sbt.org/>> es una herramienta de software para construcción de proyectos en Scala y estándar para contruir aplicaciones en Play Framework, similar a Maven o Ant (propios de Java). Entre sus características, permite el uso conjunto de Java y Scala en el mismo proyecto. Su archivo de configuración es un.stb, que dispone dispone de sintaxis propia.
+SBT<%http://www.scala-sbt.org/%> es una herramienta de software para construcción de proyectos en Scala y estándar para contruir aplicaciones en Play Framework, similar a Maven o Ant (propios de Java). Entre sus características, permite el uso conjunto de Java y Scala en el mismo proyecto. Su archivo de configuración es un.stb, que dispone dispone de sintaxis propia.
 
 Se ha utilizado para configurar el proyecto de Akka.
 
@@ -391,7 +392,7 @@ Se ha utilizado para configurar el proyecto de Akka.
 .Logo NPM
 image::./npm-logo.png[npm, pdfwidth=30%]
 
-Npm<<https://www.npmjs.com/>> es una herramienta software para la gestión y construcción de proyectos en Node.js creado por Isaac Z. Schlueter. Al igual que Maven, permite declarar las dependencias y distintas opciones de ejecución, desplegamiento y pruebas. Para ello hace uso de un archivo JSON llamado package.json.
+Npm<%https://www.npmjs.com/%> es una herramienta software para la gestión y construcción de proyectos en Node.js creado por Isaac Z. Schlueter. Al igual que Maven, permite declarar las dependencias y distintas opciones de ejecución, desplegamiento y pruebas. Para ello hace uso de un archivo JSON llamado package.json.
 
 Es utilizado en las aplicaciones de Node.js.
 
@@ -407,7 +408,7 @@ Al contar con diferentes lenguajes, se han utilizado distintos entornos de desar
 .Logo Atom
 image::./atom-logo.jpg[atom, pdfwidth=60%]
 
-Atom<<https://atom.io/>> es un editor de texto sencillo, ligero y extensible creado por Github. Cuenta con una gran librería de paquetes aportados por la comunidad para facilitar el desarrollo software. Por defecto, no cuenta con ningún tipo de compilador o intérprete.
+Atom<%https://atom.io/%> es un editor de texto sencillo, ligero y extensible creado por Github. Cuenta con una gran librería de paquetes aportados por la comunidad para facilitar el desarrollo software. Por defecto, no cuenta con ningún tipo de compilador o intérprete.
 
 Se ha utilizado de forma conjunta con una terminal para el desarrollo de las aplicaciones en Node.js
 
@@ -416,9 +417,9 @@ Se ha utilizado de forma conjunta con una terminal para el desarrollo de las apl
 .Logo NetBeans
 image::./netbeans-logo.jpg[netbeans, pdfwidth=60%]
 
-NetBeans<<https://netbeans.org/>> es un entorno de desarrollo integrado libre, centrado sobre todo en el lenguaje Java. Ofrece una interfaz completa para el desarrollo de proyectos java, desde la documentación de las librerías hasta el lanzamiento de la aplicación o la monitorización de pruebas.
+NetBeans<%https://netbeans.org/%> es un entorno de desarrollo integrado libre, centrado sobre todo en el lenguaje Java. Ofrece una interfaz completa para el desarrollo de proyectos java, desde la documentación de las librerías hasta el lanzamiento de la aplicación o la monitorización de pruebas.
 
-NetBeans permite además incluir plugins para mejorar el desarrollo. Para este proyecto se ha usado el plugin para PlayFramework <<http://plugins.netbeans.org/plugin/61050/pleasure-play-framework-plugin>> para el desarrollo de la aplicación en Akka.
+NetBeans permite además incluir plugins para mejorar el desarrollo. Para este proyecto se ha usado el plugin para PlayFramework <%http://plugins.netbeans.org/plugin/61050/pleasure-play-framework-plugin%> para el desarrollo de la aplicación en Akka.
 
 Se ha utilizado para el desarrollo de las aplicaciones en Vert.x y Akka.
 
@@ -427,7 +428,7 @@ Se ha utilizado para el desarrollo de las aplicaciones en Vert.x y Akka.
 .Logo Spring Tool Suite
 image::./sts-logo.png[sts, pdfwidth=20%]
 
-Sprint Tool Suit (STS)<<https://spring.io/tools>> es un entorno de desarrollo basado en Eclipse<<https://eclipse.org/>> y adaptado a proyectos que utilizan el framework Spring, facilitando su desarrollo, construcción y despliegue.
+Sprint Tool Suit (STS)<%https://spring.io/tools%> es un entorno de desarrollo basado en Eclipse<%https://eclipse.org/%> y adaptado a proyectos que utilizan el framework Spring, facilitando su desarrollo, construcción y despliegue.
 
 Se ha utilizado para el desarrollo de las aplicaciones en Spring.
 
@@ -435,7 +436,7 @@ Se ha utilizado para el desarrollo de las aplicaciones en Spring.
 
 === 3.3 Metodología
 
-El modelo de desarrollo de este proyecto se ha llevado a cabo a través de TDD<<https://es.wikipedia.org/wiki/Desarrollo_guiado_por_pruebas>>(Test-driven Development, o en español, desarrollo guiado por pruebas), una práctica de igeniría del software cuya principal idea es hacer que los requistos sean traducidos a pruebas.
+El modelo de desarrollo de este proyecto se ha llevado a cabo a través de TDD<%https://es.wikipedia.org/wiki/Desarrollo_guiado_por_pruebas%>(Test-driven Development, o en español, desarrollo guiado por pruebas), una práctica de igeniría del software cuya principal idea es hacer que los requistos sean traducidos a pruebas.
 
 Las razones que han llevado a utilizar un ciclo de desarrollo conducido por pruebas son:
 
@@ -474,7 +475,7 @@ Distinguiremos entre requisitos funcionales y no funcionales:
 
 ==== 4.1.1 Requisitos funcionales
 
-Los requisitos funcionales fueron detallados como documentación y publicados como una página en una wiki de GitHub para que cualquier desarrollador pudiera incluir su propia aplicación. Su versión en inglés puede ser encontrada en el siguiente enlace https://github.com/Maes95/TFG-WebChat/wiki/How-to-Build-an-Application#what-are-the-requirements-for-an-application-to-be-tested mientras que su versión en español puede encontrarse como anexo este este documento.
+Los requisitos funcionales fueron detallados como documentación y publicados como una página en una wiki de GitHub para que cualquier desarrollador pudiera incluir su propia aplicación. Su versión en inglés puede encontrarse en la documentación del proyecto en GitHub<%https://github.com/Maes95/TFG-WebChat/wiki/How-to-Build-an-Application#what-are-the-requirements-for-an-application-to-be-tested%> mientras que su versión en español puede encontrarse en el <<X1, Anexo 1>> de este documento.
 
 ==== 4.1.2 Requisitos no funcionales
 
@@ -601,7 +602,7 @@ Al desarrollar la aplicación, el primer reto fue comprender el comportamiento c
 
 Otro problema en el desarrollo fue la comunicación, la cual se tornaba bastante más compleja que en su versión monolítica. El paso de mensajes entre procesos resolvía de forma contundente el renvío de mensajes entre trabajadores, pero la validación de la primera conexión del usuario requería un flujo algo más complejo. En un principio y partiendo de la aplicación monolítica, cada trabajador tenía su propio conjunto de nombres para validar la unicidad, pero el tener que comprobar un nombre en todos los trabajadores y esperar su respuesta resultaba demasiado complejo, por lo que se decidió que la gestión de nombres de usuario se llevaría a cabo en el maestro para simplificarlo.
 
-El proyecto se desarrolló en la versión 4.2 de Node.js, siendo la comunicación entre maestro y trabajador complicada debido a que el maestro a priori, no podía saber que trabajador le había mandado un mensaje (impidiendo mandar un mensaje de vuelta, como es en el caso de la validación del usuario). Para resolver este problema, era necesario enviar a cada trabajador en su creación si id con el que el maestro le identificaba, pudiéndoselo mandar en el mensaje para poder ser identificado.  A partir de la versión 6 de Node<<https://nodejs.org/api/cluster.html#cluster_event_message_1>>, este problema quedaba solucionado, ya que se enviaba una referencia directa al trabajador junto al mensaje de forma automática.
+El proyecto se desarrolló en la versión 4.2 de Node.js, siendo la comunicación entre maestro y trabajador complicada debido a que el maestro a priori, no podía saber que trabajador le había mandado un mensaje (impidiendo mandar un mensaje de vuelta, como es en el caso de la validación del usuario). Para resolver este problema, era necesario enviar a cada trabajador en su creación si id con el que el maestro le identificaba, pudiéndoselo mandar en el mensaje para poder ser identificado.  A partir de la versión 6 de Node<%https://nodejs.org/api/cluster.html#cluster_event_message_1%>, este problema quedaba solucionado, ya que se enviaba una referencia directa al trabajador junto al mensaje de forma automática.
 
 <<<
 
@@ -957,7 +958,7 @@ A continuación, explicaremos como han sido desarrolladas estas nuevas funcional
 
 ===== Automatización de pruebas
 
-El primer paso para la automatización fue permitir que una aplicación pudiese ser probada con distintos número de usuarios y salas de chat. Dado que ya iterábamos por métodos, el siguiente paso era iterar por clases. Para abordar este concepto, usamos la anotación @Parameterized<< https://github.com/junit-team/junit4/wiki/parameterized-tests>> sobre nuestra clase de pruebas. Esta anotación nos permite definir un método bajo la anotación @Parameters, que nos permite devolver una colección de listas de objetos. Cada lista de objetos corresponde a los parámetros que recibirá el constructor de la clase. De esta forma, nuestro clase de pruebas se instanciará tantas veces como listas de parámetros proporcionemos.
+El primer paso para la automatización fue permitir que una aplicación pudiese ser probada con distintos número de usuarios y salas de chat. Dado que ya iterábamos por métodos, el siguiente paso era iterar por clases. Para abordar este concepto, usamos la anotación @Parameterized<%https://github.com/junit-team/junit4/wiki/parameterized-tests%> sobre nuestra clase de pruebas. Esta anotación nos permite definir un método bajo la anotación @Parameters, que nos permite devolver una colección de listas de objetos. Cada lista de objetos corresponde a los parámetros que recibirá el constructor de la clase. De esta forma, nuestro clase de pruebas se instanciará tantas veces como listas de parámetros proporcionemos.
 
 Un ejemplo simple de este caso sería:
 
@@ -1033,7 +1034,7 @@ Pretendemos distinguir entre dos tipos de aplicaciones:
 
 - *Remotas* (WebChatRemoteApp):  Aplicación lanzada en una máquina remota.
 
-Nuestra aplicación de pruebas hace uso de la clase WebChatAppFactory, que nos proporciona un objeto WebChatApp con la implementación adecuada en función de la configuración introducida. La estructura del archivo de configuración se extiende, permitiendo configurar cada app de forma independiente. El formato utilizado puede encontrarse en la documentación en GitHub (en Inglés) o en el anexo X de este documento (en Español).
+Nuestra aplicación de pruebas hace uso de la clase WebChatAppFactory, que nos proporciona un objeto WebChatApp con la implementación adecuada en función de la configuración introducida. La estructura del archivo de configuración se extiende, permitiendo configurar cada app de forma independiente. El formato utilizado puede encontrarse en la documentación en del proyecto en GitHub<%https://github.com/Maes95/TFG-WebChat/wiki/How-to-Build-an-Application#how-do-i-include-an-application-in-a-comparison%> (en Inglés) o en el <<X2, Anexo 2>> de este documento (en Español).
 
 <<<
 
@@ -1062,7 +1063,7 @@ Hasta ahora, todos los resultados son mostrados por la terminal, por lo que publ
 
 Para ofrecer una mejor experiencia y poder realizar la comparativa de forma más eficaz, se ha desarrollado un servidor simple que ofrece un cliente HTML.
 
-- *Servidor*: Se trata de un servidor desarrollado en Vert.x (por su sencillo y eficaz desarrollo) el cual hace uso del patrón Singleton << https://msdn.microsoft.com/es-es/library/bb972272.aspx>> para garantizar una única instancia durante la ejecución y facilitar el acceso a la misma. Se encarga de publicar los resultados al cliente, haciendo de nexo entre ChatTest y el cliente. La comunicación entre Cliente y Servidor se realiza mediante el EventBus de Vertx, que permite extender la publicación eventos al lado Cliente (en JavaScript) que cuenta con su propia referencia al EventBus. Utiliza WebSockets para soportar la comunicación.
+- *Servidor*: Se trata de un servidor desarrollado en Vert.x (por su sencillo y eficaz desarrollo) el cual hace uso del patrón Singleton <%https://msdn.microsoft.com/es-es/library/bb972272.aspx%> para garantizar una única instancia durante la ejecución y facilitar el acceso a la misma. Se encarga de publicar los resultados al cliente, haciendo de nexo entre ChatTest y el cliente. La comunicación entre Cliente y Servidor se realiza mediante el EventBus de Vertx, que permite extender la publicación eventos al lado Cliente (en JavaScript) que cuenta con su propia referencia al EventBus. Utiliza WebSockets para soportar la comunicación.
 
 [source,java]
 ---------------------------------------------------------------------
@@ -1071,14 +1072,15 @@ public void send(JsonObject result){
 }
 ---------------------------------------------------------------------
 
-- **Cliente**: Se trata de una aplicación SPA desarrollada en AngularJS que muestra los resultados del cliente en graficas dinámicas, junto a las tablas de los resultados que muestra. Para generar los gráficos se ha utilizado la libreria Chart.js <<http://www.chartjs.org/>>, concretamente su versión para AngularJS <<http://jtblin.github.io/angular-chart.js/>>.
+- **Cliente**: Se trata de una aplicación SPA desarrollada en AngularJS que muestra los resultados del cliente en graficas dinámicas, junto a las tablas de los resultados que muestra. Para generar los gráficos se ha utilizado la libreria Chart.js, concretamente su versión para AngularJS.
 
 <<<
 
 ==== 4.3.2 Funcionamiento
 
-El flujo de funcionamiento de la aplicación puede apreciarse en la siguiente imagen:
+El flujo de funcionamiento de la aplicación puede apreciarse en la siguiente figura 18
 
+.Flujo de funcionamiento del sistema
 image::./TestSystem.png[TestSystem]
 
 - *Paso 1*: Se lanza la aplicación de Test tomando un archivo de configuración. Se lanza (de forma automática) TestResultServer, que abre una nueva ventana en el navegador con el cliente web escuchando, a la espera de resultados. Se realizan las pruebas.
@@ -1108,6 +1110,7 @@ public Metrics getMetrics() {
 
 - *Paso 7*: TestResultServer publica el resultado en el EventBus, de forma que el cliente es capaz de recibirlo y añadirlo a su gráfica correspondiente.
 
+.Captura de la interfaz del cliente
 image::./captura1.png[Captura 1]
 
 * Los pasos 2-7 se repiten para cada tupla (Aplicación, Nº de chats, Nº de clientes)
@@ -1120,7 +1123,7 @@ Una vez disponemos de todas las aplicaciones desarrolladas y una herramienta par
 
 Las pruebas se han realizado en una máquina cuyo sistema operativo es Linux Mint en su versión 17.4, que dispone de 8 núcleos de procesador y 6GB de memoria RAM.
 
-El archivo de configuración utilizado para esta comparativa puede encontrarse en el Anexo 3. Realizaremos las pruebas para:
+El archivo de configuración utilizado para esta comparativa puede encontrarse en el <<X3,Anexo 3>>. Realizaremos las pruebas para:
 
 - 1 sala de chat con 10, 20, 30, 40, 50 y 60 usuarios
 - 2 salas de chat con 20, 25, 30 y 35 usuarios en cada una
@@ -1257,7 +1260,7 @@ Entre las posibles ampliaciones/continuaciones del proyecto, destacaría:
 :bibliography:
 
 == Anexos
-
+[[X1]]
 === Anexo 1: Cómo construir una aplicación
 
 La aplicación en cuestión debe poder soportar un chat en el que varios usuarios puedan comunicarse entre si.
@@ -1314,7 +1317,7 @@ Aunque las pruebas que se realizan no lo requieren, la aplicación puede impedir
 Además, y de cara a probar rápidamente el correcto funcionamiento de la aplicación, puede ofrecerse un cliente http que permita realizar la conexión desde el navegador.
 
 <<<
-
+[[X2]]
 === Anexo 2: Cómo incluir una aplicación en la comparativa
 
 WebChatTest contiene un archivo de configuración disponible en WebChatTest/src/main/resources/config.json con el siguiente aspecto:
@@ -1385,7 +1388,7 @@ Son las aplicaciones NO lanzadas por `WebChatTest`
 
 
 <<<
-
+[[X3]]
 === Anexo 3: Configuración del experimento
 
 [source,json]

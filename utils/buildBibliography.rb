@@ -5,9 +5,9 @@
 #
 #   You should write references as:
 #
-#       Google<<http://google.com>>
+#       Google<%http://google.com%>
 #       ...
-#       Wikipedia<<https://wikipedia.org>>
+#       Wikipedia<%https://wikipedia.org%>
 #       ...
 #       :bibliography:
 #
@@ -33,7 +33,7 @@ else
   cont = 1
   bibliography = ""
 
-  ( data.to_enum(:scan, /<<([^<>])+>>/).map { Regexp.last_match } )
+  ( data.to_enum(:scan, /<%([^<>])+%>/).map { Regexp.last_match } )
   .each{ |ref|
     data.gsub!(ref[0], "<<#{cont}>>")
     bibliography += "[[[#{cont}]]] "+ ref[0][2..-3] + "\n\n"
