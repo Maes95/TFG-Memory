@@ -1114,9 +1114,143 @@ image::./captura1.png[Captura 1]
 
 * La obtención de métricas de latencia y consumo de recursos se realizan de forma concurrente.
 
-== 5. Conclusiones y trabajos futuros
+== 5. Estudio comparativo
 
-Reflexión sobre el trabajo realizado, qué objetivos se han cumplido y qué aspectos quedan pendientes para una futura ampliación del proyecto. Además se deben incluir unas conclusiones personales indicando lo que ha supuesto para el alumno la realización del trabajo. Entre 2 y 5 páginas.
+Una vez disponemos de todas las aplicaciones desarrolladas y una herramienta para probarlas, llega el momento de realizar la comparativa entre tecnologías.
+
+Las pruebas se han realizado en una máquina cuyo sistema operativo es Linux Mint en su versión 17.4, que dispone de 8 núcleos de procesador y 6GB de memoria RAM.
+
+El archivo de configuración utilizado para esta comparativa puede encontrarse en el Anexo 3. Realizaremos las pruebas para:
+
+- 1 sala de chat con 10, 20, 30, 40, 50 y 60 usuarios
+- 2 salas de chat con 20, 25, 30 y 35 usuarios en cada una
+- 4 salas de chat con 10, 12, 15 y 17 usuarios en cada una
+
+Desglosaremos la comparativa en las distintas métricas que vamos a medir: latencia, uso de CPU y uso de memoria, además de comparar la dificultad/complejidad del desarrollo. Una vez realizado el estudio, procederemos a formular una serie de conclusiones.
+
+Para interpretar las gráficas que usaremos para mostrar los resultados de las pruebas es importante comprender su estructura:
+
+- Cada gráfica contiene los resultados de una métrica concreta para un número de salas concreto.
+
+- En el eje Y encontraremos la métrica estudiada
+
+- En el eje X encontraremos el número de mensajes que se han enviado en total. Este número se obtiene de la siguiente fórmula: __Nº de mensajes = (Nº de usuarios por sala)^2^ * Nº de salas__
+
+<<<
+
+=== 5.1 Latencia
+
+Para nuestro caso de estudio, podemos definir la latencia o tiempo de respuesta como el retardo en milisegundos producido por la demora en la propagación de los mensajes.
+
+.Latencia
+image::./latency.png[Latencia]
+
+Conviene recordar que:
+
+- Para obtener esta métrica, el mensaje recoge en su contenido el momento (en ms) en el que es enviado, calculándose la diferencia a su llegada, que será el retardo.
+
+- Los resultados que podemos encontrar en las gráficas son la media aritmética de los N mensajes enviados en un total de 10 iteraciones.
+
+.Aplicación con N usuarios en 1 sala de chat - Latencia
+image::./charts/old/1Room-Latency.png[latency-1Room]
+
+.Aplicación con N usuarios en 2 salas de chat - Latencia
+image::./charts/2Room-Latency.png[latency-2Room]
+
+.Aplicación con N usuarios en 4 salas de chat - Latencia
+image::./charts/4Room-Latency.png[latency-4Room]
+
+==== Conclusión del estudio: Latencia
+
+Las aplicaciones de Spring, aunque con diferencias entre ellas, ofrecen resultados considerablemente mejores que el resto de tecnologías, seguidas por Akka.
+
+Por otro lado, en la aplicación de Vert.x, puede apreciarse que el uso del EventBus supone un consumo de tiempo mayor que si no se hace uso de él.
+
+Los peores resultados dentro de esta métrica los encontramos en la aplicación de Node.js. Dicha aplicación se ejecuta en un solo hilo de ejecución, a diferencia del resto de tecnologías que hacen uso de múltiples hilos para atender las peticiones de forma concurrente. La aplicación de Node.js junto a la librería de cluster intenta dar solución a este problema, mejorando considerablemente el tiempo de respuesta, aunque quedando muy por detrás de las tecnologías que se ejecutan sobre Java, a excepción de Vert.x con EventBus.
+
+Podemos afirmar que atendiendo al tiempo de respuesta, la mejor opción sería una aplicación en SpringBoot haciendo uso de un servidor en Tomcat (el cual viene configurado por defecto).
+
+=== 5.2 Uso de CPU
+
+Tal y como se ha desarrollado la obtención de métricas, el uso de CPU que nos proporciona el comando top es el porcentaje de CPU utilizado desde la última actualización de dicha herramienta.
+
+Debido a que la máquina que realiza las pruebas tiene un total de 8 núcleos, el máximo valor que podría alcanzar esta métrica seria 800% (que por el uso del procesador del propio sistema operativo y del cliente de pruebas, no sería posible).
+
+.Aplicación con N usuarios en 1 sala de chat - CPU
+image::./charts/1Room-CPU.png[CPU-1Room]
+
+.Aplicación con N usuarios en 2 salas de chat - CPU
+image::./charts/2Room-CPU.png[CPU-2Room]
+
+.Aplicación con N usuarios en 4 salas de chat - CPU
+image::./charts/4Room-CPU.png[CPU-4Room]
+
+==== Conclusión del estudio: CPU
+
+En esta métrica, puede apreciarse la correlación que existe con el tiempo de respuesta. Las tecnologías que ofrecían mejores tiempos (SpringBoot y Akka), también hacen un uso mayor de CPU, destacando el gran consumo que genera Akka de este recurso.
+
+En el caso de Vert.x, el EventBus no sólo perjudica al tiempo de respuesta, sino que también hace un uso mucho mayor de la CPU.
+
+Las aplicaciones de Node.js, siguiendo la correlación mencionada, hace un uso mucho menor de este recurso. En el caso de la aplicación simple, esta queda limitada a un solo procesador, alcanzando en las comparativas casi el 100% de uso del mismo, mientras que la aplicación que hace uso de la librería de cluster, al hacer uso de múltiples procesadores, reparte mejor la carga de trabajo, haciendo un uso más eficiente de los recursos y reduciendo en la mayoría de caso un 50% el uso de la CPU respecto a su predecesora y posicionándose como la mejor tecnología en esta métrica
+
+=== 5.3 Uso de memoria
+
+Al igual que el uso de la CPU, esta métrica se obtuvo mediante el comando top y corresponde a la cantidad (en KBytes) media de memoria que usa el proceso de la aplicación.
+
+A pesar de que la maquina dispone de 6 GBytes de memoria RAM, la cantidad real disponible es ligeramente inferior, 5.994.856 kB.
+
+.Aplicación con N usuarios en 1 sala de chat - Memoria
+image::./charts/1Room-Memory.png[latency-1Room]
+
+.Aplicación con N usuarios en 2 salas de chat - Memoria
+image::./charts/2Room-Memory.png[latency-2Room]
+
+.Aplicación con N usuarios en 4 salas de chat - Memoria
+image::./charts/4Room-Memory.png[latency-4Room]
+
+==== Conclusión del estudio: Memoria
+
+Las aplicaciones de Java, para cargas de trabajo bajas, consumen una memoria similar pero cuando la carga aumenta (más de 40 usuarios con cualquier número de salas), la aplicación de Vertx con EventBus dispara su consumo de memoria a 1.600.000 KBytes, un 26,6% de la memoria total disponible. La aplicación de Vert.x debe este uso excesivo de memoria a su EventBus, ya que la misma aplicación sin el uso de este recurso, tiene un uso de memoria constante, al igual que las aplicaciones de SpringBoot. También podemos observar como la creación de actores por parte de Akka también repercute en el uso de memoria.
+
+Por otro lado, podemos observar que las aplicaciones que menos uso hacen de este recurso son las de Node.js, las cuales serían las óptimas si atendemos a esta métrica.
+
+=== 5.4 Desarrollo
+
+A la hora de desarrollar, también debemos plantearnos el tiempo y/o dificultad que nos puede entrañar, en este caso, crear un sistema reactivo.
+
+Tanto las aplicaciones de Akka y Vert.x disponen de amplias librerías que conllevan una curva de aprendiza inicial bastante mayor que el resto de tecnologías mostradas, introduciendo el modelo de actores de cara a resolver problemas de concurrencia. En el caso de Akka, además, se le añade la dificultad de incrustar nuestra aplicación en el framework Play para obtener un servidor WebSocket.
+
+Por otro lado, las aplicaciones de SpringBoot son mucho más sencillas y rápidas de construir gracias a su inversión de control, aunque deja en manos del usuario solventar posibles problemas de concurrencia.
+
+Por último, las aplicaciones de Node.js, para obtener un servicio reactivo resultan triviales dado el carácter reactivo del propio lenguaje, pudiendo escribir toda la funcionalidad en muy pocas líneas de forma clara y concisa, sin embargo, al añadir la librería de cluster, el flujo de la aplicación puede complicarse.
+
+<<<
+
+=== 5.5 Conclusiones generales
+
+Para obtener una visión global de la comparativa, haremos uso un gráfico de dispersión para el caso más representativo por su alta carga de trabajo, 60 usuarios en una sola sala de chat, con un total de 1,8 millones de mensajes enviados y recibidos.
+
+.Gráfico de dispersión
+image::./charts/dispersion-chart.png[dispersion-chart]
+
+Tras estudiar las distintas métricas, podemos enunciar las siguientes soluciones al problema de las aplicaciones reactivas:
+
+- Si buscamos una aplicación fiable ante grandes cargas de trabajo y que no haga un uso excesivo de los recursos de la máquina en la que se ejecuta, la tecnología óptima sería SpringBoot, concretamente usando como servidor Tomcat.
+
+- Si buscamos una aplicación ligera y sencilla, que haga un uso mínimo de los recursos de la máquina que no vaya a tener grandes cargas de trabajo, nuestra mejor opción sería Node.js (añadiéndole la librería de cluster si fuera necesaria para optimizar el servicio que proporciona).
+
+== 6. Conclusiones y trabajos futuros
+
+
+Este proyecto ha resultado ser muy enriquecedor, tanto a título personal por la cantidad de tecnologías sobre las que he adquirido conocimiento como por el uso que se le pueda dar, tanto al modelo de pruebas utilizado como a los resultados de la comparativa a la hora de elegir una u otra tecnología. Quedan satisfechos todos los objetivos del proyecto, además de haberse incluido distintas versiones de las tecnologías para hacerlo más completo.
+
+La posibilidad de ampliar este proyecto ha estado presente durante todo el desarrollo, facilitando en gran medida la inclusión de nuevas aplicaciones mediante un diseño flexible y una documentación detallada.
+
+Entre las posibles ampliaciones/continuaciones del proyecto, destacaría:
+
+- El desarrollo de aplicaciones que usen otras tecnologías que no se basen en Java ni Node, como podrían ser Go o Erlang.
+
+- Llevar la comparativa al escalado horizontal, ver cómo se comportan las distintas tecnologías de forma distribuida y cuáles serían las mejores estrategias para optimizar su funcionamiento.
 
 == Bibliografía
 
@@ -1248,3 +1382,59 @@ Son las aplicaciones NO lanzadas por `WebChatTest`
 - No es necesario, por tanto, especificar los comandos de arranque ni la carpeta de la aplicación. El retraso es fijo para las aplicaciones remotas (0 ms).
 
 - Si la aplicación corre en la misma máquina y se quieren obtener las medidas de rendimiento, es necesario incluir en la configuración su `pid`
+
+
+<<<
+
+=== Anexo 3: Configuración del experimento
+
+[source,json]
+---------------------------------------------------------------------
+{
+    "apps" : [
+        {
+            "name" : "AkkaPlay",
+            "commands" : "./target/universal/webchat-1.0/bin/webchat"
+        },
+        {
+            "name" : "NodeJS",
+            "commands" : "node app.js"
+        },
+        {
+            "name" : "NodeJSCluster",
+            "commands" : "node master.js"
+        },
+        {
+            "name" : "SpringBoot-Tomcat",
+            "commands" : "mvn spring-boot:run"
+        },
+        {
+            "name" : "SpringBoot-Jetty",
+            "commands" : "mvn spring-boot:run"
+        },
+        {
+            "name" : "Vertx",
+            "commands" : "mvn exec:java"
+        },
+        {
+            "name" : "VertxNoEventbus",
+            "commands" : "mvn exec:java"
+        }
+
+    ],
+    "chats": [
+        {
+            "numChats": 1,
+            "users": [10, 20, 30, 40, 50, 60]
+        },
+        {
+            "numChats": 2,
+            "users": [20, 25, 30, 35]
+        },
+        {
+            "numChats": 4,
+            "users": [10, 12, 15, 17]
+        }
+    ]
+}
+---------------------------------------------------------------------
