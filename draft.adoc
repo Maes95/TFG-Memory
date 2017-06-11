@@ -1168,6 +1168,8 @@ Para interpretar las gráficas que usaremos para mostrar los resultados de las p
 
 - En el eje X encontraremos el número de mensajes que se han enviado en total. Este número se obtiene de la siguiente fórmula: __Nº de mensajes = (Nº de usuarios por sala)^2^ * Nº de salas__
 
+Para replicar este experimento, se proporciona una sencilla guía en el  <<X4, Anexo 4>> de este proyecto.
+
 <<<
 
 === 5.1 Latencia
@@ -1470,3 +1472,30 @@ Son las aplicaciones NO lanzadas por `WebChatTest`
     ]
 }
 ---------------------------------------------------------------------
+
+<<<
+
+[[X4]]
+=== Anexo 4: Instrucciones para realizar el experimento
+
+Para replicar el experimento de este proyecto, primero debe descargarse todo el código
+del proyecto desde GitHub:
+
+[source,bash]
+---------------------------------------------------------------------
+git clone https://github.com/Maes95/TFG-WebChat.git
+---------------------------------------------------------------------
+
+Para cada aplicación que participa en la comparativa, es necesario que se descargen las
+dependencias y se construya la aplicación tal y como se define en su README.md como SetUp.
+
+Una vez todas las aplicaciones estan listas, podemos ejecutar el cliente de pruebas:
+
+[source,bash]
+---------------------------------------------------------------------
+cd WebChatTest
+mvn test
+---------------------------------------------------------------------
+
+A continuación, se abrirá en el navegador una nueva ventana donde se generarán
+gráficas dinámicas a medida que se obtengan los resultados.
