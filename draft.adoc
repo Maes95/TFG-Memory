@@ -117,8 +117,6 @@ los últimos años que promete ser ligera y eficiente.
 .Indice Tiobe
 image::./tiobe.png[tiobe]
 
-<<<
-
 ==== 3.1.1 WebSockets
 
 .Logo WebSocket
@@ -146,16 +144,15 @@ socket.onopen  = function(e){ console.log("WS Opened")};
 socket.onclose = function(e){ console.log("WS Closed")};
 ---------------------------------------------------------------------
 
-<<<
-
 ==== 3.1.2 Node.js
+
+.Logo Node.js
 image::./node-logo.png[node, pdfwidth=40%]
 
-Node.js<%https://nodejs.org/es/%> es un entorno de ejecución para JavaScript construido con el motor de JavaScript V8<%https://developers.google.com/v8/%> de Chrome. Está diseñado para construir aplicaciones en red escalables. Se caracteriza por sus operaciones E/S sin bloqueos y por su arquitectura orientada a eventos. Está pensado Tiene un diseño similar y está influenciado por sistemas como Event Machine de Ruby ó Twisted de Python.
+Node.js<%https://nodejs.org/es/%>(Figura 4) es un entorno de ejecución para JavaScript construido con el motor de JavaScript V8<%https://developers.google.com/v8/%> de Chrome. Está diseñado para construir aplicaciones en red escalables. Se caracteriza por sus operaciones E/S sin bloqueos y por su arquitectura orientada a eventos. Tiene un diseño similar y está influenciado por sistemas como Event Machine de Ruby ó Twisted de Python.
 
-La versión utilizada en este proyecto es la 6.9.1
 
-[.underline]#Conceptos básicos de Node.js#
+Las principales características de Node.js son:
 
 - *Arquitectura de eventos*: Node.js presenta un bucle de eventos como un entorno, no como una librería (soporte nativo). Dentro de este entorno de ejecución, cada conexión de un cliente tiene asignado un callback, y recibe una pequeña asignación de memoria dinámica (sin generar un nuevo hilo). Este bucle de eventos ejecuta de forma secuencial los callbacks hasta que no queda ninguno por atender.
 
@@ -163,13 +160,11 @@ La versión utilizada en este proyecto es la 6.9.1
 
 - *Ejecución*: Node.js, al estar desarrollado a partir de V8, no interpreta el código JavaScript en tiempo real, sino que lo compila directamente  a código máquina.
 
-La versión utilizada de Node.js para este proyecto es la 6.9.1, aunque existen versiones posteriores, estas contienen algunas incompatibilidades con algunas librerias.
-
-<<<
+La versión utilizada de Node.js para este proyecto es la 6.9.1.
 
 ===== 3.1.2.1 Express
 
-Express<%http://expressjs.com/es/%> es una infraestructura de aplicaciones web para Node.js, que proporciona un conjunto de características para crear aplicaciones web de forma simple y flexible.
+Express<%http://expressjs.com/es/%> es un framework de aplicaciones web para Node.js, que proporciona un conjunto de características para crear aplicaciones web de forma simple y flexible.
 
 [source,javascript]
 ---------------------------------------------------------------------
@@ -183,53 +178,13 @@ app.get('/', function(req, res) {
 
 ===== 3.1.2.2 WS
 
-WS<%https://github.com/websockets/ws%> es una librería de Node.js que proporciona la funcinalidad necesaria para abrir una conexión WebSocket en Node.js, tanto cliente como servidor. Puede ser utilizada junto a Express para dotar una aplicación web de conexión WebSocket.
+WS<%https://github.com/websockets/ws%> es una librería de Node.js que proporciona la funcionalidad necesaria para abrir una conexión WebSocket en Node.js, tanto cliente como servidor. Puede ser utilizada junto a Express para dotar una aplicación web de conexión WebSocket.
 
-===== 3.1.3.3 Cluster
+===== 3.1.2.3 Cluster
 
 Cluster<%https://nodejs.org/api/cluster.html%><%https://www.npmjs.com/package/cluster%> es una librería que permite a Node.js aprovechar los distintos cores del sistema en el que se ejecuta, dado que por defecto, Node.js se ejecuta como un único thread.
 
 Esta librería también facilita el balanceo de carga entre los distintos procesos, permitiéndoles compartir el puerto que escuchan y distribuyendo la carga mediante un algoritmo de Round Robin.
-
-==== 3.1.4 AngularJS
-
-.Logo AngularJS
-image::./angularjs.png[angularjs, pdfwidth=40%]
-
-AngularJS <%https://www.angularjs.org/%> <%https://es.wikipedia.org/wiki/AngularJS %>es un framework de JavaScript de código abierto desarrollado por Google. Nos permite desarrollar SPAs (Single Page Applications), que siguiendo el MVC (modelo-vista-controlador), facilitan la presentación y manipulación de los datos en el lado cliente (frontend), reduciendo la carga lógica del lado servidor (backend).
-
-<<<
-
-Entre sus características, destacamos:
-
-- La extensión del html mediante etiquetas y sintaxis propia.
-
-- Inyección de dependencias
-
-- Una numerosa comunidad y una extensa documentación
-
-La versión utilizada para este proyecto es la 1.4, aunque actualmente está disponible Angular 2, conocido simplemente con Angular<%https://angular.io/%>, una versión revulsiva y no retro compatible, que se apoya en Typescript, una extensión de JavaScript. No se ha utilizado esta nueva versión por la simplicidad que ofrecía AngularJS al no requerir dependencias o desplegado de la aplicación.
-
-==== 3.1.5 Chart.js
-
-.Logo Chart.js
-image::./chartjs-logo.jpg[chartjs, pdfwidth=40%]
-
-Chart.js<%http://www.chartjs.org/%> es una librería de JavaScript para el lado cliente que nos permite la generación de gráficas para nuestra aplicación.
-
-Entre sus características destacamos:
-
-- Gran variedad de gráficos
-
-- Sencillez de uso y una amplia y detallada documentación
-
-- No requiere de librerías adicionales
-
-- Gráficos interactivos
-
-Esta librería cuenta con una versión compatible con Angular <%http://jtblin.github.io/angular-chart.js/%> que será la utilizada en este proyecto.
-
-<<<
 
 ==== 3.1.3 Java
 
@@ -243,8 +198,6 @@ código Java en cualquier dispositivo, independientemente de la arquitectura.
 Las tecnologías basadas en Java seleccionadas para la comparativa son explicadas
 a continuación.
 
-<<<
-
 ===== 3.1.3.1 Vert.x
 
 .Logo Vertx
@@ -255,7 +208,7 @@ Se autodenomina dirigido por eventos y no bloqueante, está inspirado en Node.js
 
 La versión utilizada en el proyecto es la 3.3.
 
-[.underline]#Conceptos básicos de Vert.x#
+Las principales características de Vert.x son:
 
 * **Verticle** <%http://vertx.io/docs/vertx-core/java/#verticles%>: modelo de
 concurrencia que propone Vertx. Un Verticle es una clase que se comporta como
@@ -286,8 +239,6 @@ proporciona un handler para una posible respuesta.
 -  Multi-Thread Worker: Permite la ejecución de un verticle en diferentes threads, de forma que pueda realizar las tareas de forma concurrente, delegando en el desarrollador la responsabilidad de asegurar la concurrencia y sincronización.
 
 Además de los recursos mencionados, cuenta con una extensa API que abarca desde múltiples herramientas de testing hasta servidores y clientes de TCP/SSL, HTTP/HTTPS y WebSockets, cobrando estos últimos especial importancia de cara al desarrollo de la aplicación.
-
-<<<
 
 ===== 3.1.3.2 Akka
 
@@ -334,9 +285,7 @@ self().tell(PoisonPill.getInstance(), self());
 
 La diferencia entre un actor path y una ActorReference es que el segundo tiene el mismo ciclo de vida que el actor. Si el actor se destruye su actor reference también, sin embargo un actor path puede existir perfectamente
 
-<<<
-
-===== 3.1.2.3 Spring Boot
+===== 3.1.3.3 Spring Boot
 
 .Logo Spring
 image::./springboot-logo.png[spring, pdfwidth=40%]
@@ -353,27 +302,41 @@ Además, cuenta con el Sistema de Inversión de Control de Spring<%https://es.wi
 
 La versión utilizada de Spring para este proyecto es la 1.4.3
 
-[source,java]
----------------------------------------------------------------------
-import org.springframework.boot.*;
-import org.springframework.boot.autoconfigure.*;
-import org.springframework.web.bind.annotation.*;
+==== 3.1.4 AngularJS
 
-@RestController
-@SpringBootApplication
-public class Example {
+.Logo AngularJS
+image::./angularjs.png[angularjs, pdfwidth=40%]
 
-	@RequestMapping("/")
-	String home() {
-		return "Hello World!";
-	}
+AngularJS<%https://www.angularjs.org/%><%https://es.wikipedia.org/wiki/AngularJS %> es un framework de JavaScript de código abierto desarrollado por Google. Nos permite desarrollar SPAs (__Single Page Applications__), que siguiendo el MVC (modelo-vista-controlador), facilitan la presentación y manipulación de los datos en el lado cliente (frontend), reduciendo la carga lógica del lado servidor (backend).
 
-	public static void main(String[] args) throws Exception {
-		SpringApplication.run(Example.class, args);
-	}
+Entre sus características, destacamos:
 
-}
----------------------------------------------------------------------
+- La extensión del html mediante etiquetas y sintaxis propia.
+
+- Inyección de dependencias
+
+- Una numerosa comunidad y una extensa documentación
+
+La versión utilizada para este proyecto es la 1.4, aunque actualmente está disponible Angular 2, conocido simplemente como Angular<%https://angular.io/%>, una versión revulsiva y no retro compatible, que se apoya en Typescript, una extensión de JavaScript. No se ha utilizado esta nueva versión por la simplicidad que ofrecía AngularJS al no requerir dependencias o desplegado de la aplicación.
+
+==== 3.1.5 Chart.js
+
+.Logo Chart.js
+image::./chartjs-logo.jpg[chartjs, pdfwidth=40%]
+
+Chart.js<%http://www.chartjs.org/%> es una librería de JavaScript para el lado cliente que nos permite la generación de gráficas para nuestra aplicación.
+
+Entre sus características destacamos:
+
+- Gran variedad de gráficos
+
+- Sencillez de uso y una amplia y detallada documentación
+
+- No requiere de librerías adicionales
+
+- Gráficos interactivos
+
+Esta librería cuenta con una versión compatible con AngularJS <%http://jtblin.github.io/angular-chart.js/%> que será la utilizada en este proyecto.
 
 <<<
 
@@ -389,8 +352,6 @@ Git <%https://git-scm.com/%> es un software de control de versiones diseñado po
 Para el desarrollo de este proyecto hemos usado GitHub<%https://github.com%>, una plataforma de desarrollo colaborativa para alojar proyectos Git.
 
 A pesar de su integración con diversos entornos de desarrollo, debido a la estructura del proyecto (un solo repositorio) hemos usado su versión por terminal.
-
-<<<
 
 ==== 3.2.2 Gestores de dependencias
 
@@ -414,8 +375,6 @@ SBT<%http://www.scala-sbt.org/%> es una herramienta de software para construcci�
 
 Se ha utilizado para configurar el proyecto de Akka.
 
-<<<
-
 ===== 3.2.2.3 NPM
 
 .Logo NPM
@@ -424,9 +383,6 @@ image::./npm-logo.png[npm, pdfwidth=30%]
 Npm<%https://www.npmjs.com/%> es una herramienta software para la gestión y construcción de proyectos en Node.js creado por Isaac Z. Schlueter. Al igual que Maven, permite declarar las dependencias y distintas opciones de ejecución, desplegamiento y pruebas. Para ello hace uso de un archivo JSON llamado package.json.
 
 Es utilizado en las aplicaciones de Node.js.
-
-
-<<<
 
 ====  3.2.3 Entornos de desarrollo
 
@@ -461,17 +417,15 @@ Sprint Tool Suit (STS)<%https://spring.io/tools%> es un entorno de desarrollo ba
 
 Se ha utilizado para el desarrollo de las aplicaciones en Spring.
 
-<<<
-
 === 3.3 Metodología
 
-El modelo de desarrollo de este proyecto se ha llevado a cabo a través de TDD<%https://es.wikipedia.org/wiki/Desarrollo_guiado_por_pruebas%>(Test-driven Development, o en español, desarrollo guiado por pruebas), una práctica de igeniría del software cuya principal idea es hacer que los requistos sean traducidos a pruebas.
+El modelo de desarrollo de este proyecto se ha llevado a cabo a través de TDD<%https://es.wikipedia.org/wiki/Desarrollo_guiado_por_pruebas%>(Test-driven Development, o en español, desarrollo guiado por pruebas), una práctica de Ingeniería del Software cuya principal idea es hacer que los requistos sean traducidos a pruebas.
 
 Las razones que han llevado a utilizar un ciclo de desarrollo conducido por pruebas son:
 
-La naturaleza intrínseca del proyecto, distintas aplicaciones cuyo funcionamiento debe ser el mismo y por tanto comparten requisitos.
+- La naturaleza intrínseca del proyecto, distintas aplicaciones cuyo funcionamiento debe ser el mismo y por tanto comparten requisitos.
 
-La herencia de un proyecto, que proporcionaba dichas pruebas de integración necesarias para validad cualquier aplicación.
+- La herencia de un proyecto, que proporcionaba dichas pruebas de integración necesarias para validar cualquier aplicación.
 
 .Ciclo de desarrollo conducido por pruebas
 image::./tdd.png[tdd, pdfwidth=90%]
@@ -519,8 +473,6 @@ Dado el carácter comparativo que posee el proyecto, nos centraremos en los requ
 
 A continuación, se expondrá el diseño e implementación de cada aplicación construida, así como un acceso a su código fuente.
 
-<<<
-
 ==== 4.2.1 Node.js
 
 ===== Código de la aplicación
@@ -563,8 +515,6 @@ wss.clients.forEach( (client) => {
 });
 ---------------------------------------------------------------------
 
-<<<
-
 [.underline]#Desconexión#: La librería ws se encarga de borrar automáticamente la conexión con el cliente, por lo tanto, lo único que debemos hacer cuando un usuario se desconecta es borrar su nombre del conjunto.
 
 =====  Problemas en el desarrollo
@@ -572,8 +522,6 @@ wss.clients.forEach( (client) => {
 Debido al carácter reactivo de Node.js y las librerías de alto nivel, el desarrollo de esta aplicación se simplifica en gran medida, por lo que no dio lugar a problemas importantes.
 
 Solo cabe señalar que, al igual que en otras tecnologías, se pensó en agrupar a los usuarios por salas para que el re-envío de mensajes fuera automático, pero aparte de complicar de forma considerable la aplicación, no ofrecía mejoras en su rendimiento, sino todo lo contrario, por lo que se descartó la refactorización en ese aspecto.
-
-<<<
 
 ==== 4.2.2  Node.js con librería de clúster
 
@@ -605,8 +553,6 @@ Características de la versión con cluster:
 
 *__El maestro añadirá el usuario en cualquier caso, ya que al tratarse de un conjunto, no admite duplicados.__
 
-<<<
-
 [.underline]#Re-envío de mensajes#: Cuando un trabajador recibe un mensaje de uno de sus clientes, lo re-envía al maestro para que este lo distribuya. Cada trabajador recibe el mensaje, que re-envía a sus clientes (si pertenecen a la misma sala que especifica el mensaje).
 
 [source,javascript]
@@ -632,8 +578,6 @@ Al desarrollar la aplicación, el primer reto fue comprender el comportamiento c
 Otro problema en el desarrollo fue la comunicación, la cual se tornaba bastante más compleja que en su versión monolítica. El paso de mensajes entre procesos resolvía de forma contundente el renvío de mensajes entre trabajadores, pero la validación de la primera conexión del usuario requería un flujo algo más complejo. En un principio y partiendo de la aplicación monolítica, cada trabajador tenía su propio conjunto de nombres para validar la unicidad, pero el tener que comprobar un nombre en todos los trabajadores y esperar su respuesta resultaba demasiado complejo, por lo que se decidió que la gestión de nombres de usuario se llevaría a cabo en el maestro para simplificarlo.
 
 El proyecto se desarrolló en la versión 4.2 de Node.js, siendo la comunicación entre maestro y trabajador complicada debido a que el maestro a priori, no podía saber que trabajador le había mandado un mensaje (impidiendo mandar un mensaje de vuelta, como es en el caso de la validación del usuario). Para resolver este problema, era necesario enviar a cada trabajador en su creación si id con el que el maestro le identificaba, pudiéndoselo mandar en el mensaje para poder ser identificado.  A partir de la versión 6 de Node<%https://nodejs.org/api/cluster.html#cluster_event_message_1%>, este problema quedaba solucionado, ya que se enviaba una referencia directa al trabajador junto al mensaje de forma automática.
-
-<<<
 
 ==== 4.2.3  Akka
 
@@ -721,8 +665,6 @@ chat.tell(unsubscribeChat,getSelf());
 
 Al tratarse de una aplicación heredada, fue necesario no solo una fase de aprendizaje de Akka y Play, sino de la arquitectura de la aplicación. La aplicación original pretendía resolver el mismo problema que el de este proyecto, pero en el contexto del escalado horizontal, no vertical. En un primer momento, se incluyó la aplicación sin modificar en la comparativa, pero tras observar su complejidad en código, se trabajó en su refactorización para simplificarla. Esta nueva versión monolítica resulto dar mejores resultados y es la que actualmente se encuentra dentro de la comparativa.
 
-<<<
-
 ==== 4.2.4  Vert.x
 
 ===== Código de la aplicación
@@ -762,8 +704,6 @@ vertx.deployVerticle(user, res -> {
 vertx.eventBus().publish(message.getString("chat"), message);
 ---------------------------------------------------------------------
 
-<<<
-
 Por otro lado, cuando un User es deployeado, se suscribe a su chat para recibir los mensajes dirigidos a ese chat y re-enviar a su cliente dichos mensajes.
 
 [source,java]
@@ -799,8 +739,6 @@ Por otro lado, si requirió un estudio de la tecnología para poder optimizar la
 
 Al igual que la aplicación de Akka, se desarrolló una versión en la que los User tomaban el control total de la conexión WebSocket (no solo la escritura). Esta versión resulto ser más compleja a la hora de gestionar los Verticles y no ofrecía mejores resultados, por lo que fue descartada.
 
-<<<
-
 ==== 4.2.5  Vert.x sin EventBus
 
 ===== Código de la aplicación
@@ -832,8 +770,6 @@ rooms.get(message.getString("chat")).values().forEach((user)->{
 ---------------------------------------------------------------------
 
 [.underline]#Desconexión#: Al igual que la anterior aplicación, se produce cuando User no es capaz de mandar un mensaje a su cliente, llamando explícitamente al ChatManager para que elimine al User del mapa correspondiente a su sala de chat.
-
-<<<
 
 ==== 4.2.6  SpringBoot con servidor Tomcat
 
@@ -869,8 +805,6 @@ La información concreta del usuario se guarda en una clase User, de forma que c
 
 La estructura del almacenamiento de usuarios es un mapa cuya clave es el nombre de la sala y cuyo valor es otro mapa que almacena los usuarios, siendo su clave única, su nombre.
 
-<<<
-
 =====  Funcionamiento
 
 [.underline]#Conexión#: La conexión corresponde a la anotación [source]`@OnOpen`, cuyo método crea un nuevo objeto usuario con la sesión creada a partir de la conexión WebSocket realizada. El mensaje de conexión, en cambio, es capturado por el método bajo la anotación [source]`@OnMessage`, que tras validad que el usuario asociado a esa sesión no tiene aún atributos como “name” o “chat”, comprueba que el nombre sea único y se los asigna. Además, el usuario es guardado en el mapa correspondiente a su sala de chat
@@ -902,8 +836,6 @@ this.session.getBasicRemote().sendText(message);
 
 Las anotaciones y la configuración de SpringBoot nos permite un desarrollo rápido gracias a la estructura que nos proporciona, pero al contrario que Akka y Vertx, la concurrencia es un problema a solucionar por el desarrollador. Uno de los primeros problemas que nos encontramos en el desarrollo era el acceso concurrente al contenedor de salas y usuarios, solucionado mediante el uso de mapas concurrentes, concretamente, ConcurrentHashMap.
 
-<<<
-
 Otro problema encontrado era que el recurso encargado de enviar mensajes mediante WebSocket debía estar en exclusión mutua, no permitía la escritura concurrente (no cuenta con ningún buzón o cola de mensajes que permita la concurrencia). Para resolverlo, se encapsulo esta acción en un método sincronizado, asegurando así la exclusión mutua.
 
 [source,java]
@@ -917,8 +849,6 @@ public synchronized void send(String message){
 }
 ---------------------------------------------------------------------
 Se probaron diferentes implementaciones (Como usar la clase bajo [source]`@ServerEndpoint` como un usuario y externalizar el ChatManager como un servicio), pero esto no solo complicaba el flujo de la aplicación, si no que aumentaba de forma considerable los tiempos de respuesta. Tras muchas iteraciones, la aplicación que forma parte de la comparativa es la descrita.
-
-<<<
 
 ==== 4.2.7  SpringBoot con servidor Jetty
 
@@ -1065,8 +995,6 @@ Pretendemos distinguir entre dos tipos de aplicaciones:
 
 Nuestra aplicación de pruebas hace uso de la clase WebChatAppFactory, que nos proporciona un objeto WebChatApp con la implementación adecuada en función de la configuración introducida. La estructura del archivo de configuración se extiende, permitiendo configurar cada app de forma independiente. El formato utilizado puede encontrarse en la documentación en del proyecto en GitHub<%https://github.com/Maes95/TFG-WebChat/wiki/How-to-Build-an-Application#how-do-i-include-an-application-in-a-comparison%> (en Inglés) o en el <<X2, Anexo 2>> de este documento (en Español).
 
-<<<
-
 ===== Nuevas métricas
 
 Una vez tenemos una sólida estructura para manejar las aplicaciones, tenemos mayor facilidad para obtener las métricas de los procesos de las mismas. Como hemos comentado, las métricas deseadas son la cantidad de memoria consumida y el uso de CPU. Para su obtención, hemos hecho uso del comando top de Linux, concretamente:
@@ -1102,8 +1030,6 @@ public void send(JsonObject result){
 ---------------------------------------------------------------------
 
 - **Cliente**: Se trata de una aplicación SPA desarrollada en AngularJS que muestra los resultados del cliente en graficas dinámicas, junto a las tablas de los resultados que muestra. Para generar los gráficos se ha utilizado la libreria Chart.js, concretamente su versión para AngularJS.
-
-<<<
 
 ==== 4.3.2 Funcionamiento
 
@@ -1169,8 +1095,6 @@ Para interpretar las gráficas que usaremos para mostrar los resultados de las p
 - En el eje X encontraremos el número de mensajes que se han enviado en total. Este número se obtiene de la siguiente fórmula: __Nº de mensajes = (Nº de usuarios por sala)^2^ * Nº de salas__
 
 Para replicar este experimento, se proporciona una sencilla guía en el  <<X4, Anexo 4>> de este proyecto.
-
-<<<
 
 === 5.1 Latencia
 
@@ -1257,8 +1181,6 @@ Tanto las aplicaciones de Akka y Vert.x disponen de amplias librerías que conll
 Por otro lado, las aplicaciones de SpringBoot son mucho más sencillas y rápidas de construir gracias a su inversión de control, aunque deja en manos del usuario solventar posibles problemas de concurrencia.
 
 Por último, las aplicaciones de Node.js, para obtener un servicio reactivo resultan triviales dado el carácter reactivo del propio lenguaje, pudiendo escribir toda la funcionalidad en muy pocas líneas de forma clara y concisa, sin embargo, al añadir la librería de cluster, el flujo de la aplicación puede complicarse.
-
-<<<
 
 === 5.5 Conclusiones generales
 
