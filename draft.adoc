@@ -1,3 +1,4 @@
+
 = Comparativa de tecnologías de servidor para servicios basados en websocket
 Michel Maes Bermejo <m.maes@alumnos.urjc.es>
 :toc:
@@ -62,7 +63,8 @@ tecnologías de servidor para servicios basados en WebSockets.
 
 Estas tecnologías proporcionan una comunicación en tiempo real con clientes
 muy diversos (aplicaciones móviles, navegadores, otro servidores…). Un ejemplo
-actual son los servicios de mensajería instantánea cómo WhatsApp o Telegram. Hoy
+actual son los servicios de mensajería instantánea cómo WhatsApp o Telegram, cuyo
+crecimiento de usuaros se ha disparado en los últimos años (Ver __Figura 1__). Hoy
 en día este tipo de aplicaciones tienen un impacto drástico en la vida diaria,
 siendo casi una herramienta imprescindible, por lo que prevenir una caída de
 servicio ante un alto número de clientes es fundamental.
@@ -95,10 +97,10 @@ realizó una comparativa entre las aplicaciones de Akka y Vert.x. Nuestro
 proyecto pretende ser una continuación y expansión del anterior, concretamente:
 
 - Implementar un cliente de pruebas que automatice el proceso de comparación
-(obtención de métricas) y genere una un cliente web que muestre los resultados
+(obtención de métricas) y que muestre los resultados
 de forma dinámica y permita almacenarlos.
 
-- Re-escribir la aplicación de Vert.x a su versión más reciente.
+- Actualizar el servidor de Vert.x a su versión más reciente (v3.3)
 
 - Incluir nuevas implementaciones con distintas tecnologías para ampliar la comparativa
 
@@ -122,14 +124,15 @@ image::./tiobe.png[tiobe]
 .Logo WebSocket
 image::./websockets-logo.png[websocket, pdfwidth=40%]
 
-RFC 6455 <%https://tools.ietf.org/html/rfc6455%> define WebSocket como un protocolo que proporciona un canal
+RFC 6455 <%https://tools.ietf.org/html/rfc6455%> define WebSocket (Figura 3) como un protocolo que proporciona un canal
 de comunicación bidireccional y full-dúplex sobre un único socket TCP. Aunque
-inicialmente estaba pensada para comunicaciones entre el navegador y el servidor
+inicialmente estaba pensado para cualquier tipo de comunicaciones entre el navegador y el servidor
 web, puede usarse también para aplicaciones cliente/servidor.
 
 Por otro lado, W3C se encarga de normalizar la API<%https://www.w3.org/TR/2011/WD-websockets-20110929%> de WebSocket.
-Define una interfaz para el navegador compuesta por 4 métodos que corresponder
-a handlers para los diferentes eventos que maneja.
+Define una interfaz para el navegador compuesta por 4 métodos que corresponden a
+manejadores o gestores (__handlers__) para cada evento. Podemos ver un ejemplo de estos manejadores en el código
+mostrado a continuación (Javascript en el navegador).
 
 [source,javascript]
 ---------------------------------------------------------------------
@@ -142,6 +145,7 @@ socket.onmessage = function(event) {
 });
 socket.onopen  = function(e){ console.log("WS Opened")};
 socket.onclose = function(e){ console.log("WS Closed")};
+socket.onerror = function(e){ console.log(e)};
 ---------------------------------------------------------------------
 
 ==== 3.1.2 Node.js
@@ -165,16 +169,7 @@ La versión utilizada de Node.js para este proyecto es la 6.9.1.
 ===== 3.1.2.1 Express
 
 Express<%http://expressjs.com/es/%> es un framework de aplicaciones web para Node.js, que proporciona un conjunto de características para crear aplicaciones web de forma simple y flexible.
-
-[source,javascript]
----------------------------------------------------------------------
-var express = require('express');
-var app = express();
-// respond with "hello world" when a GET request is made to the homepage
-app.get('/', function(req, res) {
-  res.send('hello world');
-});
----------------------------------------------------------------------
+Usaremos Express para lanzar las aplicaciones de Node.js en un servidor.
 
 ===== 3.1.2.2 WS
 
@@ -191,7 +186,7 @@ Esta librería también facilita el balanceo de carga entre los distintos proces
 .Logo Java
 image::./java-logo.png[java, pdfwidth=40%]
 
-Java es un lenguaje de programación de propósito general, concurrente y orientado
+Java (Figura 5) es un lenguaje de programación de propósito general, concurrente y orientado
 a objetos. Su sintaxis deriva en gran medida de C y C++. Uno de los principales
 atractivos de Java es su máquina virtual (JVM) que nos permite ejecutar nuestro
 código Java en cualquier dispositivo, independientemente de la arquitectura.
@@ -203,12 +198,12 @@ a continuación.
 .Logo Vertx
 image::./vertx-logo.png[vertx, pdfwidth=40%]
 
-Vert.x es un toolkit de Java que permite construir aplicaciones reactivas.
+Vert.x<%http://vertx.io/%> (Figura 6) es un toolkit de Java que permite construir aplicaciones reactivas.
 Se autodenomina dirigido por eventos y no bloqueante, está inspirado en Node.js.
 
 La versión utilizada en el proyecto es la 3.3.
 
-Las principales características de Vert.x son:
+Los conceptos básicos que debemos comprender de Vert.x son:
 
 * **Verticle** <%http://vertx.io/docs/vertx-core/java/#verticles%>: modelo de
 concurrencia que propone Vertx. Un Verticle es una clase que se comporta como
@@ -245,7 +240,7 @@ Además de los recursos mencionados, cuenta con una extensa API que abarca desde
 .Logo Akka
 image::./akka-logo.png[Akka, pdfwidth=40%]
 
-Akka es otro toolkit para crear aplicaciones concurrentes y distribuidas. También se ejecuta sobre la JVM. Se puede utilizar con Java y Scala, lenguaje con el que está escrito y del que su implementación de los actores forma parte de la librería estándar desde la versión 2,10. Otras de sus características son:
+Akka<%http://akka.io/%> (Figura 7) es otro toolkit para crear aplicaciones concurrentes y distribuidas. También se ejecuta sobre la JVM. Se puede utilizar con Java y Scala, lenguaje con el que está escrito y del que su implementación de los actores forma parte de la librería estándar desde la versión 2,10. Otras de sus características son:
 
 - **Tolerancia a fallos**: Akka adopta el modelo de “let it crash” que ha resultado un gran éxito en la industria de la telecomunicación.
 
@@ -257,33 +252,17 @@ La versión utilizada de Akka durante este proyecto es la 2.4-M2, aunque actualm
 
 La aplicación de Akka hace uso de Play Framework<%https://www.playframework.com/%> un framework web open source, que da soporte web a la aplicación y proporciona la comunicación mediante WebSockets.
 
-[.underline]#Conceptos básicos de Akka#
+Los conceptos básicos que debemos comprender de Akka son:
 
 - **Actores**: Los actores son objetos que poseen un estado y un comportamiento. Se comunican entre ellos exclusivamente enviando mensajes que se encolan en el mailbox del actor de destino. Los actores se organizan jerárquicamente. Un actor encargado de realizar una tarea, puede dividir esa tarea en otras sub-tareas y enviárselas a unos actores hijos a los que supervisará.
 
 - **Actor System**: Es el encargado de ejecutar, crear y borrar actores además de otros fines como la configuración o el logging. Varios actor systems con diferentes configuraciones puede coexistir en la misma JVM sin problemas, aunque al ser una estructura pesada que puede manejar de 1..N threads, se recomienda crear una por aplicación.
 
-Para crear los actores, usaremos el siguiente método:
-
-[source,java]
----------------------------------------------------------------------
-Akka.system().actorOf(Props.create(ChatManager.class), "ChatManager");
----------------------------------------------------------------------
-
-En este caso el actorSystem es devuelto por Akka.system(). Se invoca así debido a que es el actorSystem que crea PlayFramework por defecto. Pasamos como parámetros la función Props.create con el nombre de la clase y el nombre que le asignamos al actor. Props es un objeto de configuración usado para crear los actores. Es inmutable, por lo tanto es thread-safe y se puede compartir perfectamente.
-
-Para eliminar un actor no necesitaremos llamar al actorSystem. Solo tendremos que enviar al actor una poisonPill y el mismo se eliminará. El propio actor también puede enviarse a si mismo esa poisonPill.
-
-[source,java]
----------------------------------------------------------------------
-self().tell(PoisonPill.getInstance(), self());
----------------------------------------------------------------------
-
 - **Actor Reference**: Es un objeto que representa al actor en el exterior. Estos objetos pueden enviarse sin ninguna restricción y permiten enviar mensajes al actor con total transparencia, sin necesidad de actualizar las referencias a pesar de enviarse a otros hosts. Además evitan que desde el exterior pueda conocerse el estado del actor a no ser que este lo publique.
 
 - **Actor Path**: Como los actores son creados en una estricta estructura jerárquica, existe una única secuencia de nombres de actores dados siguiendo recursivamente los links entre actores padres e hijos hasta el actorSystem. Esta secuencia similar a las rutas de un sistema de ficheros, por ello es conocida como actor Path.
 
-La diferencia entre un actor path y una ActorReference es que el segundo tiene el mismo ciclo de vida que el actor. Si el actor se destruye su actor reference también, sin embargo un actor path puede existir perfectamente
+La diferencia entre un ActorPath y una ActorReference es que el segundo tiene el mismo ciclo de vida que el actor. Si el actor se destruye su ActorReference también, sin embargo un ActorPath puede existir perfectamente a pesar de que no exista el actor.
 
 ===== 3.1.3.3 Spring Boot
 
@@ -458,7 +437,62 @@ Distinguiremos entre requisitos funcionales y no funcionales:
 
 ==== 4.1.1 Requisitos funcionales
 
-Los requisitos funcionales fueron detallados como documentación y publicados como una página en una wiki de GitHub para que cualquier desarrollador pudiera incluir su propia aplicación. Su versión en inglés puede encontrarse en la documentación del proyecto en GitHub<%https://github.com/Maes95/TFG-WebChat/wiki/How-to-Build-an-Application#what-are-the-requirements-for-an-application-to-be-tested%> mientras que su versión en español puede encontrarse en el <<X1, Anexo 1>> de este documento.
+Los requisitos funcionales fueron detallados como documentación y publicados como una página en una wiki de GitHub para que cualquier desarrollador pudiera incluir su propia aplicación. Su versión en inglés puede encontrarse en la documentación del proyecto en GitHub<%https://github.com/Maes95/TFG-WebChat/wiki/How-to-Build-an-Application#what-are-the-requirements-for-an-application-to-be-tested%> mientras que su versión en español se detalla a continuación.
+
+==== Requisitos básicos
+
+La aplicación en cuestión debe poder soportar un chat en el que varios usuarios puedan comunicarse entre si.
+
+Requiere lanzar la aplicación como un servidor que escuche de un puerto concreto y ofrecer una conexión WebSocket sobre la dirección '/chat'.
+
+==== Primera conexión
+
+El cliente, al establecer la conexión enviará sus datos en un string, que podrá formatearse a JSON y tiene la siguiente estructura:
+
+[source,json]
+---------------------------------------------------------------------
+{
+  "name": "MyName",
+  "chat": "MyRoom"
+}
+---------------------------------------------------------------------
+
+La aplicación debe almacenar estos datos junto a la conexión WebSocket, de forma que queden "registrados".
+
+==== Recepción y reenvío de mensajes
+
+Una vez se ha establecido la conexión y se ha mandado el mensaje de inicialización, el cliente enviará mensajes a la aplicación, de nuevo como un String, que se podrá formatear a un JSON con la siguiente estructura:
+
+[source,json]
+---------------------------------------------------------------------
+{
+  "name": "MyName",
+  "chat": "MyRoom",
+  "message":"MyMessage"
+}
+---------------------------------------------------------------------
+
+Este mensaje debe ser reenviado por la aplicación a todos los usuarios cuya sala de chat sea la misma que la del mensaje.
+
+NOTE: No debe confundirse un mensaje de chat con un mensaje de conexión, la forma de diferenciarlos es por la existencia o no de la clave "message" en el JSON.
+
+==== Desconexión
+
+La aplicación debe gestionar la desconexión de usuarios, de forma que cuando un usuario se desconecta, este debe eliminarse de la aplicación para que no se le reenvíen mensajes.
+
+==== Opcionales
+
+Aunque las pruebas que se realizan no lo requieren, para añadirle dificultad, la aplicación puede impedir que dos usuarios con el mismo nombre puedan conectarse (independientemente del chat al que pertenezcan). En caso de que ya exista el usuario debería enviar un mensaje de vuelta al cliente tal y cómo se muestra a continuación:
+
+[source,json]
+---------------------------------------------------------------------
+{
+   "type": "system",
+   "message": "A user with that name already exists"
+}
+---------------------------------------------------------------------
+
+Además, y de cara a probar rápidamente el correcto funcionamiento más básico de la aplicación, puede ofrecerse un cliente http que permita realizar la conexión desde el navegador.
 
 ==== 4.1.2 Requisitos no funcionales
 
@@ -475,9 +509,7 @@ A continuación, se expondrá el diseño e implementación de cada aplicación c
 
 ==== 4.2.1 Node.js
 
-===== Código de la aplicación
-
-https://github.com/Maes95/TFG-WebChat/tree/v2.1/NodeJS-WebChat
+El código de esta aplicación se puede encontrar en un repositorio en GitHub, concretamente en la siguiente ruta: https://github.com/Maes95/TFG-WebChat/tree/v2.1/NodeJS-WebChat
 
 ===== Diseño y arquitectura
 
@@ -496,7 +528,7 @@ wss.on('connection', (ws) => {
 
 =====  Funcionamiento
 
-[.underline]#Conexión#: El usuario queda registrado en la aplicación cuando establece la conexión. Su primer mensaje asigna su nombre y su chat a su conexión. En caso de que el usuario este duplicado, su conexión se cerrará.
+- **Conexión**: El usuario queda registrado en la aplicación cuando establece la conexión. Su primer mensaje asigna su nombre y su chat a su conexión, como muestra el código a continuación. En caso de que el usuario esté duplicado, su conexión se cerrará.
 
 [source,javascript]
 ---------------------------------------------------------------------
@@ -506,7 +538,7 @@ ws['name'] = message['name'];
 
 Para asegurar la unicidad de los nombres de usuario, se utiliza un conjunto (Set en js).
 
-[.underline]#Re-envío de mensajes#: Para resolver el re-envió de mensajes, el objeto wss tiene registrados todos los usuarios actualmente conectados, por lo que para re-enviar un mensaje solo es necesario recorrerlos y mandarlo en el caso de que el chat del emisor y del receptor sean el mismo:
+- **Re-envío de mensajes**: Para resolver el re-envió de mensajes, el objeto wss tiene registrados todos los usuarios actualmente conectados, por lo que para re-enviar un mensaje solo es necesario recorrerlos y mandarlo en el caso de que el chat del emisor y del receptor sean el mismo:
 
 [source,javascript]
 ---------------------------------------------------------------------
@@ -515,7 +547,7 @@ wss.clients.forEach( (client) => {
 });
 ---------------------------------------------------------------------
 
-[.underline]#Desconexión#: La librería ws se encarga de borrar automáticamente la conexión con el cliente, por lo tanto, lo único que debemos hacer cuando un usuario se desconecta es borrar su nombre del conjunto.
+- **Desconexión**:La librería ws se encarga de borrar automáticamente la conexión con el cliente, por lo tanto, lo único que debemos hacer cuando un usuario se desconecta es borrar su nombre del conjunto.
 
 =====  Problemas en el desarrollo
 
@@ -525,9 +557,7 @@ Solo cabe señalar que, al igual que en otras tecnologías, se pensó en agrupar
 
 ==== 4.2.2  Node.js con librería de clúster
 
-===== Código de la aplicación
-
-https://github.com/Maes95/TFG-WebChat/tree/v2.1/NodeJSCluster-WebChat
+El código de esta aplicación se puede encontrar en un repositorio en GitHub, concretamente en la siguiente ruta: https://github.com/Maes95/TFG-WebChat/tree/v2.1/NodeJSCluster-WebChat
 
 ===== Diseño y arquitectura
 
@@ -549,11 +579,11 @@ Características de la versión con cluster:
 
 ===== Funcionamiento
 
-[.underline]#Conexión#: Todos los trabajadores tienen su propio servidor WebSocket, aunque escuchan del mismo puerto. Al conectarse un cliente, es asignado a un trabajador (y a su correspondiente servidor de WebSocket) mediante un algoritmo de Round Robin a fin de distribuir los usuarios de forma homogénea. Cuando el cliente manda su mensaje de conexión, su trabajador debe comunicárselo al maestro, que validará si el usuario ya existe y comunicará el resultado de vuelta a ese trabajador*. Al recibir la respuesta, el trabajador operará de la misma forma que la versión monolítica en función de la respuesta, añadiendo los atributos oportunos si el usuario no existe o cerrando la conexión en caso contrario.
+- **Conexión**: Todos los trabajadores tienen su propio servidor WebSocket, aunque escuchan del mismo puerto. Al conectarse un cliente, es asignado a un trabajador (y a su correspondiente servidor de WebSocket) mediante un algoritmo de Round Robin a fin de distribuir los usuarios de forma homogénea. Cuando el cliente manda su mensaje de conexión, su trabajador debe comunicárselo al maestro, que validará si el usuario ya existe y comunicará el resultado de vuelta a ese trabajador*. Al recibir la respuesta, el trabajador operará de la misma forma que la versión monolítica en función de la respuesta, añadiendo los atributos oportunos si el usuario no existe o cerrando la conexión en caso contrario.
 
 *__El maestro añadirá el usuario en cualquier caso, ya que al tratarse de un conjunto, no admite duplicados.__
 
-[.underline]#Re-envío de mensajes#: Cuando un trabajador recibe un mensaje de uno de sus clientes, lo re-envía al maestro para que este lo distribuya. Cada trabajador recibe el mensaje, que re-envía a sus clientes (si pertenecen a la misma sala que especifica el mensaje).
+- **Re-envío de mensajes**: Cuando un trabajador recibe un mensaje de uno de sus clientes, lo re-envía al maestro para que este lo distribuya. Cada trabajador recibe el mensaje, que re-envía a sus clientes (si pertenecen a la misma sala que especifica el mensaje).
 
 [source,javascript]
 ---------------------------------------------------------------------
@@ -569,7 +599,7 @@ wss.clients.forEach( (client) => {
 } );
 ---------------------------------------------------------------------
 
-[.underline]#Desconexión#: Cuando un cliente se desconecta, el trabajador envía un mensaje al maestro para que borre de su registro el nombre de usuario.
+- **Desconexión**:Cuando un cliente se desconecta, el trabajador envía un mensaje al maestro para que borre de su registro el nombre de usuario.
 
 ===== Problemas en el desarrollo
 
@@ -577,13 +607,12 @@ Al desarrollar la aplicación, el primer reto fue comprender el comportamiento c
 
 Otro problema en el desarrollo fue la comunicación, la cual se tornaba bastante más compleja que en su versión monolítica. El paso de mensajes entre procesos resolvía de forma contundente el renvío de mensajes entre trabajadores, pero la validación de la primera conexión del usuario requería un flujo algo más complejo. En un principio y partiendo de la aplicación monolítica, cada trabajador tenía su propio conjunto de nombres para validar la unicidad, pero el tener que comprobar un nombre en todos los trabajadores y esperar su respuesta resultaba demasiado complejo, por lo que se decidió que la gestión de nombres de usuario se llevaría a cabo en el maestro para simplificarlo.
 
-El proyecto se desarrolló en la versión 4.2 de Node.js, siendo la comunicación entre maestro y trabajador complicada debido a que el maestro a priori, no podía saber que trabajador le había mandado un mensaje (impidiendo mandar un mensaje de vuelta, como es en el caso de la validación del usuario). Para resolver este problema, era necesario enviar a cada trabajador en su creación si id con el que el maestro le identificaba, pudiéndoselo mandar en el mensaje para poder ser identificado.  A partir de la versión 6 de Node<%https://nodejs.org/api/cluster.html#cluster_event_message_1%>, este problema quedaba solucionado, ya que se enviaba una referencia directa al trabajador junto al mensaje de forma automática.
+El proyecto se desarrolló en la versión 4.2 de Node.js, siendo la comunicación entre maestro y trabajador complicada debido a que el maestro a priori, no podía saber que trabajador le había mandado un mensaje (impidiendo mandar un mensaje de vuelta, como es en el caso de la validación del usuario). Para resolver este problema, era necesario enviar a cada trabajador en su creación si id con el que el maestro le identificaba, pudiéndoselo mandar en el mensaje para poder ser identificado.
+A partir de la versión 6 de Node<%https://nodejs.org/api/cluster.html#cluster_event_message_1%>, este problema quedaba solucionado, ya que se enviaba una referencia directa al trabajador junto al mensaje de forma automática, por lo que la aplicación se actualizó a esta versión, concretamente a la v6.9.1.
 
 ==== 4.2.3  Akka
 
-===== Código de la aplicación
-
-https://github.com/Maes95/TFG-WebChat/tree/v2.1/AkkaPlay-WebChat
+El código de esta aplicación se puede encontrar en un repositorio en GitHub, concretamente en la siguiente ruta: https://github.com/Maes95/TFG-WebChat/tree/v2.1/AkkaPlay-WebChat
 
 ===== Diseño y arquitectura
 
@@ -602,48 +631,36 @@ Akka.system().actorFor("Akka://application/user/ChatManager");
 - Chat, encargado de gestionar a los usuarios de una sala concreta distribuyendo sus mensajes y permitiendo su suscripción/des-suscripción.
 - User, encargado de recibir los mensajes del cliente mediante WebSocket, registrarse en una chat y re-enviar los mensajes que recibe al cliente. La creación de un User se realiza cuando un cliente abre una conexión WebSocket con la aplicación.
 
-Esto es posible gracias a Play, que nos permite asignar un WebSocket a un actor tal y como se muestra en el siguiente método:
-
-[source,java]
----------------------------------------------------------------------
-public WebSocket<String> socket() {
-    return WebSocket.withActor(User::props);
-}
----------------------------------------------------------------------
-
-Esto crea un nuevo User en el que se ha inyectado un atributo de tipo ActorRef (llamado out en la clase), que es una referencia a la conexión WebSocket y que podemos utilizar para mandar mensajes directamente.
-
-[source,java]
----------------------------------------------------------------------
-out.tell(((Message) message).getJson().toString(), self());
----------------------------------------------------------------------
-
-La recepción de mensajes por parte del cliente se producirá como si fuera un mensaje de otro actor, a través del método [source]`onRecive(Object message)`
-
 =====  Funcionamiento
 
-[.underline]#Conexión#: Cuando un cliente abre la conexión, Play ejecuta el siguiente método:
+- **Conexión**: Cuando un cliente abre la conexión, Play ejecuta el siguiente método:
 
 [source,java]
 ---------------------------------------------------------------------
 public WebSocket<String> socket() {
     return WebSocket.withActor(User::props);
 }
+---------------------------------------------------------------------
+
+La llamada al método estático [source]`props` devuelve un nuevo actor User al que asigna la conexión WebSocket establecida tal y como se muestra en el código a continuación.
+
+[source,java]
+---------------------------------------------------------------------
 public static Props props(ActorRef out) {
     return Props.create(User.class, out, Akka.system().actorFor("Akka://application/user/ChatManager"));
 }
 ---------------------------------------------------------------------
 
-Este método crea un nuevo User al que asigna la conexión WebSocket establecida. De esta forma, la nueva instancia podrá recibir mensajes del cliente mediante su método [source]`onRecive(Object message)` (como si lo estuviera enviando otro actor) y enviarle mensajes al cliente a partir de su atributo out, un ActorRef que representa al cliente.
+De esta forma, la nueva instancia podrá recibir mensajes del cliente mediante su método [source]`onRecive(Object message)` (como si lo estuviera enviando otro actor) y enviarle mensajes al cliente a partir de su atributo out, un ActorRef que representa al cliente.
 
-El mensaje de conexión del cliente es recibido por su User, que manda un mensaje pidiendo suscribirse a una sala de chat al ChatManager. Si su nombre de usuario no existe, manda un mensaje de suscripción y queda registrado, en caso contrario, manda un mensaje a su cliente y se “suicida” para eliminarse del sistema.
+El mensaje de conexión del cliente es recibido por su User, que manda un mensaje pidiendo suscribirse a una sala de chat al ChatManager. Si su nombre de usuario no existe, manda un mensaje de suscripción y queda registrado, en caso contrario, manda un mensaje a su cliente y se “suicida” para eliminarse del sistema, como se muestra a continuación:
 
 [source,java]
 ---------------------------------------------------------------------
 self().tell(PoisonPill.getInstance(), self());
 ---------------------------------------------------------------------
 
-[.underline]#Re-envío de mensajes#: Como hemos mencionado, los mensajes del cliente llegan a través del método [source]`onRecive(Object message)` del Usuario y es re-enviado al actor que representa su sala de chat. El actor Chat re-envía este el mensaje a todos sus usuarios.
+- **Re-envío de mensajes**: Como hemos mencionado, los mensajes del cliente llegan a través del método [source]`onRecive(Object message)` del Usuario y es re-enviado al actor que representa su sala de chat. El actor Chat re-envía este el mensaje a todos sus usuarios.
 
 [source,java]
 ---------------------------------------------------------------------
@@ -652,7 +669,14 @@ users.entrySet().forEach((entry) -> {
 });
 ---------------------------------------------------------------------
 
-[.underline]#Desconexión#: Cuando el usuario cierra la conexión WebSocket, se ejecuta el método postStop() del User correspondiente, que se encarga de dar de baja al usuario de su sala de chat.
+Para que cada User envíe el mensaje a través de su websocket, basta con enviárselo a actor que lo representa (out):
+
+[source,java]
+---------------------------------------------------------------------
+out.tell(((Message) message).getJson().toString(), self());
+---------------------------------------------------------------------
+
+- **Desconexión**:Cuando el usuario cierra la conexión WebSocket, se ejecuta el método postStop() del User correspondiente, que se encarga de dar de baja al usuario de su sala de chat.
 
 [source,java]
 ---------------------------------------------------------------------
@@ -667,9 +691,7 @@ Al tratarse de una aplicación heredada, fue necesario no solo una fase de apren
 
 ==== 4.2.4  Vert.x
 
-===== Código de la aplicación
-
-https://github.com/Maes95/TFG-WebChat/tree/v2.1/Vertx-WebChat
+El código de esta aplicación se puede encontrar en un repositorio en GitHub, concretamente en la siguiente ruta: https://github.com/Maes95/TFG-WebChat/tree/v2.1/Vertx-WebChat
 
 ===== Diseño y arquitectura
 
@@ -683,7 +705,12 @@ La aplicación se compone de:
 
 =====  Funcionamiento
 
-[.underline]#Conexión#: Cuando un usuario inicia la conexión WebSocket, al contrario de otras aplicaciones, no se realiza ninguna acción más que proporcionar un handler para los mensajes. Cuando el cliente manda el mensaje de conexión, si el nombre no existe, se crear un nuevo User y se incluye en la aplicación, deployeandolo, y guardando su id de Verticle en un mapa cuya clave es el nombre.
+- **Conexión**: Cuando un usuario inicia la conexión WebSocket, al
+contrario de otras aplicaciones, no se realiza ninguna acción más que proporcionar
+un handler para los mensajes. Cuando el cliente manda el mensaje de conexión, si
+el nombre no existe, se crear un nuevo User y se incluye en el contexto de la aplicación,
+guardando su id de Verticle en un mapa cuya clave es el nombre, tal y cómo podemos apreciar
+en el código a continuación:
 
 [source,java]
 ---------------------------------------------------------------------
@@ -697,14 +724,15 @@ vertx.deployVerticle(user, res -> {
 });
 ---------------------------------------------------------------------
 
-[.underline]#Re-envío de mensajes#: El chat manager es el encargado de recibir los mensajes de los clientes, publicándolos en el EventBus con la dirección igual a la sala de chat.
+- **Re-envío de mensajes**: El chat manager es el encargado de recibir los mensajes de los clientes, publicándolos en el EventBus con la dirección igual a la sala de chat.
 
 [source,java]
 ---------------------------------------------------------------------
 vertx.eventBus().publish(message.getString("chat"), message);
 ---------------------------------------------------------------------
 
-Por otro lado, cuando un User es deployeado, se suscribe a su chat para recibir los mensajes dirigidos a ese chat y re-enviar a su cliente dichos mensajes.
+Por otro lado, cuando un User es incluido en el contexto de la aplicación, se suscribe a su chat para recibir los mensajes dirigidos a esa sala y re-enviar a su cliente dichos mensajes.
+En el fragmento de código a continuación podemos apreciar esta subscripción y el __callback__ que se ejecuta al recibir un mensaje:
 
 [source,java]
 ---------------------------------------------------------------------
@@ -721,7 +749,7 @@ vertx.eventBus().consumer(chat).handler( data -> {
 });
 ---------------------------------------------------------------------
 
-[.underline]#Desconexión#: Se produce cuando User no es capaz de enviar un mensaje a su cliente. Publica su borrado en el EventBus y cierra la conexión. El evento de borrado es capturado por el ChatManager, que da de baja al User.
+- **Desconexión**:Se produce cuando User no es capaz de enviar un mensaje a su cliente. Publica su borrado en el EventBus y cierra la conexión. El evento de borrado es capturado por el ChatManager, que da de baja al User.
 
 [source,java]
 ---------------------------------------------------------------------
@@ -731,19 +759,17 @@ users.remove(user_name);
 
 =====  Problemas en el desarrollo
 
-Al igual que Akka, está aplicación formaba parte de un proyecto anterior heredado, pero en este caso, dado que existía una nueva versión de la tecnología (Vertx 3) que no era compatible con la anterior junto con la complejidad de la aplicación al estar pensada para ser distribuida, se desarrolló de nuevo (tomando la estructura de la anterior).
+Al igual que Akka, esta aplicación formaba parte de un proyecto anterior heredado, pero en este caso, dado que existía una nueva versión de la tecnología (Vertx 3) que no era compatible con la anterior junto con la complejidad de la aplicación al estar pensada para ser distribuida, se desarrolló de nuevo (tomando la estructura de la anterior).
 
 El desarrollo de la aplicación fue sencillo. Gracias al EventBus, la comunicación entre Verticles (actores en Vertx) resulta menos enrevesada que con Akka y no requiere de clases para definir los distintos tipos de mensajes.
 
 Por otro lado, si requirió un estudio de la tecnología para poder optimizar la aplicación: entender el modelo de concurrencia, los ciclos de vida de los Verticles y el funcionamiento del EventBus.
 
-Al igual que la aplicación de Akka, se desarrolló una versión en la que los User tomaban el control total de la conexión WebSocket (no solo la escritura). Esta versión resulto ser más compleja a la hora de gestionar los Verticles y no ofrecía mejores resultados, por lo que fue descartada.
+Al igual que la aplicación de Akka, se desarrolló una versión en la que los User tomaban el control total de la conexión WebSocket (no solo la escritura). Esta versión resultó ser más compleja a la hora de gestionar los Verticles y no ofrecía mejores resultados, por lo que fue descartada.
 
 ==== 4.2.5  Vert.x sin EventBus
 
-===== Código de la aplicación
-
-https://github.com/Maes95/TFG-WebChat/tree/master/VertxNoEventbus-WebChat
+El código de esta aplicación se puede encontrar en un repositorio en GitHub, concretamente en la siguiente ruta: https://github.com/Maes95/TFG-WebChat/tree/master/VertxNoEventbus-WebChat
 
 ===== Diseño y arquitectura
 
@@ -757,9 +783,9 @@ Esta aplicación pretende comprobar cómo afecta el EventBus a la aplicación an
 
 =====  Funcionamiento
 
-[.underline]#Conexión#: Al igual que la aplicación anterior, cuando se abre la conexión, se registra un handler para recoger los mensajes del usuario. Cuando el usuario manda su mensaje de conexión, se comprueba que no exista, se crea un nuevo User y se añade al mapa correspondiente a su sala de chat (el mapa de la sala se crea si no existe).
+- **Conexión**: Al igual que la aplicación anterior, cuando se abre la conexión, se registra un handler para recoger los mensajes del usuario. Cuando el usuario manda su mensaje de conexión, se comprueba que no exista, se crea un nuevo User y se añade al mapa correspondiente a su sala de chat (el mapa de la sala se crea si no existe).
 
-[.underline]#Re-envío de mensajes#: Para comunicar los mensajes a otros clientes, User implementa el método send, que corresponde al handler del evento bajo la dirección de su chat.
+- **Re-envío de mensajes**: Para comunicar los mensajes a otros clientes, User implementa el método send, que corresponde al handler del evento bajo la dirección de su chat.
 
 De esta forma, cuando llega un mensaje, se distribuye a todos los usuarios con la misma sala de chat aprovechando la estructura de datos creada.
 [source,java]
@@ -769,13 +795,11 @@ rooms.get(message.getString("chat")).values().forEach((user)->{
 });
 ---------------------------------------------------------------------
 
-[.underline]#Desconexión#: Al igual que la anterior aplicación, se produce cuando User no es capaz de mandar un mensaje a su cliente, llamando explícitamente al ChatManager para que elimine al User del mapa correspondiente a su sala de chat.
+- **Desconexión**:Al igual que la anterior aplicación, se produce cuando User no es capaz de mandar un mensaje a su cliente, llamando explícitamente al ChatManager para que elimine al User del mapa correspondiente a su sala de chat.
 
 ==== 4.2.6  SpringBoot con servidor Tomcat
 
-===== Código de la aplicación
-
-https://github.com/Maes95/TFG-WebChat/tree/v2.1/SpringBoot-Tomcat-WebChat
+El código de esta aplicación se puede encontrar en un repositorio en GitHub, concretamente en la siguiente ruta: https://github.com/Maes95/TFG-WebChat/tree/v2.1/SpringBoot-Tomcat-WebChat
 
 ===== Diseño y arquitectura
 
@@ -805,15 +829,17 @@ La información concreta del usuario se guarda en una clase User, de forma que c
 
 La estructura del almacenamiento de usuarios es un mapa cuya clave es el nombre de la sala y cuyo valor es otro mapa que almacena los usuarios, siendo su clave única, su nombre.
 
+Todas las anotaciones utilizadas pertenecen a la librería WebSocket de Java<%https://mvnrepository.com/artifact/javax.websocket/javax.websocket-api%>.
+
 =====  Funcionamiento
 
-[.underline]#Conexión#: La conexión corresponde a la anotación [source]`@OnOpen`, cuyo método crea un nuevo objeto usuario con la sesión creada a partir de la conexión WebSocket realizada. El mensaje de conexión, en cambio, es capturado por el método bajo la anotación [source]`@OnMessage`, que tras validad que el usuario asociado a esa sesión no tiene aún atributos como “name” o “chat”, comprueba que el nombre sea único y se los asigna. Además, el usuario es guardado en el mapa correspondiente a su sala de chat
+- **Conexión**: La conexión corresponde a la anotación [source]`@OnOpen`, cuyo método crea un nuevo objeto usuario con la sesión creada a partir de la conexión WebSocket realizada. El mensaje de conexión, en cambio, es capturado por el método bajo la anotación [source]`@OnMessage`, que tras validar que el usuario asociado a esa sesión no tiene aún atributos como “name” o “chat”, comprueba que el nombre sea único y se los asigna. Además, el usuario es guardado en el mapa correspondiente a su sala de chat
 [source,java]
 ---------------------------------------------------------------------
-private static final Map<String, Map<String, User>> rooms = new HashMap<>();
+private static final Map<String, Map<String, User>> rooms = new ConcurrentHashMap<>();
 ---------------------------------------------------------------------
 
-[.underline]#Re-envío de mensajes#: Los mensajes son capturados por el método bajo la anotación [source]`@OnMessage`. Si el User es válido (tiene ya su nombre y sala de chat declarados) el mensaje es reenviado a todos los usuarios de la sala de chat a la que pertenece el usuario, guardados en el mapa de la sala correspondiente
+- **Re-envío de mensajes**: Los mensajes son capturados por el método bajo la anotación [source]`@OnMessage`. Si el User es válido (tiene ya su nombre y sala de chat declarados) el mensaje es reenviado a todos los usuarios de la sala de chat a la que pertenece el usuario, guardados en el mapa de la sala correspondiente
 
 [source,java]
 ---------------------------------------------------------------------
@@ -830,13 +856,13 @@ El usuario concreto envía el mensaje correspondiente a través de su sesión:
 this.session.getBasicRemote().sendText(message);
 ---------------------------------------------------------------------
 
-[.underline]#Desconexión#: La desconexión se captura en el método bajo la anotación [source]`@OnClose`, que se ocupa de borrar al usuario desconectado de su sala.
+- **Desconexión**:La desconexión se captura en el método bajo la anotación [source]`@OnClose`, que se ocupa de borrar al usuario desconectado de su sala.
 
 =====  Problemas en el desarrollo
 
 Las anotaciones y la configuración de SpringBoot nos permite un desarrollo rápido gracias a la estructura que nos proporciona, pero al contrario que Akka y Vertx, la concurrencia es un problema a solucionar por el desarrollador. Uno de los primeros problemas que nos encontramos en el desarrollo era el acceso concurrente al contenedor de salas y usuarios, solucionado mediante el uso de mapas concurrentes, concretamente, ConcurrentHashMap.
 
-Otro problema encontrado era que el recurso encargado de enviar mensajes mediante WebSocket debía estar en exclusión mutua, no permitía la escritura concurrente (no cuenta con ningún buzón o cola de mensajes que permita la concurrencia). Para resolverlo, se encapsulo esta acción en un método sincronizado, asegurando así la exclusión mutua.
+Otro problema encontrado era que el recurso encargado de enviar mensajes mediante WebSocket debía estar en exclusión mutua, no permitía la escritura concurrente (no cuenta con ningún buzón o cola de mensajes que permita la concurrencia). Para resolverlo, se encapsuló esta acción en un método sincronizado, asegurando así la exclusión mutua.
 
 [source,java]
 ---------------------------------------------------------------------
@@ -852,9 +878,7 @@ Se probaron diferentes implementaciones (Como usar la clase bajo [source]`@Serve
 
 ==== 4.2.7  SpringBoot con servidor Jetty
 
-===== Código de la aplicación
-
-https://github.com/Maes95/TFG-WebChat/tree/v2.1/SpringBoot-Jetty-WebChat
+El código de esta aplicación se puede encontrar en un repositorio en GitHub, concretamente en la siguiente ruta: https://github.com/Maes95/TFG-WebChat/tree/v2.1/SpringBoot-Jetty-WebChat
 
 Esta aplicación corresponde a una versión idéntica a la anterior, usando como servidor Jetty en lugar de Tomcat. La única diferencia entre ambos reside en el archivo de configuración pom.xml:
 
@@ -876,7 +900,7 @@ Esta aplicación corresponde a una versión idéntica a la anterior, usando como
 </dependency>
 ---------------------------------------------------------------------
 
-Dónde se excluye el servidor configurado por defecto (Tomcat) para usar el de Jetty.
+Como podemos observar en este fragmento del pom.xml, se excluye el servidor configurado por defecto (Tomcat) para usar el de Jetty.
 
 El objetivo de esta aplicación es ver la diferencia entre una misma aplicación en SpringBoot con distintos servidores.
 
@@ -917,7 +941,7 @@ A continuación, explicaremos como han sido desarrolladas estas nuevas funcional
 
 ===== Automatización de pruebas
 
-El primer paso para la automatización fue permitir que una aplicación pudiese ser probada con distintos número de usuarios y salas de chat. Dado que ya iterábamos por métodos, el siguiente paso era iterar por clases. Para abordar este concepto, usamos la anotación @Parameterized<%https://github.com/junit-team/junit4/wiki/parameterized-tests%> sobre nuestra clase de pruebas. Esta anotación nos permite definir un método bajo la anotación @Parameters, que nos permite devolver una colección de listas de objetos. Cada lista de objetos corresponde a los parámetros que recibirá el constructor de la clase. De esta forma, nuestro clase de pruebas se instanciará tantas veces como listas de parámetros proporcionemos.
+El primer paso para la automatización fue permitir que una aplicación pudiese ser probada con distinto número de usuarios y salas de chat. Dado que ya iterábamos por métodos, el siguiente paso era iterar por clases. Para abordar este concepto, usamos la anotación @Parameterized<%https://github.com/junit-team/junit4/wiki/parameterized-tests%> sobre nuestra clase de pruebas. Esta anotación nos permite definir un método bajo la anotación @Parameters, que nos permite devolver una colección de listas de objetos. Cada lista de objetos corresponde a los parámetros que recibirá el constructor de la clase. De esta forma, nuestro clase de pruebas se instanciará tantas veces como listas de parámetros proporcionemos.
 
 Un ejemplo simple de este caso sería:
 
@@ -943,7 +967,7 @@ El segundo paso, y uno de los más laboriosos, fue automatizar el despliegue de 
 return Arrays.asList(new Object[][] { { 40, 1, "Node" } });
 ---------------------------------------------------------------------
 
-Para lanzar una aplicación, se genero un archivo ejecutable.sh en el directorio de cada aplicación, de forma que bastaba con ejecutarlo desde Java para poder controlar el proceso
+Para lanzar una aplicación, se genero un archivo run.sh en el directorio de cada aplicación, que contiene el comando o los comandos necesarios para lanzar cada aplicación, de forma que bastaba con ejecutarlo desde Java para poder controlar el proceso.
 
 [source,java]
 ---------------------------------------------------------------------
@@ -979,7 +1003,7 @@ Llegado este punto y para hacer la aplicación más flexible y que los cambios d
 }
 ---------------------------------------------------------------------
 
-Para conseguir una mayor modularidad y poder extender el código, se encapsulo toda la lógica referente al manejo del proceso de la aplicación en una clase concreta, WebChatApp. Esta idea se desarrolló hasta hacer de WebChatApp una interfaz utilizada por ChatTest para la gestión de la aplicación, permitiendo desarrollar clases que permitan distintos tipos de configuración que implementasen dicha interfaz. La estructura de clases resultantes fue la siguiente:
+Para conseguir una mayor modularidad y poder extender el código, se encapsuló toda la lógica referente al manejo del proceso de la aplicación en una clase concreta, WebChatApp. Esta idea se desarrolló hasta hacer de WebChatApp una interfaz utilizada por ChatTest para la gestión de la aplicación, permitiendo desarrollar clases que permitan distintos tipos de configuración que implementasen dicha interfaz. La estructura de clases resultantes fue la siguiente:
 
 image::./classes.png[classes]
 
@@ -993,7 +1017,7 @@ Pretendemos distinguir entre dos tipos de aplicaciones:
 
 - *Remotas* (WebChatRemoteApp):  Aplicación lanzada en una máquina remota.
 
-Nuestra aplicación de pruebas hace uso de la clase WebChatAppFactory, que nos proporciona un objeto WebChatApp con la implementación adecuada en función de la configuración introducida. La estructura del archivo de configuración se extiende, permitiendo configurar cada app de forma independiente. El formato utilizado puede encontrarse en la documentación en del proyecto en GitHub<%https://github.com/Maes95/TFG-WebChat/wiki/How-to-Build-an-Application#how-do-i-include-an-application-in-a-comparison%> (en Inglés) o en el <<X2, Anexo 2>> de este documento (en Español).
+Nuestra aplicación de pruebas hace uso de la clase WebChatAppFactory, que nos proporciona un objeto WebChatApp con la implementación adecuada en función de la configuración introducida. La estructura del archivo de configuración se extiende, permitiendo configurar cada app de forma independiente. El formato utilizado puede encontrarse en la documentación en del proyecto en GitHub<%https://github.com/Maes95/TFG-WebChat/wiki/How-to-Build-an-Application#how-do-i-include-an-application-in-a-comparison%> (en Inglés) o en el <<X1, Anexo 1>> de este documento (en Español).
 
 ===== Nuevas métricas
 
@@ -1063,7 +1087,7 @@ public Metrics getMetrics() {
 
 - *Paso 6*: Al terminar una prueba, ChatTest enviar el Result (ya en formato JSON) a TestResultServer. Al haber múltiples métricas almacenadas (diferentes tiempos de respuesta debido a las 10 iteraciones) y diferente consumo de recursos (ya que se generan cada segundo). Al convertirse a JSON, se toma solo la media aritmética de cada métrica.
 
-- *Paso 7*: TestResultServer publica el resultado en el EventBus, de forma que el cliente es capaz de recibirlo y añadirlo a su gráfica correspondiente.
+- *Paso 7*: TestResultServer publica el resultado en el EventBus, de forma que el cliente es capaz de recibirlo y añadirlo a su gráfica correspondiente. En la figura 19 podemos ver una captura de como se muestran estos resultados en el navegador.
 
 .Captura de la interfaz del cliente
 image::./captura1.png[Captura 1]
@@ -1078,7 +1102,7 @@ Una vez disponemos de todas las aplicaciones desarrolladas y una herramienta par
 
 Las pruebas se han realizado en una máquina cuyo sistema operativo es Linux Mint en su versión 17.4, que dispone de 8 núcleos de procesador y 6GB de memoria RAM.
 
-El archivo de configuración utilizado para esta comparativa puede encontrarse en el <<X3,Anexo 3>>. Realizaremos las pruebas para:
+El archivo de configuración utilizado para esta comparativa puede encontrarse en el <<X2,Anexo 2>>. Realizaremos las pruebas para:
 
 - 1 sala de chat con 10, 20, 30, 40, 50 y 60 usuarios
 - 2 salas de chat con 20, 25, 30 y 35 usuarios en cada una
@@ -1094,11 +1118,13 @@ Para interpretar las gráficas que usaremos para mostrar los resultados de las p
 
 - En el eje X encontraremos el número de mensajes que se han enviado en total. Este número se obtiene de la siguiente fórmula: __Nº de mensajes = (Nº de usuarios por sala)^2^ * Nº de salas__
 
-Para replicar este experimento, se proporciona una sencilla guía en el  <<X4, Anexo 4>> de este proyecto.
+Para replicar este experimento, se proporciona una sencilla guía en el  <<X3, Anexo 3>> de este proyecto.
+
+Esta comparativa puede encontrarse publicada en inglés en el siguiente enlace: https://maes95.github.io/TFG-WebChat/. Con esta publicación se pretende obtener retroalimentación (__Feedback__) con el fin de mejorar el proyecto y ampliar la comparativa.
 
 === 5.1 Latencia
 
-Para nuestro caso de estudio, podemos definir la latencia o tiempo de respuesta como el retardo en milisegundos producido por la demora en la propagación de los mensajes.
+Para nuestro caso de estudio, podemos definir la latencia o tiempo de respuesta como el retardo en milisegundos producido por la demora en la propagación de los mensajes, como podemos apreciar en la figura 20.
 
 .Latencia
 image::./latency.png[Latencia]
@@ -1108,6 +1134,8 @@ Conviene recordar que:
 - Para obtener esta métrica, el mensaje recoge en su contenido el momento (en ms) en el que es enviado, calculándose la diferencia a su llegada, que será el retardo.
 
 - Los resultados que podemos encontrar en las gráficas son la media aritmética de los N mensajes enviados en un total de 10 iteraciones.
+
+A continuación se muestran los resultados de latencia para distinto número de salas de chat (Figuras 21, 22 y 23):
 
 .Aplicación con N usuarios en 1 sala de chat - Latencia
 image::./charts/old/1Room-Latency.png[latency-1Room]
@@ -1134,6 +1162,8 @@ Tal y como se ha desarrollado la obtención de métricas, el uso de CPU que nos 
 
 Debido a que la máquina que realiza las pruebas tiene un total de 8 núcleos, el máximo valor que podría alcanzar esta métrica seria 800% (que por el uso del procesador del propio sistema operativo y del cliente de pruebas, no sería posible).
 
+A continuación se muestran los resultados de uso de CPU para distinto número de salas de chat (Figuras 24, 25 y 26):
+
 .Aplicación con N usuarios en 1 sala de chat - CPU
 image::./charts/1Room-CPU.png[CPU-1Room]
 
@@ -1156,6 +1186,8 @@ Las aplicaciones de Node.js, siguiendo la correlación mencionada, hace un uso m
 Al igual que el uso de la CPU, esta métrica se obtuvo mediante el comando top y corresponde a la cantidad (en KBytes) media de memoria que usa el proceso de la aplicación.
 
 A pesar de que la maquina dispone de 6 GBytes de memoria RAM, la cantidad real disponible es ligeramente inferior, 5.994.856 kB.
+
+A continuación se muestran los resultados de uso de memoria para distinto número de salas de chat (Figuras 27, 28 y 29):
 
 .Aplicación con N usuarios en 1 sala de chat - Memoria
 image::./charts/1Room-Memory.png[latency-1Room]
@@ -1182,12 +1214,14 @@ Por otro lado, las aplicaciones de SpringBoot son mucho más sencillas y rápida
 
 Por último, las aplicaciones de Node.js, para obtener un servicio reactivo resultan triviales dado el carácter reactivo del propio lenguaje, pudiendo escribir toda la funcionalidad en muy pocas líneas de forma clara y concisa, sin embargo, al añadir la librería de cluster, el flujo de la aplicación puede complicarse.
 
-=== 5.5 Conclusiones generales
+=== 5.5 Conclusiones generales de la comparativa
 
-Para obtener una visión global de la comparativa, haremos uso un gráfico de dispersión para el caso más representativo por su alta carga de trabajo, 60 usuarios en una sola sala de chat, con un total de 1,8 millones de mensajes enviados y recibidos.
+Para obtener una visión global de la comparativa, haremos uso un gráfico de dispersión (Ver __Figura 30__) para el caso más representativo por su alta carga de trabajo, 60 usuarios en una sola sala de chat, con un total de 1,8 millones de mensajes enviados y recibidos.
 
 .Gráfico de dispersión
 image::./charts/dispersion-chart.png[dispersion-chart]
+
+__* El resultado de SpringBoot con servidor Tomcat, debido a su baja latencia, apenas se distingue en el gráfico. Su posición corresponde a la punta de la flecha.__
 
 Tras estudiar las distintas métricas, podemos enunciar las siguientes soluciones al problema de las aplicaciones reactivas:
 
@@ -1195,7 +1229,7 @@ Tras estudiar las distintas métricas, podemos enunciar las siguientes solucione
 
 - Si buscamos una aplicación ligera y sencilla, que haga un uso mínimo de los recursos de la máquina que no vaya a tener grandes cargas de trabajo, nuestra mejor opción sería Node.js (añadiéndole la librería de cluster si fuera necesaria para optimizar el servicio que proporciona).
 
-== 6. Conclusiones y trabajos futuros
+== 6. Conclusiones del proyecto y trabajos futuros
 
 
 Este proyecto ha resultado ser muy enriquecedor, tanto a título personal por la cantidad de tecnologías sobre las que he adquirido conocimiento como por el uso que se le pueda dar, tanto al modelo de pruebas utilizado como a los resultados de la comparativa a la hora de elegir una u otra tecnología. Quedan satisfechos todos los objetivos del proyecto, además de haberse incluido distintas versiones de las tecnologías para hacerlo más completo.
@@ -1214,64 +1248,7 @@ Entre las posibles ampliaciones/continuaciones del proyecto, destacaría:
 
 == Anexos
 [[X1]]
-=== Anexo 1: Cómo construir una aplicación
-
-La aplicación en cuestión debe poder soportar un chat en el que varios usuarios puedan comunicarse entre si.
-
-Requiere lanzar la aplicación como un servidor que escuche de un puerto concreto y ofrecer una conexión WebSocket sobre la dirección '/chat'.
-
-==== Primera conexión
-
-El cliente, al establecer la conexión enviará sus datos en un string, que podrá formatearse a JSON y tiene la siguiente estructura:
-
-[source,json]
----------------------------------------------------------------------
-{
-  "name": "MyName",
-  "chat": "MyRoom"
-}
----------------------------------------------------------------------
-
-La aplicación debe almacenar estos datos junto a la conexión WebSocket, de forma que queden "registrados".
-
-==== Gestión de mensajes
-
-Una vez se ha establecido la conexión y se ha mandado el mensaje de inicialización, el cliente enviará mensajes a la aplicación, de nuevo como un String, que se podrá formatear a un JSON con la siguiente estructura:
-
-[source,json]
----------------------------------------------------------------------
-{
-  "name": "MyName",
-  "chat": "MyRoom",
-  "message":"MyMessage"
-}
----------------------------------------------------------------------
-
-Este mensaje debe ser reenviado por la aplicación a todos los usuarios cuya sala de chat sea la misma que la del mensaje.
-
-NOTE: No debe confundirse un mensaje de chat con un mensaje de conexión, la forma de diferenciarlos es por la existencia o no de la clave "message" en el JSON.
-
-==== Desconexión
-
-La aplicación debe gestionar la desconexión de usuarios, de forma que cuando un usuario se desconecta, este debe eliminarse de la aplicación para que no se le reenvíen mensajes.
-
-==== Opcionales
-
-Aunque las pruebas que se realizan no lo requieren, la aplicación puede impedir que dos usuarios con el mismo nombre puedan conectarse (independientemente del chat al que pertenezcan). En caso de que ya exista el usuario debería enviar un mensaje de vuelta al cliente tal y cómo se muestra a continuación:
-
-[source,json]
----------------------------------------------------------------------
-{
-   "type": "system",
-   "message": "A user with that name already exists"
-}
----------------------------------------------------------------------
-
-Además, y de cara a probar rápidamente el correcto funcionamiento de la aplicación, puede ofrecerse un cliente http que permita realizar la conexión desde el navegador.
-
-<<<
-[[X2]]
-=== Anexo 2: Cómo incluir una aplicación en la comparativa
+=== Anexo 1: Cómo incluir una aplicación en la comparativa
 
 WebChatTest contiene un archivo de configuración disponible en WebChatTest/src/main/resources/config.json con el siguiente aspecto:
 
@@ -1341,8 +1318,8 @@ Son las aplicaciones NO lanzadas por `WebChatTest`
 
 
 <<<
-[[X3]]
-=== Anexo 3: Configuración del experimento
+[[X2]]
+=== Anexo 2: Configuración del experimento
 
 [source,json]
 ---------------------------------------------------------------------
@@ -1397,8 +1374,8 @@ Son las aplicaciones NO lanzadas por `WebChatTest`
 
 <<<
 
-[[X4]]
-=== Anexo 4: Instrucciones para realizar el experimento
+[[X3]]
+=== Anexo 3: Instrucciones para realizar el experimento
 
 Para replicar el experimento de este proyecto, primero debe descargarse todo el código
 del proyecto desde GitHub:
