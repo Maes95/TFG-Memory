@@ -33,10 +33,10 @@ encontrar su versión más óptima:
 
 - Vert.x sin la utilización de su EventBus
 - Spring utilizando un servidor en Jetty en lugar de en Tomcat
-- Node.js utilizando la libreria cluster
+- Node.js utilizando la librería cluster
 
 Para realizar esta comparativa de una forma justa, se desarrollará un cliente
-común a todas las aplicaciones que se encarge de tomar diferentes métricas, concretamente:
+común a todas las aplicaciones que se encargue de tomar diferentes métricas, concretamente:
 
 - La latencia (o tiempo de respuesta)
 - El uso de CPU
@@ -64,7 +64,7 @@ tecnologías de servidor para servicios basados en WebSockets.
 Estas tecnologías proporcionan una comunicación en tiempo real con clientes
 muy diversos (aplicaciones móviles, navegadores, otro servidores…). Un ejemplo
 actual son los servicios de mensajería instantánea cómo WhatsApp o Telegram, cuyo
-crecimiento de usuaros se ha disparado en los últimos años (Ver __Figura 1__). Hoy
+crecimiento de usuarios se ha disparado en los últimos años (Ver __Figura 1__). Hoy
 en día este tipo de aplicaciones tienen un impacto drástico en la vida diaria,
 siendo casi una herramienta imprescindible, por lo que prevenir una caída de
 servicio ante un alto número de clientes es fundamental.
@@ -77,16 +77,39 @@ tecnologías y proporcionar argumentos sólidos que justifiquen el uso de una u
 otra, dependiendo de las necesidades de nuestro proyecto y de los recursos de
 los que dispongamos.
 
+Para ello, tomaremos como punto de partida las tecnologías reactivas, que siguiendo
+el Manifiesto Reactivo<%http://www.reactivemanifesto.org/%> cuentan entre sus
+características:
+
+- Tiempos de respuestas rápidos
+- Tolerantes a fallos
+- Adaptación a variaciones en la carga de trabajo
+- Uso de mensajes asíncronos para la comunicación (no bloqueantes)
+
+La tecnología reactiva que mas popularidad ha ganado en los últimos años es NodeJS,
+que propone un modelo asíncrono eficiente y ligero. Otra tecnología, mas consolidada
+es Java, que a pesar de no poseer un modelo reactivo nativo, tiene múltiples librerías y
+frameworks que le permiten adquirir las características de este modelo.
+
+Con el fin de profundizar en las tecnologías, compararemos la máquina virtual de
+Java (JVM) con NodeJS utilizando diferentes librerías para cada una, buscando la combinación
+mas efectiva.
+
+
+
 == 2. Objetivos
 
 El objetivo principal de este proyecto será realizar una comparativa entre
 distintas tecnologías que den solución a la comunicación en tiempo real mediante
-el uso de WebSockets, dentro de una misma máquina (escalado vertical).
+el uso de WebSockets. Dicha comparativa se realizará en base al rendimiento y
+el consumo de recursos de cada una de las tecnologías comparadas y ante diferentes
+niveles de carga en un mismo servidor, sin plantearnos usar varios servidores.
 
-Con este fin, se implementará una aplicación de mensajería instantánea (que a
+Con este fin, se implementará un servidor de mensajería instantánea (que a
 partir de ahora denominaremos simplemente Chat) para cada tecnología y un
-cliente común capaz de probarlas y recoger distintas métricas, que serán el
-factor determinante a la hora de realizar la comparativa.
+cliente que se conectará a ese servidor simulando varios usuarios enviando
+mensajes que podrá medir el tiempo que tarda un mensaje desde que se envía hasta
+que se recibe.
 
 Otro objetivo relevante del proyecto será su extensibilidad, de forma que
 cualquier desarrollador pueda implementar su aplicación de chat, sumarla a la
@@ -104,6 +127,16 @@ de forma dinámica y permita almacenarlos.
 
 - Incluir nuevas implementaciones con distintas tecnologías para ampliar la comparativa
 
+Las tecnologías que compararemos en este proyecto serán:
+
+- Akka
+- Vert.x
+- SpringBoot
+- NodeJS
+
+a partir de las cuales, construiremos diferentes variantes de las mismas con el fin
+de enriquecer la comparativa.
+
 == 3. Tecnologías, Herramientas y Metodologías
 
 === 3.1 Tecnologías
@@ -119,12 +152,16 @@ los últimos años que promete ser ligera y eficiente.
 .Indice Tiobe
 image::./tiobe.png[tiobe]
 
+A continuación se expondrán brevemente las tecnologías utilizadas para el proyecto
+junto a sus principales características, además de algunas librerías en las que
+nos hemos apoyado.
+
 ==== 3.1.1 WebSockets
 
 .Logo WebSocket
 image::./websockets-logo.png[websocket, pdfwidth=40%]
 
-RFC 6455 <%https://tools.ietf.org/html/rfc6455%> define WebSocket (Figura 3) como un protocolo que proporciona un canal
+RFC 6455 <%https://tools.ietf.org/html/rfc6455%> define WebSocket (__Figura 3__) como un protocolo que proporciona un canal
 de comunicación bidireccional y full-dúplex sobre un único socket TCP. Aunque
 inicialmente estaba pensado para cualquier tipo de comunicaciones entre el navegador y el servidor
 web, puede usarse también para aplicaciones cliente/servidor.
@@ -148,57 +185,53 @@ socket.onclose = function(e){ console.log("WS Closed")};
 socket.onerror = function(e){ console.log(e)};
 ---------------------------------------------------------------------
 
-==== 3.1.2 Node.js
-
-.Logo Node.js
-image::./node-logo.png[node, pdfwidth=40%]
-
-Node.js<%https://nodejs.org/es/%>(Figura 4) es un entorno de ejecución para JavaScript construido con el motor de JavaScript V8<%https://developers.google.com/v8/%> de Chrome. Está diseñado para construir aplicaciones en red escalables. Se caracteriza por sus operaciones E/S sin bloqueos y por su arquitectura orientada a eventos. Tiene un diseño similar y está influenciado por sistemas como Event Machine de Ruby ó Twisted de Python.
-
-
-Las principales características de Node.js son:
-
-- *Arquitectura de eventos*: Node.js presenta un bucle de eventos como un entorno, no como una librería (soporte nativo). Dentro de este entorno de ejecución, cada conexión de un cliente tiene asignado un callback, y recibe una pequeña asignación de memoria dinámica (sin generar un nuevo hilo). Este bucle de eventos ejecuta de forma secuencial los callbacks hasta que no queda ninguno por atender.
-
-- *Concurrencia*<%https://es.wikipedia.org/wiki/Node.js#Concurrencia%>: Node.js funciona con un modelo de evaluación de un único hilo de ejecución, usando entradas y salidas asíncronas las cuales pueden ejecutarse concurrentemente en un número de hasta cientos de miles sin incurrir en costos asociados al cambio de contexto.
-
-- *Ejecución*: Node.js, al estar desarrollado a partir de V8, no interpreta el código JavaScript en tiempo real, sino que lo compila directamente  a código máquina.
-
-La versión utilizada de Node.js para este proyecto es la 6.9.1.
-
-===== 3.1.2.1 Express
-
-Express<%http://expressjs.com/es/%> es un framework de aplicaciones web para Node.js, que proporciona un conjunto de características para crear aplicaciones web de forma simple y flexible.
-Usaremos Express para lanzar las aplicaciones de Node.js en un servidor.
-
-===== 3.1.2.2 WS
-
-WS<%https://github.com/websockets/ws%> es una librería de Node.js que proporciona la funcionalidad necesaria para abrir una conexión WebSocket en Node.js, tanto cliente como servidor. Puede ser utilizada junto a Express para dotar una aplicación web de conexión WebSocket.
-
-===== 3.1.2.3 Cluster
-
-Cluster<%https://nodejs.org/api/cluster.html%><%https://www.npmjs.com/package/cluster%> es una librería que permite a Node.js aprovechar los distintos cores del sistema en el que se ejecuta, dado que por defecto, Node.js se ejecuta como un único thread.
-
-Esta librería también facilita el balanceo de carga entre los distintos procesos, permitiéndoles compartir el puerto que escuchan y distribuyendo la carga mediante un algoritmo de Round Robin.
-
-==== 3.1.3 Java
+==== 3.1.2 Java
 
 .Logo Java
 image::./java-logo.png[java, pdfwidth=40%]
 
-Java (Figura 5) es un lenguaje de programación de propósito general, concurrente y orientado
+Java (__Figura 4__) es un lenguaje de programación de propósito general, concurrente y orientado
 a objetos. Su sintaxis deriva en gran medida de C y C++. Uno de los principales
 atractivos de Java es su máquina virtual (JVM) que nos permite ejecutar nuestro
 código Java en cualquier dispositivo, independientemente de la arquitectura.
 Las tecnologías basadas en Java seleccionadas para la comparativa son explicadas
 a continuación.
 
-===== 3.1.3.1 Vert.x
+===== 3.1.2.1 Akka
+
+.Logo Akka
+image::./akka-logo.png[Akka, pdfwidth=40%]
+
+Akka<%http://akka.io/%> (__Figura 5__) es un toolkit para crear aplicaciones concurrentes y distribuidas. También se ejecuta sobre la JVM. Se puede utilizar con Java y Scala, lenguaje con el que está escrito y del que su implementación de los actores forma parte de la librería estándar desde la versión 2,10. Otras de sus características son:
+
+- **Tolerancia a fallos**: Akka adopta el modelo de “let it crash” que ha resultado un gran éxito en la industria de la telecomunicación.
+
+- **Transparencia de localización**: todo en Akka está diseñado para trabajar en un entorno distribuido: todas las comunicaciones son mediante paso de mensajes y todo es asíncrono
+
+- **Persistencia**: Los mensajes recibidos por el actor pueden conservarse y ser reproducidos al iniciar o reiniciar el actor, por lo que se puede conservar el estado de los actores después de un fallo o al migrarlos a otro nodo.
+
+La versión utilizada de Akka durante este proyecto es la 2.4-M2, aunque actualmente ya existe la versión 2.4.0 estable.
+
+La aplicación de Akka hace uso de Play Framework<%https://www.playframework.com/%> un framework web open source, que da soporte web a la aplicación y proporciona la comunicación mediante WebSockets.
+
+Los conceptos básicos que debemos comprender de Akka son:
+
+- **Actores**: Los actores son objetos que poseen un estado y un comportamiento. Se comunican entre ellos exclusivamente enviando mensajes que se encolan en el mailbox del actor de destino. Los actores se organizan jerárquicamente. Un actor encargado de realizar una tarea, puede dividir esa tarea en otras sub-tareas y enviárselas a unos actores hijos a los que supervisará.
+
+- **Actor System**: Es el encargado de ejecutar, crear y borrar actores además de otros fines como la configuración o el logging. Varios actor systems con diferentes configuraciones puede coexistir en la misma JVM sin problemas, aunque al ser una estructura pesada que puede manejar de 1..N threads, se recomienda crear una por aplicación.
+
+- **Actor Reference**: Es un objeto que representa al actor en el exterior. Estos objetos pueden enviarse sin ninguna restricción y permiten enviar mensajes al actor con total transparencia, sin necesidad de actualizar las referencias a pesar de enviarse a otros hosts. Además evitan que desde el exterior pueda conocerse el estado del actor a no ser que este lo publique.
+
+- **Actor Path**: Como los actores son creados en una estricta estructura jerárquica, existe una única secuencia de nombres de actores dados siguiendo recursivamente los links entre actores padres e hijos hasta el actorSystem. Esta secuencia similar a las rutas de un sistema de ficheros, por ello es conocida como actor Path.
+
+La diferencia entre un ActorPath y una ActorReference es que el segundo tiene el mismo ciclo de vida que el actor. Si el actor se destruye su ActorReference también, sin embargo un ActorPath puede existir perfectamente a pesar de que no exista el actor.
+
+===== 3.1.2.2 Vert.x
 
 .Logo Vertx
 image::./vertx-logo.png[vertx, pdfwidth=40%]
 
-Vert.x<%http://vertx.io/%> (Figura 6) es un toolkit de Java que permite construir aplicaciones reactivas.
+Vert.x<%http://vertx.io/%> (__Figura 6__) es otro toolkit de Java que permite construir aplicaciones reactivas.
 Se autodenomina dirigido por eventos y no bloqueante, está inspirado en Node.js.
 
 La versión utilizada en el proyecto es la 3.3.
@@ -235,41 +268,13 @@ proporciona un handler para una posible respuesta.
 
 Además de los recursos mencionados, cuenta con una extensa API que abarca desde múltiples herramientas de testing hasta servidores y clientes de TCP/SSL, HTTP/HTTPS y WebSockets, cobrando estos últimos especial importancia de cara al desarrollo de la aplicación.
 
-===== 3.1.3.2 Akka
 
-.Logo Akka
-image::./akka-logo.png[Akka, pdfwidth=40%]
-
-Akka<%http://akka.io/%> (Figura 7) es otro toolkit para crear aplicaciones concurrentes y distribuidas. También se ejecuta sobre la JVM. Se puede utilizar con Java y Scala, lenguaje con el que está escrito y del que su implementación de los actores forma parte de la librería estándar desde la versión 2,10. Otras de sus características son:
-
-- **Tolerancia a fallos**: Akka adopta el modelo de “let it crash” que ha resultado un gran éxito en la industria de la telecomunicación.
-
-- **Transparencia de localización**: todo en Akka está diseñado para trabajar en un entorno distribuido: todas las comunicaciones son mediante paso de mensajes y todo es asíncrono
-
-- **Persistencia**: Los mensajes recibidos por el actor pueden conservarse y ser reproducidos al iniciar o reiniciar el actor, por lo que se puede conservar el estado de los actores después de un fallo o al migrarlos a otro nodo.
-
-La versión utilizada de Akka durante este proyecto es la 2.4-M2, aunque actualmente ya existe la versión 2.4.0 estable.
-
-La aplicación de Akka hace uso de Play Framework<%https://www.playframework.com/%> un framework web open source, que da soporte web a la aplicación y proporciona la comunicación mediante WebSockets.
-
-Los conceptos básicos que debemos comprender de Akka son:
-
-- **Actores**: Los actores son objetos que poseen un estado y un comportamiento. Se comunican entre ellos exclusivamente enviando mensajes que se encolan en el mailbox del actor de destino. Los actores se organizan jerárquicamente. Un actor encargado de realizar una tarea, puede dividir esa tarea en otras sub-tareas y enviárselas a unos actores hijos a los que supervisará.
-
-- **Actor System**: Es el encargado de ejecutar, crear y borrar actores además de otros fines como la configuración o el logging. Varios actor systems con diferentes configuraciones puede coexistir en la misma JVM sin problemas, aunque al ser una estructura pesada que puede manejar de 1..N threads, se recomienda crear una por aplicación.
-
-- **Actor Reference**: Es un objeto que representa al actor en el exterior. Estos objetos pueden enviarse sin ninguna restricción y permiten enviar mensajes al actor con total transparencia, sin necesidad de actualizar las referencias a pesar de enviarse a otros hosts. Además evitan que desde el exterior pueda conocerse el estado del actor a no ser que este lo publique.
-
-- **Actor Path**: Como los actores son creados en una estricta estructura jerárquica, existe una única secuencia de nombres de actores dados siguiendo recursivamente los links entre actores padres e hijos hasta el actorSystem. Esta secuencia similar a las rutas de un sistema de ficheros, por ello es conocida como actor Path.
-
-La diferencia entre un ActorPath y una ActorReference es que el segundo tiene el mismo ciclo de vida que el actor. Si el actor se destruye su ActorReference también, sin embargo un ActorPath puede existir perfectamente a pesar de que no exista el actor.
-
-===== 3.1.3.3 Spring Boot
+===== 3.1.2.3 Spring Boot
 
 .Logo Spring
 image::./springboot-logo.png[spring, pdfwidth=40%]
 
-Spring Boot<%http://projects.spring.io/spring-boot/%> comprende un módulo de Spring<%https://spring.io/%> (un framework para el desarrollo de aplicaciones web) que provee de todo lo necesario para crear una aplicación con un mínimo de configuración lista para lanzar. Spring Boot proporciona:
+Spring Boot<%http://projects.spring.io/spring-boot/%> (__Figura 7__) comprende un módulo de Spring<%https://spring.io/%> (un framework para el desarrollo de aplicaciones web) que provee de todo lo necesario para crear una aplicación con un mínimo de configuración lista para lanzar. Spring Boot proporciona:
 
 - Una experiencia de iniciación muy rápida
 
@@ -281,12 +286,49 @@ Además, cuenta con el Sistema de Inversión de Control de Spring<%https://es.wi
 
 La versión utilizada de Spring para este proyecto es la 1.4.3
 
-==== 3.1.4 AngularJS
+==== 3.1.3 Node.js
 
-.Logo AngularJS
-image::./angularjs.png[angularjs, pdfwidth=40%]
+.Logo Node.js
+image::./node-logo.png[node, pdfwidth=40%]
 
-AngularJS<%https://www.angularjs.org/%><%https://es.wikipedia.org/wiki/AngularJS %> es un framework de JavaScript de código abierto desarrollado por Google. Nos permite desarrollar SPAs (__Single Page Applications__), que siguiendo el MVC (modelo-vista-controlador), facilitan la presentación y manipulación de los datos en el lado cliente (frontend), reduciendo la carga lógica del lado servidor (backend).
+Node.js<%https://nodejs.org/es/%> (__Figura 8__) es un entorno de ejecución para JavaScript construido con el motor de JavaScript V8<%https://developers.google.com/v8/%> de Chrome. Está diseñado para construir aplicaciones en red escalables. Se caracteriza por sus operaciones E/S sin bloqueos y por su arquitectura orientada a eventos. Tiene un diseño similar y está influenciado por sistemas como Event Machine de Ruby ó Twisted de Python.
+
+
+Las principales características de Node.js son:
+
+- *Arquitectura de eventos*: Node.js presenta un bucle de eventos como un entorno, no como una librería (soporte nativo). Dentro de este entorno de ejecución, cada conexión de un cliente tiene asignado un callback, y recibe una pequeña asignación de memoria dinámica (sin generar un nuevo hilo). Este bucle de eventos ejecuta de forma secuencial los callbacks hasta que no queda ninguno por atender.
+
+- *Concurrencia*<%https://es.wikipedia.org/wiki/Node.js#Concurrencia%>: Node.js funciona con un modelo de evaluación de un único hilo de ejecución, usando entradas y salidas asíncronas las cuales pueden ejecutarse concurrentemente en un número de hasta cientos de miles sin incurrir en costos asociados al cambio de contexto.
+
+- *Ejecución*: Node.js, al estar desarrollado a partir de V8, no interpreta el código JavaScript en tiempo real, sino que lo compila directamente  a código máquina.
+
+La versión utilizada de Node.js para este proyecto es la 6.9.1.
+
+===== 3.1.3.1 Express
+
+Express<%http://expressjs.com/es/%> es un framework de aplicaciones web para Node.js, que proporciona un conjunto de características para crear aplicaciones web de forma simple y flexible.
+Usaremos Express para lanzar las aplicaciones de Node.js en un servidor.
+
+===== 3.1.3.2 WS
+
+WS<%https://github.com/websockets/ws%> es una librería de Node.js que proporciona la funcionalidad necesaria para abrir una conexión WebSocket en Node.js, tanto cliente como servidor. Puede ser utilizada junto a Express para dotar una aplicación web de conexión WebSocket.
+
+===== 3.1.3.3 Cluster
+
+Cluster<%https://nodejs.org/api/cluster.html%><%https://www.npmjs.com/package/cluster%> es una librería que permite a Node.js aprovechar los distintos cores del sistema en el que se ejecuta, dado que por defecto, Node.js se ejecuta como un único thread.
+
+Esta librería también facilita el balanceo de carga entre los distintos procesos, permitiéndoles compartir el puerto que escuchan y distribuyendo la carga mediante un algoritmo de Round Robin.
+
+
+==== 3.1.4 Angular
+
+.Logo Angular
+image::./angular2.svg[angular, pdfwidth=40%]
+
+Angular<%https://angular.io/%> (__Figura 9__) es un framework de JavaScript (aunque comúnmente se utiliza
+con Typescript<%https://www.typescriptlang.org/%>, un superconjunto de Javascript) de código abierto desarrollado por Google.
+Nos permite desarrollar SPAs (__Single Page Applications__), que siguiendo el MVC (modelo-vista-controlador), facilitan la presentación y manipulación de
+los datos en el lado cliente (frontend), reduciendo la carga lógica del lado servidor (backend).
 
 Entre sus características, destacamos:
 
@@ -296,26 +338,29 @@ Entre sus características, destacamos:
 
 - Una numerosa comunidad y una extensa documentación
 
-La versión utilizada para este proyecto es la 1.4, aunque actualmente está disponible Angular 2, conocido simplemente como Angular<%https://angular.io/%>, una versión revulsiva y no retro compatible, que se apoya en Typescript, una extensión de JavaScript. No se ha utilizado esta nueva versión por la simplicidad que ofrecía AngularJS al no requerir dependencias o desplegado de la aplicación.
+La versión utilizada para este proyecto es la 4.0.
+
+Utilizaremos Angular para ofrecer un cliente web en el que mostrar los resultados del experimento.
 
 ==== 3.1.5 Chart.js
 
 .Logo Chart.js
 image::./chartjs-logo.jpg[chartjs, pdfwidth=40%]
 
-Chart.js<%http://www.chartjs.org/%> es una librería de JavaScript para el lado cliente que nos permite la generación de gráficas para nuestra aplicación.
+Chart.js<%http://www.chartjs.org/%>(__Figura 10__) es una librería de JavaScript para el lado cliente que nos permite la generación de gráficas para nuestra aplicación.
 
 Entre sus características destacamos:
 
 - Gran variedad de gráficos
 
-- Sencillez de uso y una amplia y detallada documentación
+- Facilidad de uso y una amplia y detallada documentación
 
 - No requiere de librerías adicionales
 
 - Gráficos interactivos
 
-Esta librería cuenta con una versión compatible con AngularJS <%http://jtblin.github.io/angular-chart.js/%> que será la utilizada en este proyecto.
+Esta librería cuenta con una versión compatible con Angular<%https://github.com/valor-software/ng2-charts/%> que será la utilizada en este proyecto para
+mostrar las datos recogidos en gráficas dinámicas para facilitar la comparación de las tecnologías.
 
 <<<
 
@@ -326,7 +371,7 @@ Esta librería cuenta con una versión compatible con AngularJS <%http://jtblin.
 .Logo Git
 image::./git-logo.png[git, pdfwidth=30%]
 
-Git <%https://git-scm.com/%> es un software de control de versiones diseñado por Linus Torvalds, pensando en la eficiencia y la confiabilidad del mantenimiento de versiones de aplicaciones cuando éstas tienen un gran número de archivos de código fuente.
+Git <%https://git-scm.com/%> (__Figura 11__) es un software de control de versiones diseñado por Linus Torvalds, pensando en la eficiencia y la confiabilidad del mantenimiento de versiones de aplicaciones cuando éstas tienen un gran número de archivos de código fuente.
 
 Para el desarrollo de este proyecto hemos usado GitHub<%https://github.com%>, una plataforma de desarrollo colaborativa para alojar proyectos Git.
 
@@ -341,7 +386,7 @@ Debido a la pluralidad de tecnologías, hemos utilizado distintos gestores de de
 .Logo Maven
 image::./maven-logo.png[maven, pdfwidth=40%]
 
-Maven<%https://maven.apache.org/%> es una herramienta de software para la gestión y construcción de proyectos Java creada por Jason van Zyl. Hace uso de un POM (Project Object Model), un archivo XML que describe las dependencias y permite añadir opciones de ejecución, test y desplegamiento de la aplicación.
+Maven<%https://maven.apache.org/%> (__Figura 12__) es una herramienta de software para la gestión y construcción de proyectos Java creada por Jason van Zyl. Hace uso de un POM (Project Object Model), un archivo XML que describe las dependencias y permite añadir opciones de ejecución, test y desplegamiento de la aplicación.
 
 Se ha utilizado para configurar los proyectos en Vert.x y Spring Boot.
 
@@ -350,7 +395,7 @@ Se ha utilizado para configurar los proyectos en Vert.x y Spring Boot.
 .Logo SBT
 image::./sbt-logo.png[sbt, pdfwidth=30%]
 
-SBT<%http://www.scala-sbt.org/%> es una herramienta de software para construcción de proyectos en Scala y estándar para contruir aplicaciones en Play Framework, similar a Maven o Ant (propios de Java). Entre sus características, permite el uso conjunto de Java y Scala en el mismo proyecto. Su archivo de configuración es un.stb, que dispone dispone de sintaxis propia.
+SBT<%http://www.scala-sbt.org/%> (__Figura 13__) es una herramienta de software para construcción de proyectos en Scala y estándar para contruir aplicaciones en Play Framework, similar a Maven o Ant (propios de Java). Entre sus características, permite el uso conjunto de Java y Scala en el mismo proyecto. Su archivo de configuración es un.stb, que dispone dispone de sintaxis propia.
 
 Se ha utilizado para configurar el proyecto de Akka.
 
@@ -359,7 +404,7 @@ Se ha utilizado para configurar el proyecto de Akka.
 .Logo NPM
 image::./npm-logo.png[npm, pdfwidth=30%]
 
-Npm<%https://www.npmjs.com/%> es una herramienta software para la gestión y construcción de proyectos en Node.js creado por Isaac Z. Schlueter. Al igual que Maven, permite declarar las dependencias y distintas opciones de ejecución, desplegamiento y pruebas. Para ello hace uso de un archivo JSON llamado package.json.
+Npm<%https://www.npmjs.com/%> (__Figura 14__) es una herramienta software para la gestión y construcción de proyectos en Node.js creado por Isaac Z. Schlueter. Al igual que Maven, permite declarar las dependencias y distintas opciones de ejecución, desplegamiento y pruebas. Para ello hace uso de un archivo JSON llamado package.json.
 
 Es utilizado en las aplicaciones de Node.js.
 
@@ -372,7 +417,7 @@ Al contar con diferentes lenguajes, se han utilizado distintos entornos de desar
 .Logo Atom
 image::./atom-logo.jpg[atom, pdfwidth=60%]
 
-Atom<%https://atom.io/%> es un editor de texto sencillo, ligero y extensible creado por Github. Cuenta con una gran librería de paquetes aportados por la comunidad para facilitar el desarrollo software. Por defecto, no cuenta con ningún tipo de compilador o intérprete.
+Atom<%https://atom.io/%> (__Figura 15__) es un editor de texto sencillo, ligero y extensible creado por Github. Cuenta con una gran librería de paquetes aportados por la comunidad para facilitar el desarrollo software. Por defecto, no cuenta con ningún tipo de compilador o intérprete.
 
 Se ha utilizado de forma conjunta con una terminal para el desarrollo de las aplicaciones en Node.js
 
@@ -381,7 +426,7 @@ Se ha utilizado de forma conjunta con una terminal para el desarrollo de las apl
 .Logo NetBeans
 image::./netbeans-logo.jpg[netbeans, pdfwidth=60%]
 
-NetBeans<%https://netbeans.org/%> es un entorno de desarrollo integrado libre, centrado sobre todo en el lenguaje Java. Ofrece una interfaz completa para el desarrollo de proyectos java, desde la documentación de las librerías hasta el lanzamiento de la aplicación o la monitorización de pruebas.
+NetBeans<%https://netbeans.org/%> (__Figura 16__) es un entorno de desarrollo integrado libre, centrado sobre todo en el lenguaje Java. Ofrece una interfaz completa para el desarrollo de proyectos java, desde la documentación de las librerías hasta el lanzamiento de la aplicación o la monitorización de pruebas.
 
 NetBeans permite además incluir plugins para mejorar el desarrollo. Para este proyecto se ha usado el plugin para PlayFramework <%http://plugins.netbeans.org/plugin/61050/pleasure-play-framework-plugin%> para el desarrollo de la aplicación en Akka.
 
@@ -392,7 +437,7 @@ Se ha utilizado para el desarrollo de las aplicaciones en Vert.x y Akka.
 .Logo Spring Tool Suite
 image::./sts-logo.png[sts, pdfwidth=20%]
 
-Sprint Tool Suit (STS)<%https://spring.io/tools%> es un entorno de desarrollo basado en Eclipse<%https://eclipse.org/%> y adaptado a proyectos que utilizan el framework Spring, facilitando su desarrollo, construcción y despliegue.
+Sprint Tool Suit (STS)<%https://spring.io/tools%> (__Figura 17__) es un entorno de desarrollo basado en Eclipse<%https://eclipse.org/%> y adaptado a proyectos que utilizan el framework Spring, facilitando su desarrollo, construcción y despliegue.
 
 Se ha utilizado para el desarrollo de las aplicaciones en Spring.
 
@@ -505,118 +550,33 @@ Dado el carácter comparativo que posee el proyecto, nos centraremos en los requ
 
 === 4.2. Diseño e Implementación
 
+El proyecto seguirá la arquitectura planteada en la figura 19.
+
+.Arquitectura del proyecto
+image::./design-diagram.png[design, pdfwidth=100%]
+
+Al iniciar el experimento, el cliente abrirá varias conexiones WebSocket con el servidor, simulando varios
+usuarios, enviando mensajes a través de ellas y recogiendo diversas métricas. Estas métricas
+serán enviadas a través de WebSocket a una aplicación web en el navegador, que mostrará dichas
+métricas mediante el uso de gráficas en tiempo real. Las métricas podrán ser
+descargadas desde el navegador en formato JSON.
+
+El servidor del diagrama deberá poder ser cualquiera de las aplicaciones participantes en la
+comparativa (cuentan con los mismos requisitos), de forma que el cliente pueda
+interactuar con ellos independientemente de la implementación que posean.
+
 A continuación, se expondrá el diseño e implementación de cada aplicación construida, así como un acceso a su código fuente.
 
-==== 4.2.1 Node.js
-
-El código de esta aplicación se puede encontrar en un repositorio en GitHub, concretamente en la siguiente ruta: https://github.com/Maes95/TFG-WebChat/tree/v2.1/NodeJS-WebChat
-
-===== Diseño y arquitectura
-
-La aplicación de Node.js es muy sencilla, consta de un servidor en Express que da soporte a un servidor WebSocket proporcionado por la librería ws.
-
-El servidor WebSocket está orientado a eventos, al iniciarse una conexión, permite recoger los eventos que genera el cliente (representado mediante la variable ‘ws’)
-
-[source,javascript]
----------------------------------------------------------------------
-const wss = new SocketServer({ server });
-wss.on('connection', (ws) => {
-	ws.on('message', onMessageCallback );
-  	ws.on('close', onCloseCallback )
-});
----------------------------------------------------------------------
-
-=====  Funcionamiento
-
-- **Conexión**: El usuario queda registrado en la aplicación cuando establece la conexión. Su primer mensaje asigna su nombre y su chat a su conexión, como muestra el código a continuación. En caso de que el usuario esté duplicado, su conexión se cerrará.
-
-[source,javascript]
----------------------------------------------------------------------
-ws['chat'] = message['chat'];
-ws['name'] = message['name'];
----------------------------------------------------------------------
-
-Para asegurar la unicidad de los nombres de usuario, se utiliza un conjunto (Set en js).
-
-- **Re-envío de mensajes**: Para resolver el re-envió de mensajes, el objeto wss tiene registrados todos los usuarios actualmente conectados, por lo que para re-enviar un mensaje solo es necesario recorrerlos y mandarlo en el caso de que el chat del emisor y del receptor sean el mismo:
-
-[source,javascript]
----------------------------------------------------------------------
-wss.clients.forEach( (client) => {
-  if(client.chat == ws.chat) client.send(data)
-});
----------------------------------------------------------------------
-
-- **Desconexión**:La librería ws se encarga de borrar automáticamente la conexión con el cliente, por lo tanto, lo único que debemos hacer cuando un usuario se desconecta es borrar su nombre del conjunto.
-
-=====  Problemas en el desarrollo
-
-Debido al carácter reactivo de Node.js y las librerías de alto nivel, el desarrollo de esta aplicación se simplifica en gran medida, por lo que no dio lugar a problemas importantes.
-
-Solo cabe señalar que, al igual que en otras tecnologías, se pensó en agrupar a los usuarios por salas para que el re-envío de mensajes fuera automático, pero aparte de complicar de forma considerable la aplicación, no ofrecía mejoras en su rendimiento, sino todo lo contrario, por lo que se descartó la refactorización en ese aspecto.
-
-==== 4.2.2  Node.js con librería de clúster
-
-El código de esta aplicación se puede encontrar en un repositorio en GitHub, concretamente en la siguiente ruta: https://github.com/Maes95/TFG-WebChat/tree/v2.1/NodeJSCluster-WebChat
-
-===== Diseño y arquitectura
-
-En esta aplicación encontramos una evolución de la anterior. Esta variante pretende hacer un uso más eficiente de los núcleos de la máquina. Para ello hace uso de la librería cluster.
-
-La arquitectura de la aplicación se hace más compleja. Sigue un modelo maestro-trabajador:
-
-- Maestro: se encargar de la creación de los trabajadores y de las conexiones entre ellos.
-
-- Trabajador: se ocupa de recibir los mensajes de los clientes.
-
-Características de la versión con cluster:
-
-- La comunicación entre ambos se realiza mediante paso de mensajes entre procesos.
-
-- En este caso, será el maestro quien se ocupe de asegurar la unicidad de los nombres, también con un conjunto.
-
-- Para maximizar el rendimiento, el número de trabajadores será igual al número de núcleos de la máquina en la que ejecuta
-
-===== Funcionamiento
-
-- **Conexión**: Todos los trabajadores tienen su propio servidor WebSocket, aunque escuchan del mismo puerto. Al conectarse un cliente, es asignado a un trabajador (y a su correspondiente servidor de WebSocket) mediante un algoritmo de Round Robin a fin de distribuir los usuarios de forma homogénea. Cuando el cliente manda su mensaje de conexión, su trabajador debe comunicárselo al maestro, que validará si el usuario ya existe y comunicará el resultado de vuelta a ese trabajador*. Al recibir la respuesta, el trabajador operará de la misma forma que la versión monolítica en función de la respuesta, añadiendo los atributos oportunos si el usuario no existe o cerrando la conexión en caso contrario.
-
-*__El maestro añadirá el usuario en cualquier caso, ya que al tratarse de un conjunto, no admite duplicados.__
-
-- **Re-envío de mensajes**: Cuando un trabajador recibe un mensaje de uno de sus clientes, lo re-envía al maestro para que este lo distribuya. Cada trabajador recibe el mensaje, que re-envía a sus clientes (si pertenecen a la misma sala que especifica el mensaje).
-
-[source,javascript]
----------------------------------------------------------------------
-// Trabajador enviando el mensaje al maestro
-process.send({ type: "message", chat: ws.chat, message: data });
-
-// Maestro re-enviando el mensaje a los trabajadores
-for (var i in cluster.workers) cluster.workers[i].send(message);
-
-// Trabajador re-enviando el mensaje del master a sus clientes
-wss.clients.forEach( (client) => {
-  if(client.chat == data.chat) client.send(data.message)
-} );
----------------------------------------------------------------------
-
-- **Desconexión**:Cuando un cliente se desconecta, el trabajador envía un mensaje al maestro para que borre de su registro el nombre de usuario.
-
-===== Problemas en el desarrollo
-
-Al desarrollar la aplicación, el primer reto fue comprender el comportamiento conjunto entre la librería cluster y los servidores Express y ws. Las librerías de servidores mencionadas están preparadas para trabajar como clúster tal y como se ha mencionado anteriormente, son capaces de repartir las peticiones de forma equitativa.
-
-Otro problema en el desarrollo fue la comunicación, la cual se tornaba bastante más compleja que en su versión monolítica. El paso de mensajes entre procesos resolvía de forma contundente el renvío de mensajes entre trabajadores, pero la validación de la primera conexión del usuario requería un flujo algo más complejo. En un principio y partiendo de la aplicación monolítica, cada trabajador tenía su propio conjunto de nombres para validar la unicidad, pero el tener que comprobar un nombre en todos los trabajadores y esperar su respuesta resultaba demasiado complejo, por lo que se decidió que la gestión de nombres de usuario se llevaría a cabo en el maestro para simplificarlo.
-
-El proyecto se desarrolló en la versión 4.2 de Node.js, siendo la comunicación entre maestro y trabajador complicada debido a que el maestro a priori, no podía saber que trabajador le había mandado un mensaje (impidiendo mandar un mensaje de vuelta, como es en el caso de la validación del usuario). Para resolver este problema, era necesario enviar a cada trabajador en su creación si id con el que el maestro le identificaba, pudiéndoselo mandar en el mensaje para poder ser identificado.
-A partir de la versión 6 de Node<%https://nodejs.org/api/cluster.html#cluster_event_message_1%>, este problema quedaba solucionado, ya que se enviaba una referencia directa al trabajador junto al mensaje de forma automática, por lo que la aplicación se actualizó a esta versión, concretamente a la v6.9.1.
-
-==== 4.2.3  Akka
+==== 4.2.1  Akka
 
 El código de esta aplicación se puede encontrar en un repositorio en GitHub, concretamente en la siguiente ruta: https://github.com/Maes95/TFG-WebChat/tree/v2.1/AkkaPlay-WebChat
 
 ===== Diseño y arquitectura
 
-La aplicación de Akka corresponde a una versión simplificada del proyecto anterior, la cual estaba pensada para funcionar en varias instancias como un clúster. La aplicación consta de tres tipos de actores:
+.Arquitectura de la aplicación: Akka.js
+image::./diagrams/Akka.jpg[akka-diagram, pdfwidth=90%]
+
+La aplicación de Akka (__Figura 20__) corresponde a una versión simplificada del proyecto anterior, la cual estaba pensada para funcionar en varias instancias como un clúster. La aplicación consta de tres tipos de actores:
 
 - ChatManager, cuyo único cometido es la gestión de actores de tipo “Chat”. Proporciona (o crea) nuevos chats a petición de los usuarios. La aplicación cuenta con una única instancia de este actor. Esto es posible gracias a que Akka permite registrar actores en un contexto global:
 
@@ -637,6 +597,7 @@ Akka.system().actorFor("Akka://application/user/ChatManager");
 
 [source,java]
 ---------------------------------------------------------------------
+// AkkaPlay-WebChat/app/controllers/Application.java
 public WebSocket<String> socket() {
     return WebSocket.withActor(User::props);
 }
@@ -646,6 +607,7 @@ La llamada al método estático [source]`props` devuelve un nuevo actor User al 
 
 [source,java]
 ---------------------------------------------------------------------
+// AkkaPlay-WebChat/app/actors/User.java
 public static Props props(ActorRef out) {
     return Props.create(User.class, out, Akka.system().actorFor("Akka://application/user/ChatManager"));
 }
@@ -657,6 +619,7 @@ El mensaje de conexión del cliente es recibido por su User, que manda un mensaj
 
 [source,java]
 ---------------------------------------------------------------------
+// AkkaPlay-WebChat/app/actors/User.java
 self().tell(PoisonPill.getInstance(), self());
 ---------------------------------------------------------------------
 
@@ -664,6 +627,7 @@ self().tell(PoisonPill.getInstance(), self());
 
 [source,java]
 ---------------------------------------------------------------------
+// AkkaPlay-WebChat/app/actors/Chat.java
 users.entrySet().forEach((entry) -> {
       entry.getValue().tell(message, getSelf());
 });
@@ -673,6 +637,7 @@ Para que cada User envíe el mensaje a través de su websocket, basta con enviá
 
 [source,java]
 ---------------------------------------------------------------------
+// AkkaPlay-WebChat/app/actors/User.java
 out.tell(((Message) message).getJson().toString(), self());
 ---------------------------------------------------------------------
 
@@ -680,6 +645,7 @@ out.tell(((Message) message).getJson().toString(), self());
 
 [source,java]
 ---------------------------------------------------------------------
+// AkkaPlay-WebChat/app/actors/User.java
 UnsubscribeChat unsubscribeChat = new UnsubscribeChat(username);
 
 chat.tell(unsubscribeChat,getSelf());
@@ -689,13 +655,16 @@ chat.tell(unsubscribeChat,getSelf());
 
 Al tratarse de una aplicación heredada, fue necesario no solo una fase de aprendizaje de Akka y Play, sino de la arquitectura de la aplicación. La aplicación original pretendía resolver el mismo problema que el de este proyecto, pero en el contexto del escalado horizontal, no vertical. En un primer momento, se incluyó la aplicación sin modificar en la comparativa, pero tras observar su complejidad en código, se trabajó en su refactorización para simplificarla. Esta nueva versión monolítica resulto dar mejores resultados y es la que actualmente se encuentra dentro de la comparativa.
 
-==== 4.2.4  Vert.x
+==== 4.2.2  Vert.x
 
 El código de esta aplicación se puede encontrar en un repositorio en GitHub, concretamente en la siguiente ruta: https://github.com/Maes95/TFG-WebChat/tree/v2.1/Vertx-WebChat
 
 ===== Diseño y arquitectura
 
-La aplicación de Vert.x, al contrario de Akka y a pesar de estar basado en actores, prescinde de crear un actor para la sala de chat.
+.Arquitectura de la aplicación: Vert.x
+image::./diagrams/Vertx.jpg[vertx-diagram, pdfwidth=50%]
+
+La aplicación de Vert.x (__Figura 21__), al contrario de Akka y a pesar de estar basado en actores, prescinde de crear un actor para la sala de chat.
 
 La aplicación se compone de:
 
@@ -714,6 +683,7 @@ en el código a continuación:
 
 [source,java]
 ---------------------------------------------------------------------
+// Vertx-WebChat/src/main/java/com/globex/app/ChatManager.java
 vertx.deployVerticle(user, res -> {
     if (res.succeeded()) {
         //Save the deploymentID to later remove the verticle
@@ -728,6 +698,7 @@ vertx.deployVerticle(user, res -> {
 
 [source,java]
 ---------------------------------------------------------------------
+// Vertx-WebChat/src/main/java/com/globex/app/ChatManager.java
 vertx.eventBus().publish(message.getString("chat"), message);
 ---------------------------------------------------------------------
 
@@ -736,6 +707,7 @@ En el fragmento de código a continuación podemos apreciar esta subscripción y
 
 [source,java]
 ---------------------------------------------------------------------
+// Vertx-WebChat/src/main/java/com/globex/app/User.java
 vertx.eventBus().consumer(chat).handler( data -> {
     // Listen for messages from his chat
     try{
@@ -753,6 +725,7 @@ vertx.eventBus().consumer(chat).handler( data -> {
 
 [source,java]
 ---------------------------------------------------------------------
+// Vertx-WebChat/src/main/java/com/globex/app/ChatManager.java
 vertx.undeploy(users.get(user_name));
 users.remove(user_name);
 ---------------------------------------------------------------------
@@ -767,13 +740,16 @@ Por otro lado, si requirió un estudio de la tecnología para poder optimizar la
 
 Al igual que la aplicación de Akka, se desarrolló una versión en la que los User tomaban el control total de la conexión WebSocket (no solo la escritura). Esta versión resultó ser más compleja a la hora de gestionar los Verticles y no ofrecía mejores resultados, por lo que fue descartada.
 
-==== 4.2.5  Vert.x sin EventBus
+==== 4.2.3  Vert.x sin EventBus
 
 El código de esta aplicación se puede encontrar en un repositorio en GitHub, concretamente en la siguiente ruta: https://github.com/Maes95/TFG-WebChat/tree/master/VertxNoEventbus-WebChat
 
 ===== Diseño y arquitectura
 
-Esta aplicación pretende comprobar cómo afecta el EventBus a la aplicación anterior, eliminándolo y sustituyéndolo por llamadas directas. Esto da lugar a los siguientes cambios:
+.Arquitectura de la aplicación: Vert.x sin EventBus
+image::./diagrams/VertxNoBus.jpg[vertxnobus, pdfwidth=50%]
+
+Esta aplicación (__Figura 22__) pretende comprobar cómo afecta el EventBus a la aplicación anterior, eliminándolo y sustituyéndolo por llamadas directas. Esto da lugar a los siguientes cambios:
 
 - Las salas de chat, en lugar de ser una dirección del bus, son agrupadas en un mapa, donde el nombre de la sala es la clave y un mapa de Users es el valor.
 
@@ -790,20 +766,24 @@ Esta aplicación pretende comprobar cómo afecta el EventBus a la aplicación an
 De esta forma, cuando llega un mensaje, se distribuye a todos los usuarios con la misma sala de chat aprovechando la estructura de datos creada.
 [source,java]
 ---------------------------------------------------------------------
+// VertxNoEventbus-WebChat/src/main/java/com/globex/app/ChatManager.java
 rooms.get(message.getString("chat")).values().forEach((user)->{
-                         user.send(message);
+  user.send(message);
 });
 ---------------------------------------------------------------------
 
 - **Desconexión**:Al igual que la anterior aplicación, se produce cuando User no es capaz de mandar un mensaje a su cliente, llamando explícitamente al ChatManager para que elimine al User del mapa correspondiente a su sala de chat.
 
-==== 4.2.6  SpringBoot con servidor Tomcat
+==== 4.2.4  SpringBoot con servidor Tomcat
 
 El código de esta aplicación se puede encontrar en un repositorio en GitHub, concretamente en la siguiente ruta: https://github.com/Maes95/TFG-WebChat/tree/v2.1/SpringBoot-Tomcat-WebChat
 
 ===== Diseño y arquitectura
 
-La aplicación hace uso de la anotación [source]`@ServerEndpoint` sobre la clase ChatManager, que convierte a dicha clase en un punto de entrada para la conexión WebSocket. Permite a la clase implementar métodos bajo las anotaciones:
+.Arquitectura de la aplicación: Spring
+image::./diagrams/Spring.jpg[spring-diagram, pdfwidth=50%]
+
+La aplicación de Spring (__Figura 23__) hace uso de la anotación [source]`@ServerEndpoint` sobre la clase ChatManager, que convierte a dicha clase en un punto de entrada para la conexión WebSocket. Permite a la clase implementar métodos bajo las anotaciones:
 
 - [source]`@OnOpen` : Se ejecuta cuando el usuario establece la conexión
 
@@ -819,6 +799,7 @@ Cada vez que un cliente se conecta, se crea una instancia de ChatManager que se 
 
 [source,java]
 ---------------------------------------------------------------------
+// SpringBoot-Tomcat-WebChat/src/main/java/com/chat/WebChatSpringBootApplication.java
 @Bean
 public ChatManager reverseWebSocketEndpoint() {
 	return new ChatManager();
@@ -834,6 +815,7 @@ Todas las anotaciones utilizadas pertenecen a la librería WebSocket de Java<%ht
 =====  Funcionamiento
 
 - **Conexión**: La conexión corresponde a la anotación [source]`@OnOpen`, cuyo método crea un nuevo objeto usuario con la sesión creada a partir de la conexión WebSocket realizada. El mensaje de conexión, en cambio, es capturado por el método bajo la anotación [source]`@OnMessage`, que tras validar que el usuario asociado a esa sesión no tiene aún atributos como “name” o “chat”, comprueba que el nombre sea único y se los asigna. Además, el usuario es guardado en el mapa correspondiente a su sala de chat
+
 [source,java]
 ---------------------------------------------------------------------
 private static final Map<String, Map<String, User>> rooms = new ConcurrentHashMap<>();
@@ -843,6 +825,7 @@ private static final Map<String, Map<String, User>> rooms = new ConcurrentHashMa
 
 [source,java]
 ---------------------------------------------------------------------
+// SpringBoot-Tomcat-WebChat/src/main/java/com/chat/ChatManager.java
 // Broadcast message
 rooms.get(user.getChat()).values().forEach( _user ->
     _user.send(message)
@@ -853,6 +836,7 @@ El usuario concreto envía el mensaje correspondiente a través de su sesión:
 
 [source,java]
 ---------------------------------------------------------------------
+// SpringBoot-Tomcat-WebChat/src/main/java/com/chat/User.java
 this.session.getBasicRemote().sendText(message);
 ---------------------------------------------------------------------
 
@@ -866,6 +850,7 @@ Otro problema encontrado era que el recurso encargado de enviar mensajes mediant
 
 [source,java]
 ---------------------------------------------------------------------
+// SpringBoot-Tomcat-WebChat/src/main/java/com/chat/User.java
 public synchronized void send(String message){
       try {
               this.session.getBasicRemote().sendText(message);
@@ -876,7 +861,7 @@ public synchronized void send(String message){
 ---------------------------------------------------------------------
 Se probaron diferentes implementaciones (Como usar la clase bajo [source]`@ServerEndpoint` como un usuario y externalizar el ChatManager como un servicio), pero esto no solo complicaba el flujo de la aplicación, si no que aumentaba de forma considerable los tiempos de respuesta. Tras muchas iteraciones, la aplicación que forma parte de la comparativa es la descrita.
 
-==== 4.2.7  SpringBoot con servidor Jetty
+==== 4.2.5  SpringBoot con servidor Jetty
 
 El código de esta aplicación se puede encontrar en un repositorio en GitHub, concretamente en la siguiente ruta: https://github.com/Maes95/TFG-WebChat/tree/v2.1/SpringBoot-Jetty-WebChat
 
@@ -904,6 +889,120 @@ Como podemos observar en este fragmento del pom.xml, se excluye el servidor conf
 
 El objetivo de esta aplicación es ver la diferencia entre una misma aplicación en SpringBoot con distintos servidores.
 
+==== 4.2.6 Node.js
+
+El código de esta aplicación se puede encontrar en un repositorio en GitHub, concretamente en la siguiente ruta: https://github.com/Maes95/TFG-WebChat/tree/v2.1/NodeJS-WebChat
+
+===== Diseño y arquitectura
+
+.Arquitectura de la aplicación: Node.js
+image::./diagrams/Node.jpg[node-diagram, pdfwidth=50%]
+
+La aplicación de Node.js (__Figura 24__) es muy sencilla, consta de un servidor en Express que da soporte a un servidor WebSocket proporcionado por la librería ws.
+
+El servidor WebSocket está orientado a eventos, al iniciarse una conexión, permite recoger los eventos que genera el cliente (representado mediante la variable ‘ws’)
+
+[source,javascript]
+---------------------------------------------------------------------
+// NodeJS-WebChat/app.js
+const wss = new SocketServer({ server });
+wss.on('connection', (ws) => {
+	ws.on('message', onMessageCallback );
+  	ws.on('close', onCloseCallback )
+});
+---------------------------------------------------------------------
+
+=====  Funcionamiento
+
+- **Conexión**: El usuario queda registrado en la aplicación cuando establece la conexión. Su primer mensaje asigna su nombre y su chat a su conexión, como muestra el código a continuación. En caso de que el usuario esté duplicado, su conexión se cerrará.
+
+[source,javascript]
+---------------------------------------------------------------------
+// NodeJS-WebChat/app.js
+ws['chat'] = message['chat'];
+ws['name'] = message['name'];
+---------------------------------------------------------------------
+
+Para asegurar la unicidad de los nombres de usuario, se utiliza un conjunto (Set en js).
+
+- **Re-envío de mensajes**: Para resolver el re-envió de mensajes, el objeto wss tiene registrados todos los usuarios actualmente conectados, por lo que para re-enviar un mensaje solo es necesario recorrerlos y mandarlo en el caso de que el chat del emisor y del receptor sean el mismo:
+
+[source,javascript]
+---------------------------------------------------------------------
+// NodeJS-WebChat/app.js
+wss.clients.forEach( (client) => {
+  if(client.chat == ws.chat) client.send(data)
+});
+---------------------------------------------------------------------
+
+- **Desconexión**:La librería ws se encarga de borrar automáticamente la conexión con el cliente, por lo tanto, lo único que debemos hacer cuando un usuario se desconecta es borrar su nombre del conjunto.
+
+=====  Problemas en el desarrollo
+
+Debido al carácter reactivo de Node.js y las librerías de alto nivel, el desarrollo de esta aplicación se simplifica en gran medida, por lo que no dio lugar a problemas importantes.
+
+Solo cabe señalar que, al igual que en otras tecnologías, se pensó en agrupar a los usuarios por salas para que el re-envío de mensajes fuera automático, pero aparte de complicar de forma considerable la aplicación, no ofrecía mejoras en su rendimiento, sino todo lo contrario, por lo que se descartó la refactorización en ese aspecto.
+
+==== 4.2.7  Node.js con librería de clúster
+
+El código de esta aplicación se puede encontrar en un repositorio en GitHub, concretamente en la siguiente ruta: https://github.com/Maes95/TFG-WebChat/tree/v2.1/NodeJSCluster-WebChat
+
+===== Diseño y arquitectura
+
+.Arquitectura de la aplicación: Node.js + Cluster
+image::./diagrams/NodeJSCluster.jpg[nodecluster-diagram, pdfwidth=50%]
+
+En esta aplicación (__Figura 25__) encontramos una evolución de la anterior. Esta variante pretende hacer un uso más eficiente de los núcleos de la máquina. Para ello hace uso de la librería cluster.
+
+La arquitectura de la aplicación se hace más compleja. Sigue un modelo maestro-trabajador:
+
+- Maestro: se encargar de la creación de los trabajadores y de las conexiones entre ellos.
+
+- Trabajador: se ocupa de recibir los mensajes de los clientes.
+
+Características de la versión con cluster:
+
+- La comunicación entre ambos se realiza mediante paso de mensajes entre procesos.
+
+- En este caso, será el maestro quien se ocupe de asegurar la unicidad de los nombres, también con un conjunto.
+
+- Para maximizar el rendimiento, el número de trabajadores será igual al número de núcleos de la máquina en la que ejecuta
+
+===== Funcionamiento
+
+- **Conexión**: Todos los trabajadores tienen su propio servidor WebSocket, aunque escuchan del mismo puerto. Al conectarse un cliente, es asignado a un trabajador (y a su correspondiente servidor de WebSocket) mediante un algoritmo de Round Robin a fin de distribuir los usuarios de forma homogénea. Cuando el cliente manda su mensaje de conexión, su trabajador debe comunicárselo al maestro, que validará si el usuario ya existe y comunicará el resultado de vuelta a ese trabajador*. Al recibir la respuesta, el trabajador operará de la misma forma que la versión monolítica en función de la respuesta, añadiendo los atributos oportunos si el usuario no existe o cerrando la conexión en caso contrario.
+
+*__El maestro añadirá el usuario en cualquier caso, ya que al tratarse de un conjunto, no admite duplicados.__
+
+- **Re-envío de mensajes**: Cuando un trabajador recibe un mensaje de uno de sus clientes, lo re-envía al maestro para que este lo distribuya. Cada trabajador recibe el mensaje, que re-envía a sus clientes (si pertenecen a la misma sala que especifica el mensaje).
+
+[source,javascript]
+---------------------------------------------------------------------
+// NodeJSCluster-WebChat/worker.js
+// Trabajador enviando el mensaje al maestro
+process.send({ type: "message", chat: ws.chat, message: data });
+
+// NodeJSCluster-WebChat/master.js
+// Maestro re-enviando el mensaje a los trabajadores
+for (var i in cluster.workers) cluster.workers[i].send(message);
+
+// NodeJSCluster-WebChat/worker.js
+// Trabajador re-enviando el mensaje del master a sus clientes
+wss.clients.forEach( (client) => {
+  if(client.chat == data.chat) client.send(data.message)
+} );
+---------------------------------------------------------------------
+
+- **Desconexión**:Cuando un cliente se desconecta, el trabajador envía un mensaje al maestro para que borre de su registro el nombre de usuario.
+
+===== Problemas en el desarrollo
+
+Al desarrollar la aplicación, el primer reto fue comprender el comportamiento conjunto entre la librería cluster y los servidores Express y ws. Las librerías de servidores mencionadas están preparadas para trabajar como clúster tal y como se ha mencionado anteriormente, son capaces de repartir las peticiones de forma equitativa.
+
+Otro problema en el desarrollo fue la comunicación, la cual se tornaba bastante más compleja que en su versión monolítica. El paso de mensajes entre procesos resolvía de forma contundente el renvío de mensajes entre trabajadores, pero la validación de la primera conexión del usuario requería un flujo algo más complejo. En un principio y partiendo de la aplicación monolítica, cada trabajador tenía su propio conjunto de nombres para validar la unicidad, pero el tener que comprobar un nombre en todos los trabajadores y esperar su respuesta resultaba demasiado complejo, por lo que se decidió que la gestión de nombres de usuario se llevaría a cabo en el maestro para simplificarlo.
+
+El proyecto se desarrolló en la versión 4.2 de Node.js, siendo la comunicación entre maestro y trabajador complicada debido a que el maestro a priori, no podía saber que trabajador le había mandado un mensaje (impidiendo mandar un mensaje de vuelta, como es en el caso de la validación del usuario). Para resolver este problema, era necesario enviar a cada trabajador en su creación si id con el que el maestro le identificaba, pudiéndoselo mandar en el mensaje para poder ser identificado.
+A partir de la versión 6 de Node<%https://nodejs.org/api/cluster.html#cluster_event_message_1%>, este problema quedaba solucionado, ya que se enviaba una referencia directa al trabajador junto al mensaje de forma automática, por lo que la aplicación se actualizó a esta versión, concretamente a la v6.9.1.
 
 <<<
 
@@ -976,7 +1075,7 @@ switch(app){
                 .directory(new File(path+ "WebChatNodeWebsockets"))
                 .start();
        break;
-   …
+   // ...
 }
 ---------------------------------------------------------------------
 
@@ -1003,8 +1102,14 @@ Llegado este punto y para hacer la aplicación más flexible y que los cambios d
 }
 ---------------------------------------------------------------------
 
-Para conseguir una mayor modularidad y poder extender el código, se encapsuló toda la lógica referente al manejo del proceso de la aplicación en una clase concreta, WebChatApp. Esta idea se desarrolló hasta hacer de WebChatApp una interfaz utilizada por ChatTest para la gestión de la aplicación, permitiendo desarrollar clases que permitan distintos tipos de configuración que implementasen dicha interfaz. La estructura de clases resultantes fue la siguiente:
+Para conseguir una mayor modularidad y poder extender el código, se encapsuló toda
+la lógica referente al manejo del proceso de la aplicación en una clase concreta, WebChatApp.
+Esta idea se desarrolló hasta hacer de WebChatApp una interfaz utilizada por ChatTest
+para la gestión de la aplicación, permitiendo desarrollar clases que permitan distintos
+tipos de configuración que implementasen dicha interfaz. La estructura de clases resultantes
+puede apreciarse en la figura 26.
 
+.Diagrama de clases de WebChatApp
 image::./classes.png[classes]
 
 Pretendemos distinguir entre dos tipos de aplicaciones:
@@ -1018,6 +1123,11 @@ Pretendemos distinguir entre dos tipos de aplicaciones:
 - *Remotas* (WebChatRemoteApp):  Aplicación lanzada en una máquina remota.
 
 Nuestra aplicación de pruebas hace uso de la clase WebChatAppFactory, que nos proporciona un objeto WebChatApp con la implementación adecuada en función de la configuración introducida. La estructura del archivo de configuración se extiende, permitiendo configurar cada app de forma independiente. El formato utilizado puede encontrarse en la documentación en del proyecto en GitHub<%https://github.com/Maes95/TFG-WebChat/wiki/How-to-Build-an-Application#how-do-i-include-an-application-in-a-comparison%> (en Inglés) o en el <<X1, Anexo 1>> de este documento (en Español).
+
+La arquitectura de la aplicación en este punto sería tal y como muestra la figura 27, sin incluir las clases que implementan WebChatApp.
+
+.Arquitectura de la aplicación (Primera iteración)
+image::./System1.jpg[System 1]
 
 ===== Nuevas métricas
 
@@ -1038,6 +1148,11 @@ PID USUARIO PR  NI    VIRT    RES    SHR S  %CPU %MEM   HORA+ ORDEN
 
 Aunque solo necesitamos la cantidad de memoria RAM utilizada (RES) y el uso de la CPU (%CPU), hemos decidido tomar además el uso de memoria como porcentaje (%MEM) y la memoria virtual (VIRT).
 
+Ampliamos por lo tanto nuestra arquitectura con TestMetrics, la clase que nos provee de las funcionalidades mencionadas (__Ver Figura 28__)
+
+.Arquitectura de la aplicación (Segunda iteración)
+image::./System2.jpg[System 2]
+
 ===== Interfaz Web
 
 Hasta ahora, todos los resultados son mostrados por la terminal, por lo que publicar los resultados en otros formatos puede ser tedioso.
@@ -1053,14 +1168,19 @@ public void send(JsonObject result){
 }
 ---------------------------------------------------------------------
 
-- **Cliente**: Se trata de una aplicación SPA desarrollada en AngularJS que muestra los resultados del cliente en graficas dinámicas, junto a las tablas de los resultados que muestra. Para generar los gráficos se ha utilizado la libreria Chart.js, concretamente su versión para AngularJS.
+- **Cliente**: Se trata de una aplicación SPA desarrollada en Angular que muestra los resultados del cliente en gráficas dinámicas, junto a las tablas de los resultados que muestra. Para generar los gráficos se ha utilizado la libreria Chart.js, concretamente su versión para Angular.
+
+Finalmente, completamos nuestra arquitectura (__Ver Figura 29__) incluyendo el servidor (__TestResultServer.java__) y el cliente en Angular (Angular Client).
+
+.Arquitectura de la aplicación (Tercera iteración)
+image::./System3.jpg[System 3]
 
 ==== 4.3.2 Funcionamiento
 
-El flujo de funcionamiento de la aplicación puede apreciarse en la siguiente figura 18
+El flujo detallado del funcionamiento de la aplicación puede apreciarse en la la figura 30.
 
 .Flujo de funcionamiento del sistema
-image::./TestSystem.png[TestSystem]
+image::./System4.jpg[System 4]
 
 - *Paso 1*: Se lanza la aplicación de Test tomando un archivo de configuración. Se lanza (de forma automática) TestResultServer, que abre una nueva ventana en el navegador con el cliente web escuchando, a la espera de resultados. Se realizan las pruebas.
 
@@ -1087,7 +1207,7 @@ public Metrics getMetrics() {
 
 - *Paso 6*: Al terminar una prueba, ChatTest enviar el Result (ya en formato JSON) a TestResultServer. Al haber múltiples métricas almacenadas (diferentes tiempos de respuesta debido a las 10 iteraciones) y diferente consumo de recursos (ya que se generan cada segundo). Al convertirse a JSON, se toma solo la media aritmética de cada métrica.
 
-- *Paso 7*: TestResultServer publica el resultado en el EventBus, de forma que el cliente es capaz de recibirlo y añadirlo a su gráfica correspondiente. En la figura 19 podemos ver una captura de como se muestran estos resultados en el navegador.
+- *Paso 7*: TestResultServer publica el resultado en el EventBus, de forma que el cliente es capaz de recibirlo y añadirlo a su gráfica correspondiente. En la figura 31 podemos ver una captura de como se muestran estos resultados en el navegador.
 
 .Captura de la interfaz del cliente
 image::./captura1.png[Captura 1]
@@ -1116,7 +1236,9 @@ Para interpretar las gráficas que usaremos para mostrar los resultados de las p
 
 - En el eje Y encontraremos la métrica estudiada
 
-- En el eje X encontraremos el número de mensajes que se han enviado en total. Este número se obtiene de la siguiente fórmula: __Nº de mensajes = (Nº de usuarios por sala)^2^ * Nº de salas__
+- En el eje X encontraremos el número de mensajes que se han enviado en total. Este número se obtiene de la siguiente fórmula:
+
+  Nº de mensajes = (Nº de usuarios por sala)^2^ * Nº de salas
 
 Para replicar este experimento, se proporciona una sencilla guía en el  <<X3, Anexo 3>> de este proyecto.
 
@@ -1124,7 +1246,9 @@ Esta comparativa puede encontrarse publicada en inglés en el siguiente enlace: 
 
 === 5.1 Latencia
 
-Para nuestro caso de estudio, podemos definir la latencia o tiempo de respuesta como el retardo en milisegundos producido por la demora en la propagación de los mensajes, como podemos apreciar en la figura 20.
+Para nuestro caso de estudio, podemos definir la latencia o tiempo de respuesta
+como el retardo en milisegundos producido por la demora en la propagación de los
+mensajes (__Ver Figura 32__)
 
 .Latencia
 image::./latency.png[Latencia]
@@ -1135,7 +1259,7 @@ Conviene recordar que:
 
 - Los resultados que podemos encontrar en las gráficas son la media aritmética de los N mensajes enviados en un total de 10 iteraciones.
 
-A continuación se muestran los resultados de latencia para distinto número de salas de chat (Figuras 21, 22 y 23):
+A continuación se muestran los resultados de latencia para distinto número de salas de chat (Figuras 33, 34 y 35):
 
 .Aplicación con N usuarios en 1 sala de chat - Latencia
 image::./charts/old/1Room-Latency.png[latency-1Room]
@@ -1162,7 +1286,7 @@ Tal y como se ha desarrollado la obtención de métricas, el uso de CPU que nos 
 
 Debido a que la máquina que realiza las pruebas tiene un total de 8 núcleos, el máximo valor que podría alcanzar esta métrica seria 800% (que por el uso del procesador del propio sistema operativo y del cliente de pruebas, no sería posible).
 
-A continuación se muestran los resultados de uso de CPU para distinto número de salas de chat (Figuras 24, 25 y 26):
+A continuación se muestran los resultados de uso de CPU para distinto número de salas de chat (Figuras 36, 37 y 38):
 
 .Aplicación con N usuarios en 1 sala de chat - CPU
 image::./charts/1Room-CPU.png[CPU-1Room]
@@ -1179,7 +1303,31 @@ En esta métrica, puede apreciarse la correlación que existe con el tiempo de r
 
 En el caso de Vert.x, el EventBus no sólo perjudica al tiempo de respuesta, sino que también hace un uso mucho mayor de la CPU.
 
-Las aplicaciones de Node.js, siguiendo la correlación mencionada, hace un uso mucho menor de este recurso. En el caso de la aplicación simple, esta queda limitada a un solo procesador, alcanzando en las comparativas casi el 100% de uso del mismo, mientras que la aplicación que hace uso de la librería de cluster, al hacer uso de múltiples procesadores, reparte mejor la carga de trabajo, haciendo un uso más eficiente de los recursos y reduciendo en la mayoría de caso un 50% el uso de la CPU respecto a su predecesora y posicionándose como la mejor tecnología en esta métrica
+La aplicación de Node.js simple, siguiendo la correlación mencionada, hace un uso
+mucho menor de este recurso, ya que esta queda
+limitada a un solo procesador, alcanzando en las comparativas casi el 100% de
+uso del mismo, mientras que la aplicación que hace uso de la librería cluster,
+al hacer uso de múltiples procesadores, reparte mejor la carga de trabajo, haciendo
+un uso más eficiente de los recursos. El bajo uso de CPU de la aplicación con
+cluster mostrado en la gráfica se debe a que corresponde únicamente al proceso
+que contiene el maestro (al contrario que el resto de tecnologías que usan hilos
+para aprovechar los núcleos de la máquina, NodeJS con cluster hace uso de múltiples
+procesos, uno para cada trabajador).
+
+Dado que nuestra aplicación de pruebas contempla un único proceso que medir, se han
+tomado las métricas correspondientes al uso de CPU de forma manual para el caso
+mas representativo (60 usuarios, una sala de chat y un total de 1,8 millones de mensajes enviados y recibidos):
+
+.Uso de CPU de los trabajadores en la aplicación de NodeJS con cluster
+[width="100%",frame="topbot",options="header"]
+|========================================================================================
+| Worker 1 | Worker 2 | Worker 3 | Worker 4 | Worker 5 | Worker 6 | Worker 7 | Worker 8
+|  69,7%   |  57,0%   |  50,7%   |  44,4%   |  44,4%   |  44,4%   |  38,0%   |  38,0%  |
+|========================================================================================
+
+por lo que para este caso concreto, el uso total de CPU es de 417,9% (contando el proceso maestro),
+situándose por encima de todas las tecnologías, a excepción de Akka.
+
 
 === 5.3 Uso de memoria
 
@@ -1187,7 +1335,7 @@ Al igual que el uso de la CPU, esta métrica se obtuvo mediante el comando top y
 
 A pesar de que la maquina dispone de 6 GBytes de memoria RAM, la cantidad real disponible es ligeramente inferior, 5.994.856 kB.
 
-A continuación se muestran los resultados de uso de memoria para distinto número de salas de chat (Figuras 27, 28 y 29):
+A continuación se muestran los resultados de uso de memoria para distinto número de salas de chat (Figuras 39, 40 y 41):
 
 .Aplicación con N usuarios en 1 sala de chat - Memoria
 image::./charts/1Room-Memory.png[latency-1Room]
@@ -1200,9 +1348,34 @@ image::./charts/4Room-Memory.png[latency-4Room]
 
 ==== Conclusión del estudio: Memoria
 
-Las aplicaciones de Java, para cargas de trabajo bajas, consumen una memoria similar pero cuando la carga aumenta (más de 40 usuarios con cualquier número de salas), la aplicación de Vertx con EventBus dispara su consumo de memoria a 1.600.000 KBytes, un 26,6% de la memoria total disponible. La aplicación de Vert.x debe este uso excesivo de memoria a su EventBus, ya que la misma aplicación sin el uso de este recurso, tiene un uso de memoria constante, al igual que las aplicaciones de SpringBoot. También podemos observar como la creación de actores por parte de Akka también repercute en el uso de memoria.
+Las aplicaciones de Java, para cargas de trabajo bajas, consumen una memoria similar
+pero cuando la carga aumenta (más de 40 usuarios con cualquier número de salas),
+la aplicación de Vertx con EventBus dispara su consumo de memoria a 1.600.000 KBytes,
+un 26,6% de la memoria total disponible. La aplicación de Vert.x debe este uso
+excesivo de memoria a su EventBus, ya que la misma aplicación sin el uso de este recurso,
+tiene un uso de memoria constante, al igual que las aplicaciones de SpringBoot.
+También podemos observar como la creación de actores por parte de Akka también
+repercute en el uso de memoria.
 
-Por otro lado, podemos observar que las aplicaciones que menos uso hacen de este recurso son las de Node.js, las cuales serían las óptimas si atendemos a esta métrica.
+Por otro lado, podemos observar que la aplicación que menos uso hacen de este
+recurso es la de Node.js, la cual sería la óptima si atendemos a esta métrica.
+
+Al igual que ocurre con el uso de CPU, en la aplicación de NodeJS con cluster
+la memoria mostrada corresponde únicamente al proceso maestro. Los resultados
+de uso de memoria (en KBytes) para cada trabajador en el caso mas representativo (de nuevo,
+60 usuarios en una sola sala de chat) han sido:
+
+.Uso de memoria de los trabajadores en la aplicación de NodeJS con cluster
+[width="100%",frame="topbot",options="header"]
+|========================================================================================
+| Worker 1 | Worker 2 | Worker 3 | Worker 4 | Worker 5 | Worker 6 | Worker 7 | Worker 8
+|  40552   |  64576  |  58368   |  57296   |  64700   |  64656   |  62820   |  44148  |
+|========================================================================================
+
+Como podemos observar, la memoria usada por los procesos trabajadores es sensiblemente
+inferior a la del proceso maestro (238.611 KBytes). La memoria total usada por la aplicación
+asciende a 695.727 KBytes, quedando por encima de de las aplicaciones de Spring y
+Vert.x sin EventBus, pero continuando por debajo de Vert.x y Akka.
 
 === 5.4 Desarrollo
 
@@ -1216,18 +1389,36 @@ Por último, las aplicaciones de Node.js, para obtener un servicio reactivo resu
 
 === 5.5 Conclusiones generales de la comparativa
 
-Para obtener una visión global de la comparativa, haremos uso un gráfico de dispersión (Ver __Figura 30__) para el caso más representativo por su alta carga de trabajo, 60 usuarios en una sola sala de chat, con un total de 1,8 millones de mensajes enviados y recibidos.
+Para obtener una visión global de la comparativa, haremos uso un gráfico de dispersión (Ver __Figura 42__)
+para el caso más representativo por su alta carga de trabajo, 60 usuarios en una sola sala de chat, con un total
+de 1,8 millones de mensajes enviados y recibidos. Además, en la tabla 3 expondremos un resumen
+de los resultados del experimento.
 
 .Gráfico de dispersión
 image::./charts/dispersion-chart.png[dispersion-chart]
 
 __* El resultado de SpringBoot con servidor Tomcat, debido a su baja latencia, apenas se distingue en el gráfico. Su posición corresponde a la punta de la flecha.__
 
+.Resumen de la comparativa
+[width="100%",frame="topbot",options="header"]
+|===============================================================================================
+| Tecnología               | Latencia |  Uso de CPU | Uso de Memoria | Dificultad de desarrollo
+|  Akka + PlayFramework    |  Baja    |  Alto       |  Medio         |  Alta
+|  Vert.x                  |  Media   |  Medio      |  Alto          |  Alta
+|  Vert.x sin EventBus     |  Media   |  Bajo       |  Medio         |  Alta
+|  Spring + Tomcat         |  Baja    |  Medio      |  Medio         |  Media
+|  Spring + Jetty          |  Baja    |  Medio      |  Medio         |  Media
+|  NodeJS                  |  Alta    |  Bajo       |  Bajo          |  Baja
+|  NodeJS + Cluster        |  Media   |  Alto*      |  Medio*        |  Alta
+|===============================================================================================
+
+__*Los valores de uso de CPU y memoria mostrados en las gráficas corresponden únicamente al proceso maestro.__
+
 Tras estudiar las distintas métricas, podemos enunciar las siguientes soluciones al problema de las aplicaciones reactivas:
 
 - Si buscamos una aplicación fiable ante grandes cargas de trabajo y que no haga un uso excesivo de los recursos de la máquina en la que se ejecuta, la tecnología óptima sería SpringBoot, concretamente usando como servidor Tomcat.
 
-- Si buscamos una aplicación ligera y sencilla, que haga un uso mínimo de los recursos de la máquina que no vaya a tener grandes cargas de trabajo, nuestra mejor opción sería Node.js (añadiéndole la librería de cluster si fuera necesaria para optimizar el servicio que proporciona).
+- Si buscamos una aplicación ligera y sencilla, que haga un uso mínimo de los recursos de la máquina que no vaya a tener grandes cargas de trabajo, nuestra mejor opción sería Node.js (sin cluster).
 
 == 6. Conclusiones del proyecto y trabajos futuros
 
@@ -1241,6 +1432,8 @@ Entre las posibles ampliaciones/continuaciones del proyecto, destacaría:
 - El desarrollo de aplicaciones que usen otras tecnologías que no se basen en Java ni Node, como podrían ser Go o Erlang.
 
 - Llevar la comparativa al escalado horizontal, ver cómo se comportan las distintas tecnologías de forma distribuida y cuáles serían las mejores estrategias para optimizar su funcionamiento.
+
+- Ampliar la aplicación de pruebas para que contemple aplicaciones multiproceso.
 
 == Bibliografía
 
