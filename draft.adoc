@@ -197,6 +197,8 @@ código Java en cualquier dispositivo, independientemente de la arquitectura.
 Las tecnologías basadas en Java seleccionadas para la comparativa son explicadas
 a continuación.
 
+<<<
+
 ===== 3.1.2.1 Akka
 
 .Logo Akka
@@ -390,6 +392,8 @@ Maven<%https://maven.apache.org/%> (__Figura 12__) es una herramienta de softwar
 
 Se ha utilizado para configurar los proyectos en Vert.x y Spring Boot.
 
+<<<
+
 ===== 3.2.2.2 SBT
 
 .Logo SBT
@@ -553,7 +557,7 @@ Dado el carácter comparativo que posee el proyecto, nos centraremos en los requ
 El proyecto seguirá la arquitectura planteada en la figura 19.
 
 .Arquitectura del proyecto
-image::./design-diagram.png[design, pdfwidth=100%]
+image::./design-diagram.jpg[design]
 
 Al iniciar el experimento, el cliente abrirá varias conexiones WebSocket con el servidor, simulando varios
 usuarios, enviando mensajes a través de ellas y recogiendo diversas métricas. Estas métricas
@@ -570,6 +574,8 @@ A continuación, se expondrá el diseño e implementación de cada aplicación c
 ==== 4.2.1  Akka
 
 El código de esta aplicación se puede encontrar en un repositorio en GitHub, concretamente en la siguiente ruta: https://github.com/Maes95/TFG-WebChat/tree/v2.1/AkkaPlay-WebChat
+
+<<<
 
 ===== Diseño y arquitectura
 
@@ -653,16 +659,18 @@ chat.tell(unsubscribeChat,getSelf());
 
 =====  Problemas en el desarrollo
 
-Al tratarse de una aplicación heredada, fue necesario no solo una fase de aprendizaje de Akka y Play, sino de la arquitectura de la aplicación. La aplicación original pretendía resolver el mismo problema que el de este proyecto, pero en el contexto del escalado horizontal, no vertical. En un primer momento, se incluyó la aplicación sin modificar en la comparativa, pero tras observar su complejidad en código, se trabajó en su refactorización para simplificarla. Esta nueva versión monolítica resulto dar mejores resultados y es la que actualmente se encuentra dentro de la comparativa.
+Al tratarse de una aplicación heredada, fue necesario no solo una fase de aprendizaje de Akka y Play, sino de la arquitectura de la aplicación. La aplicación original pretendía resolver el mismo problema que el de este proyecto, pero en el contexto del escalado horizontal, no vertical. En un primer momento, se incluyó la aplicación sin modificar en la comparativa, pero tras observar su complejidad en código, se trabajó en su refactorización para simplificarla. Esta nueva versión monolítica resultó dar mejores resultados y es la que actualmente se encuentra dentro de la comparativa.
 
 ==== 4.2.2  Vert.x
 
 El código de esta aplicación se puede encontrar en un repositorio en GitHub, concretamente en la siguiente ruta: https://github.com/Maes95/TFG-WebChat/tree/v2.1/Vertx-WebChat
 
+<<<
+
 ===== Diseño y arquitectura
 
 .Arquitectura de la aplicación: Vert.x
-image::./diagrams/Vertx.jpg[vertx-diagram, pdfwidth=50%]
+image::./diagrams/Vertx.jpg[vertx-diagram, pdfwidth=70%]
 
 La aplicación de Vert.x (__Figura 21__), al contrario de Akka y a pesar de estar basado en actores, prescinde de crear un actor para la sala de chat.
 
@@ -747,7 +755,7 @@ El código de esta aplicación se puede encontrar en un repositorio en GitHub, c
 ===== Diseño y arquitectura
 
 .Arquitectura de la aplicación: Vert.x sin EventBus
-image::./diagrams/VertxNoBus.jpg[vertxnobus, pdfwidth=50%]
+image::./diagrams/VertxNoBus.jpg[vertxnobus, pdfwidth=70%]
 
 Esta aplicación (__Figura 22__) pretende comprobar cómo afecta el EventBus a la aplicación anterior, eliminándolo y sustituyéndolo por llamadas directas. Esto da lugar a los siguientes cambios:
 
@@ -778,10 +786,12 @@ rooms.get(message.getString("chat")).values().forEach((user)->{
 
 El código de esta aplicación se puede encontrar en un repositorio en GitHub, concretamente en la siguiente ruta: https://github.com/Maes95/TFG-WebChat/tree/v2.1/SpringBoot-Tomcat-WebChat
 
+<<<
+
 ===== Diseño y arquitectura
 
 .Arquitectura de la aplicación: Spring
-image::./diagrams/Spring.jpg[spring-diagram, pdfwidth=50%]
+image::./diagrams/Spring.jpg[spring-diagram, pdfwidth=70%]
 
 La aplicación de Spring (__Figura 23__) hace uso de la anotación [source]`@ServerEndpoint` sobre la clase ChatManager, que convierte a dicha clase en un punto de entrada para la conexión WebSocket. Permite a la clase implementar métodos bajo las anotaciones:
 
@@ -898,7 +908,7 @@ El código de esta aplicación se puede encontrar en un repositorio en GitHub, c
 .Arquitectura de la aplicación: Node.js
 image::./diagrams/Node.jpg[node-diagram, pdfwidth=50%]
 
-La aplicación de Node.js (__Figura 24__) es muy sencilla, consta de un servidor en Express que da soporte a un servidor WebSocket proporcionado por la librería ws.
+La aplicación de Node.js (__Figura 24__) es muy sencilla (un solo archivo, app.js), consta de un servidor en Express que da soporte a un servidor WebSocket proporcionado por la librería ws.
 
 El servidor WebSocket está orientado a eventos, al iniciarse una conexión, permite recoger los eventos que genera el cliente (representado mediante la variable ‘ws’)
 
@@ -1244,6 +1254,8 @@ Para replicar este experimento, se proporciona una sencilla guía en el  <<X3, A
 
 Esta comparativa puede encontrarse publicada en inglés en el siguiente enlace: https://maes95.github.io/TFG-WebChat/. Con esta publicación se pretende obtener retroalimentación (__Feedback__) con el fin de mejorar el proyecto y ampliar la comparativa.
 
+<<<
+
 === 5.1 Latencia
 
 Para nuestro caso de estudio, podemos definir la latencia o tiempo de respuesta
@@ -1279,6 +1291,8 @@ Por otro lado, en la aplicación de Vert.x, puede apreciarse que el uso del Even
 Los peores resultados dentro de esta métrica los encontramos en la aplicación de Node.js. Dicha aplicación se ejecuta en un solo hilo de ejecución, a diferencia del resto de tecnologías que hacen uso de múltiples hilos para atender las peticiones de forma concurrente. La aplicación de Node.js junto a la librería de cluster intenta dar solución a este problema, mejorando considerablemente el tiempo de respuesta, aunque quedando muy por detrás de las tecnologías que se ejecutan sobre Java, a excepción de Vert.x con EventBus.
 
 Podemos afirmar que atendiendo al tiempo de respuesta, la mejor opción sería una aplicación en SpringBoot haciendo uso de un servidor en Tomcat (el cual viene configurado por defecto).
+
+<<<
 
 === 5.2 Uso de CPU
 
@@ -1328,6 +1342,7 @@ mas representativo (60 usuarios, una sala de chat y un total de 1,8 millones de 
 por lo que para este caso concreto, el uso total de CPU es de 417,9% (contando el proceso maestro),
 situándose por encima de todas las tecnologías, a excepción de Akka.
 
+<<<
 
 === 5.3 Uso de memoria
 
@@ -1377,6 +1392,9 @@ inferior a la del proceso maestro (238.611 KBytes). La memoria total usada por l
 asciende a 695.727 KBytes, quedando por encima de de las aplicaciones de Spring y
 Vert.x sin EventBus, pero continuando por debajo de Vert.x y Akka.
 
+
+<<<
+
 === 5.4 Desarrollo
 
 A la hora de desarrollar, también debemos plantearnos el tiempo y/o dificultad que nos puede entrañar, en este caso, crear un sistema reactivo.
@@ -1386,6 +1404,8 @@ Tanto las aplicaciones de Akka y Vert.x disponen de amplias librerías que conll
 Por otro lado, las aplicaciones de SpringBoot son mucho más sencillas y rápidas de construir gracias a su inversión de control, aunque deja en manos del usuario solventar posibles problemas de concurrencia.
 
 Por último, las aplicaciones de Node.js, para obtener un servicio reactivo resultan triviales dado el carácter reactivo del propio lenguaje, pudiendo escribir toda la funcionalidad en muy pocas líneas de forma clara y concisa, sin embargo, al añadir la librería de cluster, el flujo de la aplicación puede complicarse.
+
+<<<
 
 === 5.5 Conclusiones generales de la comparativa
 
@@ -1412,7 +1432,7 @@ __* El resultado de SpringBoot con servidor Tomcat, debido a su baja latencia, a
 |  NodeJS + Cluster        |  Media   |  Alto*      |  Medio*        |  Alta
 |===============================================================================================
 
-__*Los valores de uso de CPU y memoria mostrados en las gráficas corresponden únicamente al proceso maestro.__
+__*Los valores de uso de CPU y memoria mostrados corresponden a los reales (trabajadores y maestro), tal y como se muestra en las tablas 1 y 2 en apartados anteriores.__
 
 Tras estudiar las distintas métricas, podemos enunciar las siguientes soluciones al problema de las aplicaciones reactivas:
 
@@ -1422,18 +1442,39 @@ Tras estudiar las distintas métricas, podemos enunciar las siguientes solucione
 
 == 6. Conclusiones del proyecto y trabajos futuros
 
+Este proyecto ha resultado ser muy enriquecedor, tanto a título personal por la
+cantidad de tecnologías sobre las que he adquirido conocimiento como por el uso
+que se le pueda dar, tanto al modelo de pruebas utilizado como a los resultados
+de la comparativa a la hora de elegir una u otra tecnología. Quedan satisfechos
+todos los objetivos del proyecto, además de haberse incluido distintas versiones
+de las tecnologías para hacerlo más completo.
 
-Este proyecto ha resultado ser muy enriquecedor, tanto a título personal por la cantidad de tecnologías sobre las que he adquirido conocimiento como por el uso que se le pueda dar, tanto al modelo de pruebas utilizado como a los resultados de la comparativa a la hora de elegir una u otra tecnología. Quedan satisfechos todos los objetivos del proyecto, además de haberse incluido distintas versiones de las tecnologías para hacerlo más completo.
+Me gustaría destacar las continuas iteraciones/refactorización que ha sufrido cada tecnología, ya
+que tras cada comparación que hacía, buscaba mejorar las tecnologías con "peores
+resultados", haciéndolas mas eficientes.
 
-La posibilidad de ampliar este proyecto ha estado presente durante todo el desarrollo, facilitando en gran medida la inclusión de nuevas aplicaciones mediante un diseño flexible y una documentación detallada.
+Como conclusión personal, a pesar de los buenos resultados que muestra Spring en
+términos generales, la tecnología que más interés me ha despertado ha sido Vert.x, su
+sistema de eventos puede ser muy interesante en otros escenarios, además de que queda
+por probar como de útil sería el bus de eventos en un entorno distribuido.
+
+La posibilidad de ampliar este proyecto ha estado presente durante todo el desarrollo,
+facilitando en gran medida la inclusión de nuevas aplicaciones mediante un diseño
+flexible y una documentación detallada.
 
 Entre las posibles ampliaciones/continuaciones del proyecto, destacaría:
 
-- El desarrollo de aplicaciones que usen otras tecnologías que no se basen en Java ni Node, como podrían ser Go o Erlang.
+* El desarrollo de aplicaciones que usen otras tecnologías que no se basen en Java ni Node, como podrían ser Go o Erlang.
 
-- Llevar la comparativa al escalado horizontal, ver cómo se comportan las distintas tecnologías de forma distribuida y cuáles serían las mejores estrategias para optimizar su funcionamiento.
+* Llevar la comparativa al escalado horizontal, ver cómo se comportan las distintas tecnologías de forma distribuida y cuáles serían las mejores estrategias para optimizar su funcionamiento.
 
-- Ampliar la aplicación de pruebas para que contemple aplicaciones multiproceso.
+* Ampliar la aplicación de pruebas:
+
+** Soportar aplicaciones multiproceso.
+
+** Capturar los errores de las aplicaciones para mostrarlos por el cliente web
+
+** Añadir otros tipos de gráficos (cómo el de dispersión) al cliente web.
 
 == Bibliografía
 
